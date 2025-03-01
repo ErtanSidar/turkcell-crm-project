@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.turkcell</groupId>
-    <artifactId>contract-service</artifactId>
+    <artifactId>contractservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>contract-service</name>
     <description>contract-service</description>
