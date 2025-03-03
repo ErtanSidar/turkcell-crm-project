@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: "planservice"
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:27018/planservice?authSource=admin
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+
+server:
+  port: 8086
+
+eureka:
+  client:
+    service-url:
+      defaultZone: "http://localhost:8761/eureka"
+    register-with-eureka: true
+    fetch-registry: true
