@@ -1,0 +1,115 @@
+services:
+  user-service-db:
+    image: postgres
+    container_name: "user-service-db"
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=userservice
+    volumes:
+      - user-service-db-data:/var/lib/postgresql/data
+    networks:
+      - common
+
+  customer-service-db:
+    image: postgres
+    container_name: "customer-service-db"
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=customerservice
+    volumes:
+      - customer-service-db-data:/var/lib/postgresql/data
+    networks:
+      - common
+
+
+  customer-support-service-db:
+    image: postgres
+    container_name: "customer-support-service-db"
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=customersupportservice
+    volumes:
+      - customer-support-service-db-data:/var/lib/postgresql/data
+    networks:
+      - common
+
+
+  billing-payment-service-db:
+    image: mysql:latest
+    container_name: billing-payment-service-db
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: billingpaymentservice
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: test
+    ports:
+      - "3306:3306"
+    volumes:
+      - billing-payment-service-db-data:/var/lib/mysql
+    networks:
+      - common
+
+
+  contract-service-db:
+    image: mysql:latest
+    container_name: contract-service-db
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: contractservice
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: test
+    ports:
+      - "3307:3306"
+    volumes:
+      - contract-service-db-data:/var/lib/mysql
+    networks:
+      - common
+
+
+  analytic-service-db:
+    image: mongo
+    container_name: "analytic-service-db"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - analytic-service-db-data:/data/db
+    networks:
+      - common
+
+  plan-service-db:
+    image: mongo
+    container_name: "plan-service-db"
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - plan-service-db-data:/data/db
+    networks:
+      - common
+
+volumes:
+  analytic-service-db-data:
+  billing-payment-service-db-data:
+  contract-service-db-data:
+  customer-service-db-data:
+  customer-support-service-db-data:
+  plan-service-db-data:
+  user-service-db-data:
+
+networks:
+  common:
+    driver: bridge
