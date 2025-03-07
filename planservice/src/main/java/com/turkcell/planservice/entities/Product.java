@@ -1,0 +1,40 @@
+package com.turkcell.planservice.entities;
+
+import io.github.ertansidar.entities.BaseEntity;
+import jakarta.persistence.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "products")
+public class Product extends BaseEntity<UUID> {
+
+    @Column(name = "product_name")
+    private String productName;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "product_type")
+    private ProductType productType;
+
+    @ManyToOne
+    @JoinColumn(name = "plan_id")
+    private Plan plan;
+
+    @OneToOne
+    private Package packagee;
+
+    @OneToMany(mappedBy = "product")
+    private List<Usage> usages;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "subscription_id")
+    private Subscription subscription;
+
+}

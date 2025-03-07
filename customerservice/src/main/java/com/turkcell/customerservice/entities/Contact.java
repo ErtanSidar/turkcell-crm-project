@@ -1,11 +1,11 @@
 package com.turkcell.customerservice.entities;
 
-import com.turkcell.customerservice.core.entities.BaseEntity;
+import io.github.ertansidar.entities.BaseEntity;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "contacts")
-public abstract class Contact extends BaseEntity<Long> {
+public class Contact extends BaseEntity<Long> {
 
     @Column(name = "email")
     private String email;
