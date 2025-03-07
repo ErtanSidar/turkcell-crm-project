@@ -1,13 +1,14 @@
 package com.turkcell.customerservice.entities;
 
-import com.turkcell.customerservice.core.entities.BaseEntity;
+import io.github.ertansidar.entities.BaseEntity;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "districts")
-public abstract class District extends BaseEntity<Long> {
+public class District extends BaseEntity<UUID> {
 
     @Column(name = "name")
     private String name;

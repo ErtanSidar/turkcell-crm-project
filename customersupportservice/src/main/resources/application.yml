@@ -1,21 +1,11 @@
 spring:
   application:
     name: "customersupportservice"
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:27018/customersupportservice?authSource=admin
   config:
     import: "optional:configserver:http://localhost:8888/"
-  datasource:
-    url: jdbc:postgresql://localhost:5434/customersupportservice
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
 
 server:
   port: 8084

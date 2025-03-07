@@ -27,21 +27,18 @@ services:
     networks:
       - common
 
-
   customer-support-service-db:
-    image: postgres
+    image: mongo
     container_name: "customer-support-service-db"
     ports:
-      - "5434:5432"
+      - "27018:27017"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=customersupportservice
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
     volumes:
-      - customer-support-service-db-data:/var/lib/postgresql/data
+      - customer-support-service-db-data:/data/db
     networks:
       - common
-
 
   billing-payment-service-db:
     image: mysql:latest
@@ -58,7 +55,6 @@ services:
     networks:
       - common
 
-
   contract-service-db:
     image: mysql:latest
     container_name: contract-service-db
@@ -74,7 +70,6 @@ services:
     networks:
       - common
 
-
   analytic-service-db:
     image: mongo
     container_name: "analytic-service-db"
@@ -89,15 +84,16 @@ services:
       - common
 
   plan-service-db:
-    image: mongo
+    image: postgres
     container_name: "plan-service-db"
     ports:
-      - "27018:27017"
+      - "5434:5432"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=planservice
     volumes:
-      - plan-service-db-data:/data/db
+      - plan-service-db-data:/var/lib/postgresql/data
     networks:
       - common
 
