@@ -19,7 +19,7 @@ public class Plan {
     @Field(name = "plan_name")
     private String planName;
 
-    @Field(name = "plan_ype")
+    @Field(name = "plan_type")
     private String planType;
 
     @Field(name = "monthly_fee")
