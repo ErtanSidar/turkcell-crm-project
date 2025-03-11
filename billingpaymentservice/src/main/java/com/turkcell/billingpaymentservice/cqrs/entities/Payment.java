@@ -1,10 +1,14 @@
-package com.turkcell.billingpaymentservice.entities;
+package com.turkcell.billingpaymentservice.cqrs.entities;
 
 import io.github.ertansidar.entities.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "payments")
 public class Payment extends BaseEntity<UUID> {
@@ -27,5 +31,10 @@ public class Payment extends BaseEntity<UUID> {
     @OneToOne
     @JoinColumn(name = "billing_id")
     private Billing billing;
+
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
 }
