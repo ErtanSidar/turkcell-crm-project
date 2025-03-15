@@ -8,12 +8,11 @@ import com.turkcell.customerservice.services.dtos.requests.cityRequests.UpdateCi
 import com.turkcell.customerservice.services.dtos.responses.cityResponses.*;
 import com.turkcell.customerservice.services.mappers.CityMapper;
 import com.turkcell.customerservice.services.rules.CityBusinessRules;
+import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
+import io.github.ertansidar.response.ListResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,21 +23,13 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class CityServiceImpl implements CityService {
+
     private CityRepository cityRepository;
     private CityBusinessRules cityBusinessRules;
 
     @Override
     public GetListResponse<GetAllCityResponse> getAll(PageInfo pageInfo) {
-        GetListResponse<GetAllCityResponse> response = new GetListResponse<>();
-        Pageable pageable = PageRequest.of(pageInfo.getPage(), pageInfo.getSize());
-        Page<City> cities = cityRepository.findAllIfDeletedDateIsNull(pageable);
-        response.setItems(cities.stream().map(CityMapper.INSTANCE::getAllCityResponseFromCity).collect(Collectors.toList()));
-        response.setTotalElements(cities.getTotalElements());
-        response.setTotalPage(cities.getTotalPages());
-        response.setSize(cities.getSize());
-        response.setHasNext(cities.hasNext());
-        response.setHasPrevious(cities.hasPrevious());
-        return response;
+        return ListResponse.get(pageInfo, cityRepository, CityMapper.INSTANCE::getAllCityResponseFromCity);
     }
 
     @Override
@@ -46,59 +37,48 @@ public class CityServiceImpl implements CityService {
         cityBusinessRules.cityNotFound(id);
         cityBusinessRules.cityIsDeleted(id);
 
-        City foundCity = cityRepository.findById(id).get();
-        GetCityResponse getCityResponse = CityMapper.INSTANCE.getCityResponseFromCity(foundCity);
-        return getCityResponse;
+        City foundCity = cityRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("City not found"));
+        return CityMapper.INSTANCE.getCityResponseFromCity(foundCity);
     }
 
     @Override
-    public CreatedCityResponse add(CreateCityRequest createCityRequest) {
-        cityBusinessRules.cityNameCanNotBeDuplicated(createCityRequest.getName());
+    public CreatedCityResponse add(CreateCityRequest request) {
+        cityBusinessRules.cityNameCanNotBeDuplicated(request.getName());
 
-        City city = CityMapper.INSTANCE.cityFromCreateCityRequest(createCityRequest);
+        City city = CityMapper.INSTANCE.cityFromCreateCityRequest(request);
         city.setId(UUID.randomUUID());
-        city.setCreatedDate(LocalDateTime.now());
         City createdCity = cityRepository.save(city);
 
-        CreatedCityResponse createdCityResponse = CityMapper.INSTANCE.createdCityResponseFromCity(createdCity);
-        return createdCityResponse;
+        return CityMapper.INSTANCE.createdCityResponseFromCity(createdCity);
     }
 
-    public UpdatedCityResponse update(UpdateCityRequest updateCityRequest, UUID id) {
-        cityBusinessRules.cityNotFound(id);
-        cityBusinessRules.cityIsDeleted(id);
-        cityBusinessRules.cityNameCanNotBeDuplicated(updateCityRequest.getName());
+    @Override
+    public UpdatedCityResponse update(UpdateCityRequest request, UUID id) {
+//        cityBusinessRules.cityNotFound(id);
+//        cityBusinessRules.cityNameCanNotBeDuplicated(request.getName());
 
-        City foundCity = cityRepository.findById(id).get();
-        foundCity.setUpdatedDate(LocalDateTime.now());
+        City foundCity = cityRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("City not found"));
 
-        City city = CityMapper.INSTANCE.cityFromUpdateCityRequest(updateCityRequest);
+        City city = CityMapper.INSTANCE.cityFromUpdateCityRequest(request);
         city.setId(foundCity.getId());
-        city.setCreatedDate(foundCity.getCreatedDate());
-        city.setUpdatedDate(foundCity.getUpdatedDate());
         City updatedCity = cityRepository.save(city);
 
-        UpdatedCityResponse updatedCityResponse = CityMapper.INSTANCE.updatedCityResponseFromCity(updatedCity);
-        return updatedCityResponse;
+        return CityMapper.INSTANCE.updatedCityResponseFromCity(updatedCity);
     }
 
-    public DeletedCityResponse delete(UUID id) {
+    @Override
+    public void delete(UUID id) {
         cityBusinessRules.cityNotFound(id);
         cityBusinessRules.cityIsDeleted(id);
-
-        City foundCity = cityRepository.findById(id).get();
-        foundCity.setDeletedDate(LocalDateTime.now());
-        City deletedCity = cityRepository.save(foundCity);
-
-        DeletedCityResponse deletedCityResponse = CityMapper.INSTANCE.deletedCityResponseFromCity(deletedCity);
-        return deletedCityResponse;
+        cityRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
     }
 
     @Override
     public List<GetCityByCountryIdResponse> getByCountryId(UUID countryId) {
         List<City> cities = this.cityRepository.findByCountryId(countryId);
-        List<GetCityByCountryIdResponse> getCityByCountryIdResponse = cities
-                .stream().map(CityMapper.INSTANCE::getCityByCountryIdResponseFromCity).collect(Collectors.toList());
-        return getCityByCountryIdResponse;
+        return cities.stream().map(CityMapper.INSTANCE::getCityByCountryIdResponseFromCity).toList();
     }
+
 }

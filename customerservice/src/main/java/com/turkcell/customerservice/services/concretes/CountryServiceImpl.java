@@ -5,20 +5,22 @@ import com.turkcell.customerservice.repositories.CountryRepository;
 import com.turkcell.customerservice.services.abstracts.CountryService;
 import com.turkcell.customerservice.services.dtos.requests.countryRequests.CreateCountryRequest;
 import com.turkcell.customerservice.services.dtos.requests.countryRequests.UpdateCountryRequest;
-import com.turkcell.customerservice.services.dtos.responses.countryResponses.*;
+import com.turkcell.customerservice.services.dtos.responses.countryResponses.CreatedCountryResponse;
+import com.turkcell.customerservice.services.dtos.responses.countryResponses.GetAllCountryResponse;
+import com.turkcell.customerservice.services.dtos.responses.countryResponses.GetCountryResponse;
+import com.turkcell.customerservice.services.dtos.responses.countryResponses.UpdatedCountryResponse;
 import com.turkcell.customerservice.services.mappers.CountryMapper;
 import com.turkcell.customerservice.services.rules.CountryBusinessRules;
+import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
+import io.github.ertansidar.response.ListResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -29,24 +31,14 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public GetListResponse<GetAllCountryResponse> getAll(PageInfo pageInfo) {
-        GetListResponse<GetAllCountryResponse> response = new GetListResponse<>();
-        Pageable pageable = PageRequest.of(pageInfo.getPage(), pageInfo.getSize());
-        Page<Country> countries = countryRepository.findAllIfDeletedDateIsNull(pageable);
-        response.setItems(countries.stream()
-                .map(CountryMapper.INSTANCE::getAllCountryResponseFromCountry).collect(Collectors.toList()));
-        response.setTotalElements(countries.getTotalElements());
-        response.setTotalPage(countries.getTotalPages());
-        response.setSize(countries.getSize());
-        response.setHasNext(countries.hasNext());
-        response.setHasPrevious(countries.hasPrevious());
-        return response;
+        return ListResponse.get(pageInfo, countryRepository, CountryMapper.INSTANCE::getAllCountryResponseFromCountry);
     }
 
     @Override
     public GetCountryResponse getById(UUID id) {
-        countryBusinessRules.checkCountryExists(id);
-        countryBusinessRules.checkCountryIsDeleted(id);
-        Country foundedCountry = countryRepository.findById(id).get();
+        countryBusinessRules.checkCountryIdExists(id);
+        Country foundedCountry = countryRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Country not found"));
         return CountryMapper.INSTANCE.getCountryResponseFromCountry(foundedCountry);
     }
 
@@ -60,28 +52,21 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public UpdatedCountryResponse update(UpdateCountryRequest request, UUID id) {
-        countryBusinessRules.checkCountryExists(id);
-        countryBusinessRules.checkCountryIsDeleted(id);
-        countryBusinessRules.checkCountryNameIsUnique(request.getName());
-        Country foundCountry = countryRepository.findById(id).get();
+        countryBusinessRules.checkCountryIdExists(id);
+        Country foundCountry = countryRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Country not found"));
 
         Country country = CountryMapper.INSTANCE.countryFromUpdateCountryRequest(request);
         country.setId(foundCountry.getId());
-        country.setCreatedDate(foundCountry.getCreatedDate());
-        country.setUpdatedDate(foundCountry.getUpdatedDate());
         Country updatedCountry = countryRepository.save(country);
 
-        UpdatedCountryResponse updatedCountryResponse = CountryMapper.INSTANCE.updatedCountryResponseFromCountry(updatedCountry);
-        return updatedCountryResponse;
+        return CountryMapper.INSTANCE.updatedCountryResponseFromCountry(updatedCountry);
     }
 
+    @Transactional
     @Override
-    public DeletedCountryResponse delete(UUID id) {
-        countryBusinessRules.checkCountryExists(id);
-        countryBusinessRules.checkCountryIsDeleted(id);
-        Country foundCountry = countryRepository.findById(id).get();
-        foundCountry.setDeletedDate(LocalDateTime.now());
-        Country deletedCountry = countryRepository.save(foundCountry);
-        return CountryMapper.INSTANCE.deletedCountryResponseFromCountry(deletedCountry);
+    public void delete(UUID id) {
+        countryBusinessRules.checkCountryIdExists(id);
+        countryRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
     }
 }

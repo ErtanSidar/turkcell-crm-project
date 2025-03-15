@@ -4,11 +4,13 @@ import io.github.ertansidar.entities.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Where;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "customer_campaigns")
+@Where(clause = "deleted_at is null")
 public class CustomerCampaign extends BaseEntity<UUID> {
 
     @Column(name = "customer_campaign_id")
@@ -22,5 +24,10 @@ public class CustomerCampaign extends BaseEntity<UUID> {
 
     @Column(name = "assigned_date")
     private String assignedDate;
+
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
 }

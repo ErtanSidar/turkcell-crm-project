@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
+
 
 @Entity
 @Table(name = "individual_customer")
@@ -16,6 +18,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Where(clause = "deleted_at is null")
 public class IndividualCustomer extends Customer {
 
     @Column(name = "first_name")

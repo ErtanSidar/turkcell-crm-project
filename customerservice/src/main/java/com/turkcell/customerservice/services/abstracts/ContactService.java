@@ -3,14 +3,15 @@ package com.turkcell.customerservice.services.abstracts;
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.CreateContactRequest;
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.UpdateContactRequest;
 import com.turkcell.customerservice.services.dtos.responses.contactResponses.*;
+import io.github.ertansidar.paging.PageInfo;
+import io.github.ertansidar.response.GetListResponse;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ContactService {
     CreatedContactResponse add(CreateContactRequest request);
 
-    List<GetAllContactResponse> findAll();
+    GetListResponse<GetAllContactResponse> getAll(PageInfo pageInfo);
 
     GetContactResponse findById(UUID id);
 
@@ -18,5 +19,5 @@ public interface ContactService {
 
     UpdatedContactResponse update(UpdateContactRequest request, UUID id);
 
-    DeletedContactResponse delete(UUID id);
+    void delete(UUID id);
 }

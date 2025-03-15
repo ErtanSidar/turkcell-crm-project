@@ -29,7 +29,7 @@ public class AddressBusinessRules {
     public void addressIsDeleted(UUID id) {
         Optional<Address> address = addressRepository.findById(id);
 
-        if (address.isPresent() && address.get().getDeletedDate() != null) {
+        if (address.isPresent() && address.get().getDeletedAt() != null) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.ADDRESS_IS_DELETED));
         }
     }

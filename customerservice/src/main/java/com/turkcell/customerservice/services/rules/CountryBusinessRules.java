@@ -25,7 +25,7 @@ public class CountryBusinessRules {
         }
     }
 
-    public void checkCountryExists(UUID id) {
+    public void checkCountryIdExists(UUID id) {
         Optional<Country> country = countryRepository.findById(id);
 
         if (country.isEmpty()) {
@@ -36,7 +36,7 @@ public class CountryBusinessRules {
     public void checkCountryIsDeleted(UUID id) {
         Optional<Country> country = countryRepository.findById(id);
 
-        if (country.isPresent() && country.get().getDeletedDate() != null) {
+        if (country.isPresent() && country.get().getDeletedAt() != null) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.COUNTRY_IS_DELETED));
         }
     }

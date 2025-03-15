@@ -18,8 +18,5 @@ public class UpdateDistrictRequest {
     @NotBlank
     private String name;
 
-    @NotNull
-    @NotEmpty
-    @NotBlank
     private UUID cityId;
 }

@@ -36,7 +36,7 @@ public class DistrictBusinessRules {
     public void districtIsDeleted(UUID id) {
         Optional<District> district = districtRepository.findById(id);
 
-        if (district.isPresent() && district.get().getDeletedDate() != null) {
+        if (district.isPresent() && district.get().getDeletedAt() != null) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.DISTRICT_IS_DELETED));
         }
     }

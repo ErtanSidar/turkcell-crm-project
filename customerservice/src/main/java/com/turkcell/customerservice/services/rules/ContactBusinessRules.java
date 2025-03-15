@@ -28,7 +28,7 @@ public class ContactBusinessRules {
     public void contactMediumIsDeleted(UUID id) {
         Optional<Contact> contactMedium = contactRepository.findById(id);
 
-        if (contactMedium.isPresent() && contactMedium.get().getDeletedDate() != null) {
+        if (contactMedium.isPresent() && contactMedium.get().getDeletedAt() != null) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.CONTACT_IS_DELETED));
         }
     }

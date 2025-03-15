@@ -5,10 +5,14 @@ import com.turkcell.customerservice.services.abstracts.CorporateCustomerService;
 import com.turkcell.customerservice.services.dtos.requests.corporateCustomerRequests.CreateCorporateCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.corporateCustomerRequests.UpdateCorporateCustomerRequest;
 import com.turkcell.customerservice.services.dtos.responses.corporateCustomerResponses.*;
+import com.turkcell.customerservice.services.mappers.CorporateCustomerMapper;
+import io.github.ertansidar.paging.PageInfo;
+import io.github.ertansidar.response.GetListResponse;
+import io.github.ertansidar.response.ListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,13 +22,13 @@ public class CorporateCustomerServiceImpl implements CorporateCustomerService {
     private final CorporateCustomerRepository corporateCustomerRepository;
 
     @Override
-    public CreatedCorporateCustomerResponse add(CreateCorporateCustomerRequest createCorporateCustomerRequest) throws Exception {
+    public CreatedCorporateCustomerResponse add(CreateCorporateCustomerRequest request) throws Exception {
         return null;
     }
 
     @Override
-    public List<GetAllCorporateCustomerResponse> findAll() {
-        return List.of();
+    public GetListResponse<GetAllCorporateCustomerResponse> getAll(PageInfo pageInfo) {
+        return ListResponse.get(pageInfo, corporateCustomerRepository, CorporateCustomerMapper.INSTANCE::getAllCorporateCustomerResponseFromCorporateCustomer);
     }
 
     @Override
@@ -33,12 +37,13 @@ public class CorporateCustomerServiceImpl implements CorporateCustomerService {
     }
 
     @Override
-    public UpdatedCorporateCustomerResponse update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest, UUID id) throws Exception {
+    public UpdatedCorporateCustomerResponse update(UpdateCorporateCustomerRequest request, UUID id) throws Exception {
         return null;
     }
 
+    @Transactional
     @Override
-    public DeletedCorporateCustomerResponse delete(UUID id) {
-        return null;
+    public void delete(UUID id) {
+
     }
 }

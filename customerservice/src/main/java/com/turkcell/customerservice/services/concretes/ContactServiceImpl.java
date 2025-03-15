@@ -10,13 +10,16 @@ import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerRe
 import com.turkcell.customerservice.services.dtos.responses.contactResponses.*;
 import com.turkcell.customerservice.services.mappers.ContactMapper;
 import com.turkcell.customerservice.services.rules.ContactBusinessRules;
+import io.github.ertansidar.exception.type.BusinessException;
+import io.github.ertansidar.paging.PageInfo;
+import io.github.ertansidar.response.GetListResponse;
+import io.github.ertansidar.response.ListResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,28 +29,21 @@ public class ContactServiceImpl implements ContactService {
     private ContactBusinessRules contactBusinessRules;
 
     @Override
-    public CreatedContactResponse add(CreateContactRequest createContactRequest) {
+    public CreatedContactResponse add(CreateContactRequest request) {
         Contact contact =
-                ContactMapper.INSTANCE.contactFromCreateContactRequest(createContactRequest);
+                ContactMapper.INSTANCE.contactFromCreateContactRequest(request);
         contact.setId(UUID.randomUUID());
-        contact.setCreatedDate(LocalDateTime.now());
         Contact savedContact = this.contactRepository.save(contact);
 
         GetIndividualCustomerResponse individualCustomer =
-                individualCustomerService.findById(createContactRequest.getCustomerId());
+                individualCustomerService.findById(request.getCustomerId());
 
         return ContactMapper.INSTANCE.createdContactResponseFromContact(savedContact);
     }
 
     @Override
-    public List<GetAllContactResponse> findAll() {
-        List<Contact> contactMediumsList = this.contactRepository.findAll();
-        List<GetAllContactResponse> getAllContactResponses = contactMediumsList.stream()
-                .filter(contactMedium -> contactMedium.getDeletedDate() == null)
-                .map(contactMedium ->
-                        ContactMapper.INSTANCE
-                                .getAllContactResponseFromContact(contactMedium)).collect(Collectors.toList());
-        return getAllContactResponses;
+    public GetListResponse<GetAllContactResponse> getAll(PageInfo pageInfo) {
+        return ListResponse.get(pageInfo, contactRepository, ContactMapper.INSTANCE::getAllContactResponseFromContact);
     }
 
     @Override
@@ -55,7 +51,8 @@ public class ContactServiceImpl implements ContactService {
         contactBusinessRules.contactMediumNotFound(id);
         contactBusinessRules.contactMediumIsDeleted(id);
 
-        Contact contact = this.contactRepository.findById(id).get();
+        Contact contact = this.contactRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Contact not found"));
         return ContactMapper.INSTANCE.getContactResponseFromContact(contact);
     }
 
@@ -66,21 +63,18 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public UpdatedContactResponse update(UpdateContactRequest updateContactRequest, UUID id) {
+    public UpdatedContactResponse update(UpdateContactRequest request, UUID id) {
         contactBusinessRules.contactMediumNotFound(id);
         contactBusinessRules.contactMediumIsDeleted(id);
 
         return null;
     }
 
+    @Transactional
     @Override
-    public DeletedContactResponse delete(UUID id) {
+    public void delete(UUID id) {
         contactBusinessRules.contactMediumNotFound(id);
         contactBusinessRules.contactMediumIsDeleted(id);
-
-        Contact contact = this.contactRepository.findById(id).get();
-        contact.setDeletedDate(LocalDateTime.now());
-        Contact savedContact = this.contactRepository.save(contact);
-        return ContactMapper.INSTANCE.deletedContactResponseFromContact(savedContact);
+        contactRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
     }
 }

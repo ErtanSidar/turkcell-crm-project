@@ -12,9 +12,14 @@ import java.util.UUID;
 
 public interface AddressService {
     GetListResponse<GetAllAddressResponse> getAll(PageInfo pageInfo);
+
     GetAddressResponse getById(UUID id);
+
     CreatedAddressResponse add(CreateAddressRequest request);
+
     UpdatedAddressResponse update(UpdateAddressRequest request, UUID id);
-    DeletedAddressResponse delete(UUID id);
+
+    void delete(UUID id);
+
     List<GetAddressByCustomerIdResponse> getByCustomerId(UUID customerId);
 }

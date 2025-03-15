@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Where(clause = "deleted_at is null")
 public class Address extends BaseEntity<UUID> {
 
     @Column(name = "description")
@@ -44,4 +46,9 @@ public class Address extends BaseEntity<UUID> {
     @ManyToOne
     @JoinColumn(name = "district_id")
     private District district;
+
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 }

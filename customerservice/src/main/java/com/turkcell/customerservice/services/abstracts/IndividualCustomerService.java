@@ -3,15 +3,19 @@ package com.turkcell.customerservice.services.abstracts;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CheckTurkishCitizenRequest;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CreateIndividualCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.UpdateIndividualCustomerRequest;
-import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.*;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.CreatedIndividualCustomerResponse;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.GetAllIndividualCustomerResponse;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.GetIndividualCustomerResponse;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.UpdatedIndividualCustomerResponse;
+import io.github.ertansidar.paging.PageInfo;
+import io.github.ertansidar.response.GetListResponse;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface IndividualCustomerService {
     CreatedIndividualCustomerResponse add(CreateIndividualCustomerRequest request) throws Exception;
 
-    List<GetAllIndividualCustomerResponse> findAll();
+    GetListResponse<GetAllIndividualCustomerResponse> getAll(PageInfo pageInfo);
 
     GetIndividualCustomerResponse findById(UUID id);
 
@@ -19,7 +23,7 @@ public interface IndividualCustomerService {
 
     UpdatedIndividualCustomerResponse update(UpdateIndividualCustomerRequest request, UUID id) throws Exception;
 
-    DeletedIndividualCustomerResponse delete(UUID id);
+    void delete(UUID id);
 
-    boolean checkIfTurkishCitizen(CheckTurkishCitizenRequest checkTurkishCitizenRequest) throws Exception;
+    boolean checkIfTurkishCitizen(CheckTurkishCitizenRequest request) throws Exception;
 }

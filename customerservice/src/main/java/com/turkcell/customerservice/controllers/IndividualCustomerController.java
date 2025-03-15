@@ -1,15 +1,20 @@
 package com.turkcell.customerservice.controllers;
 
+import com.turkcell.customerservice.core.business.Utility;
 import com.turkcell.customerservice.services.abstracts.IndividualCustomerService;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CheckTurkishCitizenRequest;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CreateIndividualCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.UpdateIndividualCustomerRequest;
-import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.*;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.CreatedIndividualCustomerResponse;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.GetAllIndividualCustomerResponse;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.GetIndividualCustomerResponse;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.UpdatedIndividualCustomerResponse;
+import io.github.ertansidar.paging.PageInfo;
+import io.github.ertansidar.response.GetListResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,18 +24,18 @@ public class IndividualCustomerController {
     private IndividualCustomerService individualCustomerService;
 
     @PostMapping
-    public CreatedIndividualCustomerResponse add(@Valid @RequestBody CreateIndividualCustomerRequest createIndividualCustomerRequest) throws Exception {
-        return individualCustomerService.add(createIndividualCustomerRequest);
+    public CreatedIndividualCustomerResponse add(@Valid @RequestBody CreateIndividualCustomerRequest request) throws Exception {
+        return individualCustomerService.add(request);
     }
 
     @PostMapping("/checkmernis")
-    public boolean checkIfRealPerson(@RequestBody CheckTurkishCitizenRequest checkTurkishCitizenRequest) throws Exception {
-        return individualCustomerService.checkIfTurkishCitizen(checkTurkishCitizenRequest);
+    public boolean checkIfRealPerson(@RequestBody CheckTurkishCitizenRequest request) throws Exception {
+        return individualCustomerService.checkIfTurkishCitizen(request);
     }
 
     @GetMapping
-    public List<GetAllIndividualCustomerResponse> findAll() {
-        return individualCustomerService.findAll();
+    public GetListResponse<GetAllIndividualCustomerResponse> getAll(@RequestParam int page, @RequestParam int size) {
+        return individualCustomerService.getAll(new PageInfo(page, size));
     }
 
     @GetMapping("/nationalityid")
@@ -40,17 +45,19 @@ public class IndividualCustomerController {
 
     @GetMapping("/{id}")
     public GetIndividualCustomerResponse findById(@PathVariable UUID id) {
+        Utility.checkIdIsEmpty(id);
         return individualCustomerService.findById(id);
     }
 
     @PutMapping("/{id}")
     public UpdatedIndividualCustomerResponse update(
-            @Valid @RequestBody UpdateIndividualCustomerRequest updateIndividualCustomerRequest, @PathVariable UUID id) throws Exception {
-        return individualCustomerService.update(updateIndividualCustomerRequest, id);
+            @Valid @RequestBody UpdateIndividualCustomerRequest request, @PathVariable UUID id) throws Exception {
+        return individualCustomerService.update(request, id);
     }
 
     @DeleteMapping("/{id}")
-    public DeletedIndividualCustomerResponse delete(@PathVariable UUID id) {
-        return individualCustomerService.delete(id);
+    public void delete(@PathVariable UUID id) {
+        Utility.checkIdIsEmpty(id);
+        individualCustomerService.delete(id);
     }
 }

@@ -19,6 +19,8 @@ public interface CityMapper {
 
     City cityFromCreateCityRequest(CreateCityRequest createCityRequest);
 
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "countryId", source = "country.id")
     CreatedCityResponse createdCityResponseFromCity(City city);
 
     City cityFromUpdateCityRequest(UpdateCityRequest updateCityRequest);

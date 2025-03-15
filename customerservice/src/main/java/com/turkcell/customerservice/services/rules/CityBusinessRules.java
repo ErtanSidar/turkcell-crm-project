@@ -38,7 +38,7 @@ public class CityBusinessRules {
     public void cityIsDeleted(UUID id) {
         Optional<City> city = cityRepository.findById(id);
 
-        if (city.isPresent() && city.get().getDeletedDate() != null) {
+        if (city.isPresent() && city.get().getDeletedAt() != null) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.CITY_IS_DELETED));
         }
     }

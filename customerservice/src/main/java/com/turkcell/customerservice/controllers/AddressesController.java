@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.controllers;
 
+import com.turkcell.customerservice.core.business.Utility;
 import com.turkcell.customerservice.services.abstracts.AddressService;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.CreateAddressRequest;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.UpdateAddressRequest;
@@ -20,8 +21,8 @@ public class AddressesController {
     private AddressService addressService;
 
     @PostMapping
-    public CreatedAddressResponse add(@Valid @RequestBody CreateAddressRequest createAddressRequest) {
-        return addressService.add(createAddressRequest);
+    public CreatedAddressResponse add(@Valid @RequestBody CreateAddressRequest request) {
+        return addressService.add(request);
     }
 
     @GetMapping()
@@ -31,21 +32,25 @@ public class AddressesController {
 
     @GetMapping("/{id}")
     public GetAddressResponse getById(@PathVariable UUID id) {
+        Utility.checkIdIsEmpty(id);
         return addressService.getById(id);
     }
 
     @PutMapping("/{id}")
-    public UpdatedAddressResponse update(@Valid @RequestBody UpdateAddressRequest updateAddressRequest, @PathVariable UUID id) {
-        return addressService.update(updateAddressRequest, id);
+    public UpdatedAddressResponse update(@Valid @RequestBody UpdateAddressRequest request, @PathVariable UUID id) {
+        Utility.checkIdIsEmpty(id);
+        return addressService.update(request, id);
     }
 
     @DeleteMapping("/{id}")
-    public DeletedAddressResponse delete(@PathVariable UUID id) {
-        return addressService.delete(id);
+    public void delete(@PathVariable UUID id) {
+        Utility.checkIdIsEmpty(id);
+        addressService.delete(id);
     }
 
     @GetMapping("/customerid/{customerId}")
     public List<GetAddressByCustomerIdResponse> getByCustomerId(@PathVariable UUID customerId) {
+        Utility.checkIdIsEmpty(customerId);
         return addressService.getByCustomerId(customerId);
     }
 

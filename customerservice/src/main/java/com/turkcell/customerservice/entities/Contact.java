@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Where(clause = "deleted_at is null")
 public class Contact extends BaseEntity<UUID> {
 
     @Column(name = "email")
@@ -29,8 +31,13 @@ public class Contact extends BaseEntity<UUID> {
     @Column(name = "fax")
     private String fax;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
 }

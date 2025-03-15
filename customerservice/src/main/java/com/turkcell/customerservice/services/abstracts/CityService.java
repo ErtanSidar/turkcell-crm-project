@@ -11,9 +11,14 @@ import java.util.UUID;
 
 public interface CityService {
     GetListResponse<GetAllCityResponse> getAll(PageInfo pageInfo);
+
     GetCityResponse getById(UUID id);
+
     CreatedCityResponse add(CreateCityRequest request);
+
     UpdatedCityResponse update(UpdateCityRequest request, UUID id);
-    DeletedCityResponse delete(UUID id);
+
+    void delete(UUID id);
+
     List<GetCityByCountryIdResponse> getByCountryId(UUID countryId);
 }

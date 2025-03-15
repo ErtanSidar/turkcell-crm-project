@@ -8,8 +8,16 @@ import com.turkcell.customerservice.services.dtos.requests.districtRequests.Upda
 import com.turkcell.customerservice.services.dtos.responses.districtResponses.*;
 import com.turkcell.customerservice.services.mappers.DistrictMapper;
 import com.turkcell.customerservice.services.rules.DistrictBusinessRules;
+import io.github.ertansidar.exception.type.BusinessException;
+import io.github.ertansidar.paging.PageInfo;
+import io.github.ertansidar.response.GetListResponse;
+import io.github.ertansidar.response.ListResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,69 +31,55 @@ public class DistrictServiceImpl implements DistrictService {
     private DistrictBusinessRules districtBusinessRules;
 
     @Override
-    public List<GetAllDistrictResponse> getAll() {
-        List<District> districts = districtRepository.findAllIfDeletedDateIsNull();
-        List<GetAllDistrictResponse> getAllDistrictResponse = districts.stream()
-                .map(DistrictMapper.INSTANCE::getAllDistrictResponseFromDistrict).collect(Collectors.toList());
-        return getAllDistrictResponse;
+    public GetListResponse<GetAllDistrictResponse> getAll(PageInfo pageInfo) {
+        return ListResponse.get(pageInfo, districtRepository, DistrictMapper.INSTANCE::getAllDistrictResponseFromDistrict);
     }
 
     @Override
     public GetDistrictResponse getById(UUID id) {
         districtBusinessRules.districtNotFound(id);
         districtBusinessRules.districtIsDeleted(id);
-        District foundDistrict = districtRepository.findById(id).get();
-        GetDistrictResponse getDistrictResponse = DistrictMapper.INSTANCE.getDistrictResponseFromDistrict(foundDistrict);
-        return getDistrictResponse;
+        District foundDistrict = districtRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("District not found"));
+        return DistrictMapper.INSTANCE.getDistrictResponseFromDistrict(foundDistrict);
     }
 
     @Override
-    public CreatedDistrictResponse add(CreateDistrictRequest createDistrictRequest) {
-        districtBusinessRules.districtNameCanNotBeDuplicated(createDistrictRequest.getName());
-        District district = DistrictMapper.INSTANCE.districtFromCreateDistrictRequest(createDistrictRequest);
+    public CreatedDistrictResponse add(CreateDistrictRequest request) {
+        districtBusinessRules.districtNameCanNotBeDuplicated(request.getName());
+        District district = DistrictMapper.INSTANCE.districtFromCreateDistrictRequest(request);
         district.setId(UUID.randomUUID());
-        district.setCreatedDate(LocalDateTime.now());
         District createdDistrict = districtRepository.save(district);
 
-        CreatedDistrictResponse createdDistrictResponse = DistrictMapper.INSTANCE.createdDistrictResponseFromDistrict(createdDistrict);
-        return createdDistrictResponse;
+        return DistrictMapper.INSTANCE.createdDistrictResponseFromDistrict(createdDistrict);
     }
 
     @Override
-    public UpdatedDistrictResponse update(UpdateDistrictRequest updateDistrictRequest, UUID id) {
-        districtBusinessRules.districtNotFound(id);
-        districtBusinessRules.districtIsDeleted(id);
-        districtBusinessRules.districtNameCanNotBeDuplicated(updateDistrictRequest.getName());
-        District foundDistrict = districtRepository.findById(id).get();
-        foundDistrict.setUpdatedDate(LocalDateTime.now());
+    public UpdatedDistrictResponse update(UpdateDistrictRequest request, UUID id) {
+//        districtBusinessRules.districtNotFound(id);
+//        districtBusinessRules.districtNameCanNotBeDuplicated(updateDistrictRequest.getName());
+        District foundDistrict = districtRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("District not found"));
 
-        District district = DistrictMapper.INSTANCE.districtFromUpdateDistrictRequest(updateDistrictRequest);
+        District district = DistrictMapper.INSTANCE.districtFromUpdateDistrictRequest(request);
         district.setId(foundDistrict.getId());
-        district.setCreatedDate(foundDistrict.getCreatedDate());
-        district.setUpdatedDate(foundDistrict.getUpdatedDate());
         District updatedDistrict = districtRepository.save(district);
 
-        UpdatedDistrictResponse updatedDistrictResponse = DistrictMapper.INSTANCE.updatedDistrictResponseFromDistrict(updatedDistrict);
-        return updatedDistrictResponse;
+        return DistrictMapper.INSTANCE.updatedDistrictResponseFromDistrict(updatedDistrict);
     }
 
+    @Transactional
     @Override
-    public DeletedDistrictResponse delete(UUID id) {
+    public void delete(UUID id) {
         districtBusinessRules.districtNotFound(id);
         districtBusinessRules.districtIsDeleted(id);
-        District foundDistrict = districtRepository.findById(id).get();
-        foundDistrict.setDeletedDate(LocalDateTime.now());
-        District deletedDistrict = districtRepository.save(foundDistrict);
-
-        DeletedDistrictResponse deletedDistrictResponse = DistrictMapper.INSTANCE.deletedDistrictResponseFromDistrict(deletedDistrict);
-        return deletedDistrictResponse;
+        districtRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
     }
 
     @Override
     public List<GetDistrictByCityIdResponse> getByCityId(UUID cityId) {
         List<District> districts = this.districtRepository.findByCityId(cityId);
-        List<GetDistrictByCityIdResponse> getDistrictByCityIdResponse = districts
-                .stream().map(DistrictMapper.INSTANCE::getDistrictByCityIdResponseFromDistrict).collect(Collectors.toList());
-        return getDistrictByCityIdResponse;
+        return districts
+                .stream().map(DistrictMapper.INSTANCE::getDistrictByCityIdResponseFromDistrict).toList();
     }
 }

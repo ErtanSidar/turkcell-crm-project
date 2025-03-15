@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeletedCampaignResponse {
+public class GetCampaignResponse {
     private String name;
 
     private double discountPercentage;

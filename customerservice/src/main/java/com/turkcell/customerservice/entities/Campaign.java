@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import java.util.UUID;
 
@@ -17,13 +18,11 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Where(clause = "deleted_at is null")
 public class Campaign extends BaseEntity<UUID> {
 
-    @Column(name = "campaign_id")
-    private UUID campaignId;
-
     @Column(name = "campaign_name")
-    private String campaignName;
+    private String name;
 
     @Column(name = "discount_percentage")
     private double discountPercentage;
@@ -33,5 +32,10 @@ public class Campaign extends BaseEntity<UUID> {
 
     @Column(name = "valid_until")
     private String validUntil;
+
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
 }

@@ -21,19 +21,19 @@ public class IndividualCustomerBusinessRules {
     private CustomerCheckService customerCheckService;
 
     public void individualCustomerNationalityIdCannotBeDuplicated(String nationalityId) {
-        Optional<IndividualCustomer> individualCustomer = individualCustomerRepository.findByNationalityIdAndDeletedDateIsNull(nationalityId);
+        //Optional<IndividualCustomer> individualCustomer = individualCustomerRepository.findByNationalityIdAndDeletedAtIsNull(nationalityId);
 //        if(individualCustomer.isPresent() && individualCustomer.get().getCustomer().getDeletedDate() == null){
 //            throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.NATIONALITY_ID_EXISTS));
 //        }
     }
 
     public void individualCustomerNationalityIdIsExist(UUID id, String nationalityId) {
-        Optional<IndividualCustomer> individualCustomer = individualCustomerRepository.findByNationalityIdAndDeletedDateIsNull(nationalityId);
-        if(individualCustomer.isPresent()){
-            if(!individualCustomer.get().getId().equals(id)){
-                throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.NATIONALITY_ID_EXISTS));
-            }
-        }
+//        Optional<IndividualCustomer> individualCustomer = individualCustomerRepository.findByNationalityIdAndDeletedAtIsNull(nationalityId);
+//        if(individualCustomer.isPresent()){
+//            if(!individualCustomer.get().getId().equals(id)){
+//                throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.NATIONALITY_ID_EXISTS));
+//            }
+//        }
     }
 
     public void individualCustomerIdMustExist(UUID id) {

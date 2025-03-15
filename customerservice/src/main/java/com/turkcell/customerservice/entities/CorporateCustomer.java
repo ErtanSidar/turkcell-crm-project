@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "corporate_customer")
@@ -16,6 +19,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Where(clause = "deleted_at is null")
 public class CorporateCustomer extends Customer {
 
     @Column(name = "company_name", nullable = false)
@@ -23,4 +27,5 @@ public class CorporateCustomer extends Customer {
 
     @Column(name = "tax_number", nullable = false)
     private String taxNumber;
+
 }
