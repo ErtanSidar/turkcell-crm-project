@@ -1,5 +1,6 @@
 package com.turkcell.analyticservice.domain.entity;
 
+import io.github.ertansidar.entities.BaseEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -10,12 +11,13 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collation = "products")
-public class Product {
+@Document(collection = "products")
+public class Product extends BaseEntity<UUID> {
 
-    @Id
-    @Field(name = "id")
-    private UUID id;
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
     @Field(name = "product_name")
     private String productName;

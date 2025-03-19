@@ -1,4 +1,4 @@
-package com.turkcell.analyticservice.application.packages.query;
+package com.turkcell.analyticservice.application.packages.query.list;
 import an.awesome.pipelinr.Command;
 import com.turkcell.analyticservice.domain.entity.Package;
 import com.turkcell.analyticservice.persistence.packages.PackageRepository;
@@ -21,7 +21,7 @@ public class GetListPackageQuery implements Command<List<GetListPackageItemDto>>
             List<Package> packages = packageRepository.findAll();
 
             return packages.stream()
-                    .map(pkg -> new GetListPackageItemDto(pkg.getId(), pkg.getPackageName(),pkg.getPackageType()))
+                    .map(pkg -> new GetListPackageItemDto(pkg.getId(), pkg.getPackageName(),pkg.getPackageType(),pkg.getQuota(),pkg.getPrice(),pkg.getValidityPeriod()))
                     .toList();
         }
     }

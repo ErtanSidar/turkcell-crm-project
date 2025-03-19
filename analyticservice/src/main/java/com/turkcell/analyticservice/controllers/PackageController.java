@@ -1,6 +1,7 @@
 package com.turkcell.analyticservice.controllers;
 
 
+
 import an.awesome.pipelinr.Pipeline;
 import com.turkcell.analyticservice.application.packages.command.create.CreatePackageCommand;
 import com.turkcell.analyticservice.application.packages.command.create.CreatedPackageResponse;
@@ -8,8 +9,10 @@ import com.turkcell.analyticservice.application.packages.command.delete.DeletePa
 import com.turkcell.analyticservice.application.packages.command.delete.DeletedPackageResponse;
 import com.turkcell.analyticservice.application.packages.command.update.UpdatePackageCommand;
 import com.turkcell.analyticservice.application.packages.command.update.UpdatedPackageResponse;
-import com.turkcell.analyticservice.application.packages.query.GetListPackageItemDto;
-import com.turkcell.analyticservice.application.packages.query.GetListPackageQuery;
+import com.turkcell.analyticservice.application.packages.query.getbyid.GetPackageByIdItemDto;
+import com.turkcell.analyticservice.application.packages.query.getbyid.GetPackageByIdQuery;
+import com.turkcell.analyticservice.application.packages.query.list.GetListPackageItemDto;
+import com.turkcell.analyticservice.application.packages.query.list.GetListPackageQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PackageController {
     private final Pipeline pipeline;
+
 
     @PostMapping
     public ResponseEntity<CreatedPackageResponse> createPackage(@RequestBody CreatePackageCommand command) {
@@ -45,5 +49,11 @@ public class PackageController {
         GetListPackageQuery query = new GetListPackageQuery();
         List<GetListPackageItemDto> packages = pipeline.send(query);
         return ResponseEntity.ok(packages);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<GetPackageByIdItemDto> getPackageById(@PathVariable UUID id) {
+        GetPackageByIdQuery query = new GetPackageByIdQuery(id);
+        GetPackageByIdItemDto pkg = pipeline.send(query);
+        return ResponseEntity.ok(pkg);
     }
 }

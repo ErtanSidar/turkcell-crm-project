@@ -7,10 +7,15 @@ import com.turkcell.analyticservice.application.usage.command.delete.DeleteUsage
 import com.turkcell.analyticservice.application.usage.command.delete.DeletedUsageResponse;
 import com.turkcell.analyticservice.application.usage.command.update.UpdateUsageCommand;
 import com.turkcell.analyticservice.application.usage.command.update.UpdatedUsageResponse;
+import com.turkcell.analyticservice.application.usage.query.getbyid.GetUsageByIdItemDto;
+import com.turkcell.analyticservice.application.usage.query.getbyid.GetUsageByIdQuery;
+import com.turkcell.analyticservice.application.usage.query.list.GetListUsageItemDto;
+import com.turkcell.analyticservice.application.usage.query.list.GetListUsageQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -34,5 +39,18 @@ public class UsageController {
     @DeleteMapping("/{id}")
     public ResponseEntity<DeletedUsageResponse> deleteUsage(@PathVariable UUID id) {
         return ResponseEntity.ok(pipeline.send(new DeleteUsageCommand(id)));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GetListUsageItemDto>> getListUsages() {
+        GetListUsageQuery query = new GetListUsageQuery();
+        List<GetListUsageItemDto> usages = pipeline.send(query);
+        return ResponseEntity.ok(usages);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<GetUsageByIdItemDto> getUsageById(@PathVariable UUID id) {
+        GetUsageByIdQuery query = new GetUsageByIdQuery(id);
+        GetUsageByIdItemDto usage = pipeline.send(query);
+        return ResponseEntity.ok(usage);
     }
 }
