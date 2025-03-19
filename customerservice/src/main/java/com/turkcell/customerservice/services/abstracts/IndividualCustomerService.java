@@ -1,6 +1,5 @@
 package com.turkcell.customerservice.services.abstracts;
 
-import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CheckTurkishCitizenRequest;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CreateIndividualCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.UpdateIndividualCustomerRequest;
 import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.CreatedIndividualCustomerResponse;
@@ -13,17 +12,13 @@ import io.github.ertansidar.response.GetListResponse;
 import java.util.UUID;
 
 public interface IndividualCustomerService {
-    CreatedIndividualCustomerResponse add(CreateIndividualCustomerRequest request) throws Exception;
+    CreatedIndividualCustomerResponse add(CreateIndividualCustomerRequest request);
 
     GetListResponse<GetAllIndividualCustomerResponse> getAll(PageInfo pageInfo);
 
     GetIndividualCustomerResponse findById(UUID id);
 
-    boolean isIndividualCustomerExistsByNationalityId(String nationalityId);
-
-    UpdatedIndividualCustomerResponse update(UpdateIndividualCustomerRequest request, UUID id) throws Exception;
+    UpdatedIndividualCustomerResponse update(UpdateIndividualCustomerRequest request, UUID id);
 
     void delete(UUID id);
-
-    boolean checkIfTurkishCitizen(CheckTurkishCitizenRequest request) throws Exception;
 }

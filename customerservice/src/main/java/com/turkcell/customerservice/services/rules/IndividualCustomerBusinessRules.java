@@ -54,9 +54,9 @@ public class IndividualCustomerBusinessRules {
 
     public void checkAndFormatFullName(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws Exception {
         String fullName = updateIndividualCustomerRequest.getFirstName();
-        if (!updateIndividualCustomerRequest.getMiddleName().isEmpty()) {
-            fullName += " " + updateIndividualCustomerRequest.getMiddleName();
-        }
+//        if (!updateIndividualCustomerRequest.getMiddleName().isEmpty()) {
+//            fullName += " " + updateIndividualCustomerRequest.getMiddleName();
+//        }
         checkIdNationalIdentityExists(updateIndividualCustomerRequest.getNationalityId(),
                 fullName,
                 updateIndividualCustomerRequest.getLastName(),

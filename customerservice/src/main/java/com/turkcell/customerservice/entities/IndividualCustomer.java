@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "individual_customer")
@@ -31,5 +33,5 @@ public class IndividualCustomer extends Customer {
     private String nationalityId;
 
     @Column(name = "birth_date")
-    private String birthDate;
+    private LocalDate birthDate;
 }

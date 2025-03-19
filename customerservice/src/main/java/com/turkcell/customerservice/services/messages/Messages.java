@@ -20,6 +20,6 @@ public class Messages {
         public static final String ADDRESS_IS_DELETED = "addressIsDeleted";
         public static final String CONTACT_NOT_FOUND = "contactNotFound";
         public static final String CONTACT_IS_DELETED = "contactIsDeleted";
-
+        public static final String CUSTOMER_NOT_FOUND = "customerNotFound";
     }
 }

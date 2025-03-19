@@ -1,13 +1,16 @@
 package com.turkcell.customerservice.services.concretes;
 
 import com.turkcell.customerservice.adapters.CustomerCheckService;
+import com.turkcell.customerservice.entities.Customer;
 import com.turkcell.customerservice.entities.IndividualCustomer;
+import com.turkcell.customerservice.repositories.CustomerRepository;
 import com.turkcell.customerservice.repositories.IndividualCustomerRepository;
 import com.turkcell.customerservice.services.abstracts.IndividualCustomerService;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CheckTurkishCitizenRequest;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CreateIndividualCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.UpdateIndividualCustomerRequest;
 import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.*;
+import com.turkcell.customerservice.services.dtos.responses.customerResponses.GetAllCustomerResponse;
 import com.turkcell.customerservice.services.mappers.IndividualCustomerMapper;
 import com.turkcell.customerservice.services.rules.IndividualCustomerBusinessRules;
 import io.github.ertansidar.exception.type.BusinessException;
@@ -28,22 +31,28 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class IndividualCustomerImpl implements IndividualCustomerService {
-    private IndividualCustomerRepository individualCustomerRepository;
+
+    private CustomerRepository customerRepository;
     private IndividualCustomerBusinessRules individualCustomerBusinessRules;
     private CustomerCheckService customerCheckService;
 
-    @Override
-    public CreatedIndividualCustomerResponse add(CreateIndividualCustomerRequest request) throws Exception {
-        String fullName = request.getFirstName();
-        if (!request.getMiddleName().isEmpty()) {
-            fullName += " " + request.getMiddleName();
-        }
-        individualCustomerBusinessRules.checkIdNationalIdentityExists(request.getNationalityId(),
-                fullName,
-                request.getLastName(),
-                request.getBirthDate().getYear());
-        individualCustomerBusinessRules.individualCustomerNationalityIdCannotBeDuplicated(request.getNationalityId());
 
+    @Override
+    public GetListResponse<GetAllCustomerResponse> getAll(PageInfo pageInfo) {
+        return ListResponse.get(pageInfo, customerRepository, CustomerMapper.INSTANCE::getAllCustomerResponseFromCustomer);
+    }
+
+
+    @Override
+    public GetIndividualCustomerResponse findById(UUID id) {
+        Customer foundedCustomer = individualCustomerRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Individual customer not found"));
+
+        return IndividualCustomerMapper.INSTANCE.getIndividualCustomerFromIndividualCustomer(foundIndividualCustomer);
+    }
+
+    @Override
+    public CreatedIndividualCustomerResponse add(CreateIndividualCustomerRequest request) {
         IndividualCustomer individualCustomer = new IndividualCustomer();
         IndividualCustomer createdCustomer = individualCustomerRepository.save(individualCustomer);
 
@@ -51,34 +60,9 @@ public class IndividualCustomerImpl implements IndividualCustomerService {
     }
 
     @Override
-    public GetListResponse<GetAllIndividualCustomerResponse> getAll(PageInfo pageInfo) {
-        return ListResponse.get(pageInfo, individualCustomerRepository, IndividualCustomerMapper.INSTANCE::getAllIndividualCustomerResponseFromIndividualCustomer);
-    }
-
-    @Override
-    public boolean isIndividualCustomerExistsByNationalityId(String nationalityId) {
-//        Optional<IndividualCustomer> individualCustomer = individualCustomerRepository.findByNationalityIdAndDeletedAtIsNull(nationalityId);
-//        if (individualCustomer.isPresent()) {
-//            return true;
-//        }
-        return false;
-    }
-
-    @Override
-    public GetIndividualCustomerResponse findById(UUID id) {
-        individualCustomerBusinessRules.individualCustomerIdMustExist(id);
-
-        IndividualCustomer foundIndividualCustomer = individualCustomerRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Individual customer not found"));
-
-        return IndividualCustomerMapper.INSTANCE.getIndividualCustomerFromIndividualCustomer(foundIndividualCustomer);
-    }
-
-    @Override
-    public UpdatedIndividualCustomerResponse update(UpdateIndividualCustomerRequest request, UUID id) throws Exception {
+    public UpdatedIndividualCustomerResponse update(UpdateIndividualCustomerRequest request, UUID id) {
         individualCustomerBusinessRules.individualCustomerIdMustExist(id);
         individualCustomerBusinessRules.individualCustomerNationalityIdIsExist(id, request.getNationalityId());
-        individualCustomerBusinessRules.checkAndFormatFullName(request);
 
         IndividualCustomer foundIndividualCustomer = individualCustomerRepository.findById(id).orElseThrow(() -> new BusinessException("Individual customer not found"));
         IndividualCustomer individualCustomer =
@@ -96,9 +80,4 @@ public class IndividualCustomerImpl implements IndividualCustomerService {
         individualCustomerBusinessRules.individualCustomerIdMustExist(id);
     }
 
-    @Override
-    public boolean checkIfTurkishCitizen(CheckTurkishCitizenRequest request) throws Exception {
-        return customerCheckService.checkIfRealPerson(request.getNationalityId(), request.getFirstName(),
-                request.getLastName(), request.getBirthDate().getYear());
-    }
 }

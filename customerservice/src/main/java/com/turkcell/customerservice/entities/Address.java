@@ -31,6 +31,9 @@ public class Address extends BaseEntity<UUID> {
     @Column(name = "street")
     private String street;
 
+    @Enumerated(EnumType.STRING)
+    private AddressType addressType;
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
