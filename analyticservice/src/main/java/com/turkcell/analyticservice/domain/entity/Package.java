@@ -1,17 +1,22 @@
 package com.turkcell.analyticservice.domain.entity;
 
-import org.springframework.data.annotation.Id;
+import io.github.ertansidar.entities.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.UUID;
+import lombok.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "packages")
+public class Package extends BaseEntity<UUID> {
 
-@Document(collation = "packages")
-public class Package {
-
-    @Id
-    @Field(name = "id")
-    private UUID id;
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
     @Field(name = "product")
     private Product product;
@@ -30,5 +35,6 @@ public class Package {
 
     @Field(name = "validity_period")
     private int validityPeriod;
+
 
 }

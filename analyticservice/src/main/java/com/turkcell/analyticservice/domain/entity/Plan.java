@@ -1,17 +1,25 @@
 package com.turkcell.analyticservice.domain.entity;
 
-import org.springframework.data.annotation.Id;
+import io.github.ertansidar.entities.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.UUID;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "plans")
+public class Plan extends BaseEntity<UUID> {
 
-@Document(collation = "plans")
-public class Plan {
-
-    @Id
-    @Field(name = "id")
-    private UUID id;
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
     @Field(name = "product")
     private Product product;
@@ -19,7 +27,7 @@ public class Plan {
     @Field(name = "plan_name")
     private String planName;
 
-    @Field(name = "plan_ype")
+    @Field(name = "plan_type")
     private String planType;
 
     @Field(name = "monthly_fee")

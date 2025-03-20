@@ -1,17 +1,23 @@
 package com.turkcell.analyticservice.domain.entity;
 
+import io.github.ertansidar.entities.BaseEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.UUID;
+import lombok.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "subscriptions")
+public class Subscription extends BaseEntity<UUID> {
 
-@Document(collation = "subscriptions")
-public class Subscription {
-
-    @Id
-    @Field(name = "id")
-    private UUID id;
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
     @Field(name = "customer_id")
     private UUID customerId;
