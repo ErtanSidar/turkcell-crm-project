@@ -29,8 +29,17 @@ public class CustomerBusinessRules {
 
     public void checkCustomerIdExists(UUID id) {
         Optional<Customer> customer = customerRepository.findById(id);
-        if (customer.isPresent()) {
+        if (customer.isEmpty()) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.CUSTOMER_NOT_FOUND));
+        }
+    }
+
+    public void checkIndividualCustomerVerifiedByMernis(String nationalityId,
+                                                        String firstName,
+                                                        String lastName,
+                                                        int birthYear) throws Exception {
+        if (!customerCheckService.checkIfRealPerson(nationalityId, firstName, lastName, birthYear)) {
+            throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.NATIONALITY_ID_COULD_NOT_BE_VERIFIED));
         }
     }
 }

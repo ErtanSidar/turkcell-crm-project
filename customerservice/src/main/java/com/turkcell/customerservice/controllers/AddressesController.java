@@ -4,14 +4,16 @@ import com.turkcell.customerservice.core.business.Utility;
 import com.turkcell.customerservice.services.abstracts.AddressService;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.CreateAddressRequest;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.UpdateAddressRequest;
-import com.turkcell.customerservice.services.dtos.responses.addressResponses.*;
+import com.turkcell.customerservice.services.dtos.responses.addressResponses.CreatedAddressResponse;
+import com.turkcell.customerservice.services.dtos.responses.addressResponses.GetAddressResponse;
+import com.turkcell.customerservice.services.dtos.responses.addressResponses.GetAllAddressResponse;
+import com.turkcell.customerservice.services.dtos.responses.addressResponses.UpdatedAddressResponse;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -46,12 +48,6 @@ public class AddressesController {
     public void delete(@PathVariable UUID id) {
         Utility.checkIdIsEmpty(id);
         addressService.delete(id);
-    }
-
-    @GetMapping("/customerid/{customerId}")
-    public List<GetAddressByCustomerIdResponse> getByCustomerId(@PathVariable UUID customerId) {
-        Utility.checkIdIsEmpty(customerId);
-        return addressService.getByCustomerId(customerId);
     }
 
 }

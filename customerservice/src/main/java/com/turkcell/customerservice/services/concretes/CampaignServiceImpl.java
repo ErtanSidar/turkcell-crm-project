@@ -1,11 +1,16 @@
 package com.turkcell.customerservice.services.concretes;
 
+import com.turkcell.customerservice.entities.Campaign;
+import com.turkcell.customerservice.entities.City;
 import com.turkcell.customerservice.repositories.CampaignRepository;
 import com.turkcell.customerservice.services.abstracts.CampaignService;
 import com.turkcell.customerservice.services.dtos.requests.campaignRequests.CreateCampaignRequest;
 import com.turkcell.customerservice.services.dtos.requests.campaignRequests.UpdateCampaignRequest;
 import com.turkcell.customerservice.services.dtos.responses.campaignResponses.*;
 import com.turkcell.customerservice.services.mappers.CampaignMapper;
+import com.turkcell.customerservice.services.mappers.CityMapper;
+import com.turkcell.customerservice.services.rules.CampaignBusinessRules;
+import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import io.github.ertansidar.response.ListResponse;
@@ -21,6 +26,7 @@ import java.util.UUID;
 public class CampaignServiceImpl implements CampaignService {
 
     private final CampaignRepository campaignRepository;
+    private final CampaignBusinessRules campaignBusinessRules;
 
     @Override
     public GetListResponse<GetAllCampaignResponse> getAll(PageInfo pageInfo) {
@@ -29,22 +35,30 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public GetCampaignResponse getById(UUID id) {
-        return null;
+        campaignBusinessRules.checkCampaignIdExists(id);
+        Campaign foundCampaign = campaignRepository.findById(id).get();
+        return CampaignMapper.INSTANCE.getCampaignResponseFromCampaign(foundCampaign);
     }
 
     @Override
     public CreatedCampaignResponse add(CreateCampaignRequest request) {
-        return null;
+        Campaign campaign = CampaignMapper.INSTANCE.campaignFromCreateCampaignRequest(request);
+        Campaign createdCampaign = campaignRepository.save(campaign);
+        return CampaignMapper.INSTANCE.createdCampaignResponseFromCampaign(createdCampaign);
     }
 
     @Override
     public UpdatedCampaignResponse update(UpdateCampaignRequest request, UUID id) {
-        return null;
+        campaignBusinessRules.checkCampaignIdExists(id);
+        Campaign campaign = CampaignMapper.INSTANCE.campaignFromUpdateCampaignRequest(request);
+        Campaign updatedCampaign = campaignRepository.save(campaign);
+        return CampaignMapper.INSTANCE.updatedCampaignResponseFromCampaign(updatedCampaign);
     }
 
     @Transactional
     @Override
     public void delete(UUID id) {
+        campaignBusinessRules.checkCampaignIdExists(id);
         campaignRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
     }
 }

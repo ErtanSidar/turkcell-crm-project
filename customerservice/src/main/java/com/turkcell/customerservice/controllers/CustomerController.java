@@ -23,11 +23,6 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @PostMapping
-    public CreatedCustomerResponse add(@Valid @RequestBody CreateCustomerRequest request) {
-        return customerService.add(request);
-    }
-
     @GetMapping
     public GetListResponse<GetAllCustomerResponse> getAll(@RequestParam int page, @RequestParam int size) {
         return customerService.getAll(new PageInfo(page, size));
@@ -39,9 +34,15 @@ public class CustomerController {
         return customerService.findById(id);
     }
 
+    @PostMapping
+    public CreatedCustomerResponse add(@Valid @RequestBody CreateCustomerRequest request) throws Exception {
+        return customerService.add(request);
+    }
+
     @PutMapping("/{id}")
     public UpdatedCustomerResponse update(
             @Valid @RequestBody UpdateCustomerRequest request, @PathVariable UUID id) {
+        Utility.checkIdIsEmpty(id);
         return customerService.update(request, id);
     }
 
@@ -49,5 +50,11 @@ public class CustomerController {
     public void delete(@PathVariable UUID id) {
         Utility.checkIdIsEmpty(id);
         customerService.delete(id);
+    }
+
+    @PostMapping("/{customerId}/campaign/{campaignId}")
+    public void addCustomerToCampaign(@PathVariable UUID customerId,
+                                      @PathVariable UUID campaignId) {
+        customerService.addCustomerToCampaign(customerId, campaignId);
     }
 }

@@ -4,14 +4,16 @@ import com.turkcell.customerservice.core.business.Utility;
 import com.turkcell.customerservice.services.abstracts.DistrictService;
 import com.turkcell.customerservice.services.dtos.requests.districtRequests.CreateDistrictRequest;
 import com.turkcell.customerservice.services.dtos.requests.districtRequests.UpdateDistrictRequest;
-import com.turkcell.customerservice.services.dtos.responses.districtResponses.*;
+import com.turkcell.customerservice.services.dtos.responses.districtResponses.CreatedDistrictResponse;
+import com.turkcell.customerservice.services.dtos.responses.districtResponses.GetAllDistrictResponse;
+import com.turkcell.customerservice.services.dtos.responses.districtResponses.GetDistrictResponse;
+import com.turkcell.customerservice.services.dtos.responses.districtResponses.UpdatedDistrictResponse;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -46,11 +48,5 @@ public class DistrictsController {
     public void delete(@PathVariable UUID id) {
         Utility.checkIdIsEmpty(id);
         districtService.delete(id);
-    }
-
-    @GetMapping("/cityid/{cityId}")
-    public List<GetDistrictByCityIdResponse> getByCityId(@PathVariable UUID cityId) {
-        Utility.checkIdIsEmpty(cityId);
-        return districtService.getByCityId(cityId);
     }
 }

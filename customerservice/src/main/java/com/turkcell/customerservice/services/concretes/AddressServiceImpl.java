@@ -37,34 +37,24 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public GetAddressResponse getById(UUID id) {
-        addressBusinessRules.addressNotFound(id);
-
-        Address foundAddress = addressRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Address not found"));
+        addressBusinessRules.checkAddressIdExists(id);
+        Address foundAddress = addressRepository.findById(id).get();
         return AddressMapper.INSTANCE.getAddressResponseFromAddress(foundAddress);
     }
 
     @Override
     public CreatedAddressResponse add(CreateAddressRequest request) {
-        Address address =
-                AddressMapper.INSTANCE.addressFromCreateAddressRequest(request);
-        address.setId(UUID.randomUUID());
+        Address address = AddressMapper.INSTANCE.addressFromCreateAddressRequest(request);
         Address createdAddress = addressRepository.save(address);
         return AddressMapper.INSTANCE.createdAddressResponseFromAddress(createdAddress);
     }
 
     @Override
     public UpdatedAddressResponse update(UpdateAddressRequest request, UUID id) {
-        addressBusinessRules.addressNotFound(id);
-        addressBusinessRules.addressIsDeleted(id);
-
-        Address foundAddress = addressRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Address not found"));
-
-        Address address =
-                AddressMapper.INSTANCE.addressFromUpdateAddressRequest(request);
+        addressBusinessRules.checkAddressIdExists(id);
+        Address foundAddress = addressRepository.findById(id).get();
+        Address address = AddressMapper.INSTANCE.addressFromUpdateAddressRequest(request);
         address.setId(foundAddress.getId());
-
         Address updatedAddress = addressRepository.save(address);
         return AddressMapper.INSTANCE.updatedAddressResponseFromAddress(updatedAddress);
     }
@@ -72,15 +62,7 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     @Override
     public void delete(UUID id) {
-        addressBusinessRules.addressNotFound(id);
-        addressBusinessRules.addressIsDeleted(id);
+        addressBusinessRules.checkAddressIdExists(id);
         addressRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
-    }
-
-    @Override
-    public List<GetAddressByCustomerIdResponse> getByCustomerId(UUID customerId) {
-        List<Address> addresses = this.addressRepository.findByCustomerId(customerId);
-        return addresses
-                .stream().map(AddressMapper.INSTANCE::getAddressByCustomerIdResponseFromAddress).toList();
     }
 }

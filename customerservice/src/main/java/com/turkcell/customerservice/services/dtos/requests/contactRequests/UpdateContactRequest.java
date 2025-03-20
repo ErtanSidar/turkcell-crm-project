@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.services.dtos.requests.contactRequests;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UpdateContactRequest {
     @NotNull
-    @Pattern(regexp = "\\b[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Z|a-z]{2,}\\b", message = "E-mail must be a valid e-mail address")
+    @Email
     private String email;
 
     @Pattern(regexp = "^\\d{10}$", message = "Home Phone must have 10 characters and contain only numbers.")

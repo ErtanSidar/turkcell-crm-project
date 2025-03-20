@@ -5,6 +5,7 @@ import com.turkcell.customerservice.services.dtos.requests.addressRequests.Creat
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.UpdateAddressRequest;
 import com.turkcell.customerservice.services.dtos.responses.addressResponses.*;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -16,6 +17,10 @@ public interface AddressMapper {
 
     GetAddressResponse getAddressResponseFromAddress(Address address);
 
+    @Mapping(source = "createAddressRequest.customerId", target = "customer.id")
+    @Mapping(source = "createAddressRequest.cityId", target = "city.id")
+    @Mapping(source = "createAddressRequest.districtId", target = "district.id")
+    @Mapping(source = "createAddressRequest.countryId", target = "country.id")
     Address addressFromCreateAddressRequest(CreateAddressRequest createAddressRequest);
 
     CreatedAddressResponse createdAddressResponseFromAddress(Address address);
@@ -24,7 +29,4 @@ public interface AddressMapper {
 
     UpdatedAddressResponse updatedAddressResponseFromAddress(Address address);
 
-    DeletedAddressResponse deletedAddressResponseFromAddress(Address address);
-
-    GetAddressByCustomerIdResponse getAddressByCustomerIdResponseFromAddress(Address address);
 }

@@ -4,7 +4,10 @@ import com.turkcell.customerservice.core.business.Utility;
 import com.turkcell.customerservice.services.abstracts.ContactService;
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.CreateContactRequest;
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.UpdateContactRequest;
-import com.turkcell.customerservice.services.dtos.responses.contactResponses.*;
+import com.turkcell.customerservice.services.dtos.responses.contactResponses.CreatedContactResponse;
+import com.turkcell.customerservice.services.dtos.responses.contactResponses.GetAllContactResponse;
+import com.turkcell.customerservice.services.dtos.responses.contactResponses.GetContactResponse;
+import com.turkcell.customerservice.services.dtos.responses.contactResponses.UpdatedContactResponse;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import jakarta.validation.Valid;
@@ -33,12 +36,6 @@ public class ContactsController {
     public GetContactResponse findById(@PathVariable UUID id) {
         Utility.checkIdIsEmpty(id);
         return contactService.findById(id);
-    }
-
-    @GetMapping("/customerid/{customerId}")
-    public GetContactByCustomerIdResponse getByCustomerId(@PathVariable UUID customerId) {
-        Utility.checkIdIsEmpty(customerId);
-        return contactService.getByCustomerId(customerId);
     }
 
     @PutMapping("/{id}")

@@ -4,7 +4,7 @@
     <Version>9.3.3.2</Version>
     <AccountType>Basic</AccountType>
     <LibrariesFolder>easywsdl</LibrariesFolder>
-    <MainClass>LWAKPSPublicSoap</MainClass>
+    <MainClass>IMGKPSPublicSoap</MainClass>
   </Info>
   <Settings>
     <Url>https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx</Url>
@@ -29,24 +29,25 @@
     <DetectDictionaries>false</DetectDictionaries>
   </Settings>
   <Files>
-    <File>docs/Html/LWAKPSPublicSoap.html</File>
-    <File>docs/Html/LWAKPSPublicSoap12.html</File>
-    <File>docs/Html/LWAKPSPublicSoap12_methods.html</File>
-    <File>docs/Html/LWAKPSPublicSoap_methods.html</File>
+    <File>docs/Html/IMGKPSPublicSoap.html</File>
+    <File>docs/Html/IMGKPSPublicSoap12.html</File>
+    <File>docs/Html/IMGKPSPublicSoap12_methods.html</File>
+    <File>docs/Html/IMGKPSPublicSoap_methods.html</File>
     <File>docs/Html/MTOMTransfer.html</File>
     <File>docs/Html/Tips.html</File>
     <File>docs/Index.html</File>
     <File>docs/Styles/Blueprint_Styles/Style.css</File>
-    <File>LWABinaryObject.java</File>
-    <File>LWAConnectionProvider.java</File>
-    <File>LWADateTimeParser.java</File>
-    <File>LWAHelper.java</File>
-    <File>LWAKPSPublicSoap.java</File>
-    <File>LWAKPSPublicSoap12.java</File>
-    <File>LWARequestResultHandler.java</File>
-    <File>LWAResponseData.java</File>
-    <File>LWASoapException.java</File>
-    <File>LWAStandardDateTimeParser.java</File>
+    <File>IMGBinaryObject.java</File>
+    <File>IMGConnectionProvider.java</File>
+    <File>IMGDateTimeParser.java</File>
+    <File>IMGHelper.java</File>
+    <File>IMGKPSPublicSoap.java</File>
+    <File>IMGKPSPublicSoap12.java</File>
+    <File>IMGRequestResultHandler.java</File>
+    <File>IMGResponseData.java</File>
+    <File>IMGSoapException.java</File>
+    <File>IMGStandardDateTimeParser.java</File>
+    <File>Metadata.info</File>
   </Files>
   <Libraries/>
 </EasyWSDL>

@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public interface CustomerService {
 
-    CreatedCustomerResponse add(CreateCustomerRequest request);
+    CreatedCustomerResponse add(CreateCustomerRequest request) throws Exception;
 
     GetListResponse<GetAllCustomerResponse> getAll(PageInfo pageInfo);
 
@@ -23,4 +23,5 @@ public interface CustomerService {
 
     void delete(UUID id);
 
+    void addCustomerToCampaign(UUID customerId, UUID campaignId);
 }

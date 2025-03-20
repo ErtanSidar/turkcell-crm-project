@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CreateContactRequest {
     @NotNull
-    @Pattern(regexp = "\\b[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Z|a-z]{2,}\\b", message = "E-mail must be a valid e-mail address")
+    @Email
     private String email;
 
     @Nullable
@@ -27,5 +27,6 @@ public class CreateContactRequest {
     @Nullable
     @Pattern(regexp = "^$|\\d{10}", message = "Fax must have 10 characters and contain only numbers.")
     private String fax;
+
     private UUID customerId;
 }

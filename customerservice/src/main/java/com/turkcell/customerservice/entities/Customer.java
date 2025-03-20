@@ -48,6 +48,9 @@ public class Customer extends BaseEntity<UUID> {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Address> addresses;
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<CustomerCampaign> customerCampaigns;
+
     @Override
     protected UUID generateId() {
         return UUID.randomUUID();

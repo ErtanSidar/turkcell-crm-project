@@ -25,7 +25,7 @@
     </p>
     <pre>
     <code class="java">
-LWAKPSPublicSoap service = new LWAKPSPublicSoap();
+IMGKPSPublicSoap service = new IMGKPSPublicSoap();
 service.setUserName("my user");
 service.setPassword("my password");
 service.TCKimlikNoDogrula();
@@ -95,14 +95,14 @@ for(Object obj : exercises.any)
 
     <pre>
     <code class="java">
-public class CustomService extends LWAKPSPublicSoap
+public class CustomService extends IMGKPSPublicSoap
 {
-    private LWAMTOM.FileDestinationManager manager=null;
+    private IMGMTOM.FileDestinationManager manager=null;
 
     @Override
-    protected LWARequestResultHandler createRequestResultHandler() {
-        LWARequestResultHandler handler= super.createRequestResultHandler();
-        manager= new LWAMTOM.FileDestinationManager("c:\\folder");
+    protected IMGRequestResultHandler createRequestResultHandler() {
+        IMGRequestResultHandler handler= super.createRequestResultHandler();
+        manager= new IMGMTOM.FileDestinationManager("c:\\folder");
         handler.setDestinationManager(manager);
         return handler;
     }
@@ -116,7 +116,7 @@ public class CustomService extends LWAKPSPublicSoap
 }
         </code>
 </pre>
-    <p>Now to connect to your web service you should use MyService class instead of LWAKPSPublicSoap.</p>
+    <p>Now to connect to your web service you should use MyService class instead of IMGKPSPublicSoap.</p>
 
 <br />
 <br />
@@ -141,7 +141,7 @@ public class CustomService extends LWAKPSPublicSoap
 
 <pre>
     <code class="java">
-    public class MyCustomDateConverter extends LWAStandardDateTimeParser
+    public class MyCustomDateConverter extends IMGStandardDateTimeParser
     {
         @Override
         public LocalDate parseLocal(String value) {
@@ -157,12 +157,12 @@ public class CustomService extends LWAKPSPublicSoap
     </code>
 </pre>
 <p>
-    Next is to create an instance of this class and set it into LWARequestResultHandler. You need to do this before you connect to your webservice.
+    Next is to create an instance of this class and set it into IMGRequestResultHandler. You need to do this before you connect to your webservice.
 </p>
 <pre>
     <code class="java">
     MyCustomDateConverter converter = new MyCustomDateConverter();
-    LWARequestResultHandler.setDateTimeParser(converter);
+    IMGRequestResultHandler.setDateTimeParser(converter);
     </code>
 
 </pre>
@@ -175,10 +175,10 @@ public class CustomService extends LWAKPSPublicSoap
 
 <pre>
     <code class="kotlin">
-public class CustomService extends LWAKPSPublicSoap {
+public class CustomService extends IMGKPSPublicSoap {
     @Override
-    protected LWARequestResultHandler createRequestResultHandler() {
-        LWARequestResultHandler handler = super.createRequestResultHandler();
+    protected IMGRequestResultHandler createRequestResultHandler() {
+        IMGRequestResultHandler handler = super.createRequestResultHandler();
 
         try {
             org.w3c.dom.Element soapHeader = handler.getHeader();

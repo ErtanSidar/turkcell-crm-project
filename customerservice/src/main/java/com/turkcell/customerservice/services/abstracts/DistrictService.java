@@ -19,6 +19,4 @@ public interface DistrictService {
     UpdatedDistrictResponse update(UpdateDistrictRequest request, UUID id);
 
     void delete(UUID id);
-
-    List<GetDistrictByCityIdResponse> getByCityId(UUID cityId);
 }

@@ -12,7 +12,7 @@ package com.turkcell.customerservice.outservices.mernis;
 // To use it in commercial project, you need to generate this class again with Premium account.
 // Check https://EasyWsdl.com/Payment/PremiumAccountDetails to see all benefits of Premium account.
 //
-// Licence: 2B05DCA11FC0CD75F030989C93727B58978D5949169F9A9ED189A6C43D466A58E869D6B7D900DAB338FBE27C88F457D14D8F2D0E1A888337FE5AE708723DDE51
+// Licence: A2F1EE67251196CB9AE51919EA06EB20A1FCE35AAF9E7541FD2D7400525B0FAA3A2DFD7F3201633933C56F36720993FE4AF02467B2A130DCDF43CDD49FBABC5A
 //------------------------------------------------------------------------
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,27 +20,27 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.util.*;
 import java.io.InputStream;
 
-enum LWASoapVersion {
+enum IMGSoapVersion {
     v1_0,
     v1_1,
     v1_2
 }
 
-interface LWAISerializableObject
+interface IMGISerializableObject
 {
-    void loadWithXml(org.w3c.dom.Element __node, LWARequestResultHandler __handler);
-    void serialize(org.w3c.dom.Element __node,LWARequestResultHandler __handler);
+    void loadWithXml(org.w3c.dom.Element __node, IMGRequestResultHandler __handler);
+    void serialize(org.w3c.dom.Element __node,IMGRequestResultHandler __handler);
 }
 
-interface LWAIReferenceObject
+interface IMGIReferenceObject
 {
 }
 
-public class LWARequestResultHandler
+public class IMGRequestResultHandler
 {
-    private LWASoapVersion _version=LWASoapVersion.v1_1;
+    private IMGSoapVersion _version=IMGSoapVersion.v1_1;
     
-    public LWASoapVersion getVersion(){
+    public IMGSoapVersion getVersion(){
         return _version;
     }
     private String soapNS = "";
@@ -54,12 +54,12 @@ public class LWARequestResultHandler
     
     private HashMap<String, String> namespaces = new HashMap<String, String>();
 
-    private static LWADateTimeParser dateTimeConverter=new LWAStandardDateTimeParser();
+    private static IMGDateTimeParser dateTimeConverter=new IMGStandardDateTimeParser();
     private static HashMap< java.lang.String,java.lang.Class> classNames = new HashMap< java.lang.String, java.lang.Class>();
     private static HashMap< java.lang.Class,java.lang.String> reverseClassNames = new HashMap< java.lang.Class, java.lang.String>();
     private static HashMap< java.lang.String,java.lang.String> elementNames = new HashMap< java.lang.String, java.lang.String>();
 
-    public LWARequestResultHandler(LWASoapVersion version)
+    public IMGRequestResultHandler(IMGSoapVersion version)
     {
         _version=version;
     }
@@ -103,16 +103,16 @@ public class LWARequestResultHandler
         this.outputHeader = outputHeader;
     }
 
-    public static void setDateTimeParser(LWADateTimeParser converter)
+    public static void setDateTimeParser(IMGDateTimeParser converter)
     {
         if(converter==null)
         {
-            converter = new LWAStandardDateTimeParser();
+            converter = new IMGStandardDateTimeParser();
         }
         dateTimeConverter=converter;
     }
 
-    public static LWADateTimeParser getDateTimeParser()
+    public static IMGDateTimeParser getDateTimeParser()
     {
         return dateTimeConverter;
     }
@@ -121,7 +121,7 @@ public class LWARequestResultHandler
     {
         String prefix=ensureNamespace(namespace,element.getOwnerDocument(),null);
         String attrName=name;
-        if(!LWAHelper.isEmpty(prefix))
+        if(!IMGHelper.isEmpty(prefix))
         {
             attrName=prefix+":"+name;
         }
@@ -133,7 +133,7 @@ public class LWARequestResultHandler
 
     public org.w3c.dom.Document createEnvelopeXml() throws ParserConfigurationException
     {
-        soapNS = _version == LWASoapVersion.v1_2 ? "http://www.w3.org/2003/05/soap-envelope" : "http://schemas.xmlsoap.org/soap/envelope/";
+        soapNS = _version == IMGSoapVersion.v1_2 ? "http://www.w3.org/2003/05/soap-envelope" : "http://schemas.xmlsoap.org/soap/envelope/";
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         builderFactory.setNamespaceAware(true);
         DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
@@ -147,8 +147,8 @@ public class LWARequestResultHandler
         envelope.appendChild(body);
 
         ensureNamespace(soapNS,xml,"soap");
-        ensureNamespace(LWAHelper.MS_SERIALIZATION_NS,xml,"ms");
-        ensureNamespace(LWAHelper.XSI,xml,"xsi");
+        ensureNamespace(IMGHelper.MS_SERIALIZATION_NS,xml,"ms");
+        ensureNamespace(IMGHelper.XSI,xml,"xsi");
         return xml;
     }
     
@@ -181,7 +181,7 @@ public class LWARequestResultHandler
         for (String param : referenceParameters) 
         {
             try {
-                org.w3c.dom.Document root = LWAHelper.loadXMLFromString(param);
+                org.w3c.dom.Document root = IMGHelper.loadXMLFromString(param);
                 org.w3c.dom.Element element=(org.w3c.dom.Element)header.getOwnerDocument().adoptNode(root.getDocumentElement());
                 header.appendChild(element);
                 addAttribute(element, "http://www.w3.org/2005/08/addressing","IsReferenceParameter",  "true");
@@ -193,9 +193,9 @@ public class LWARequestResultHandler
     
     public void setAnyTypeValue(Object item, org.w3c.dom.Element propertyElement)
     {
-        if (item instanceof LWAISerializableObject)
+        if (item instanceof IMGISerializableObject)
         {
-            LWAISerializableObject obj=(LWAISerializableObject)item;
+            IMGISerializableObject obj=(IMGISerializableObject)item;
             obj.serialize(propertyElement ,this);
             return;
         }
@@ -237,8 +237,8 @@ public class LWARequestResultHandler
 
     public Object getAnyTypeValue(org.w3c.dom.Element node)
     {
-        String typeAttr=node.getAttributeNS(LWAHelper.XSI,"type");
-        if (!LWAHelper.isEmpty(typeAttr))
+        String typeAttr=node.getAttributeNS(IMGHelper.XSI,"type");
+        if (!IMGHelper.isEmpty(typeAttr))
         {
             String[] splitString=typeAttr.split(":");
             if (splitString.length==2)
@@ -330,13 +330,13 @@ public class LWARequestResultHandler
     private String ensureNamespace(String namespace,org.w3c.dom.Document doc,String defaultPrefix)
     {
         String prefix="";
-        if(!LWAHelper.isEmpty(namespace))
+        if(!IMGHelper.isEmpty(namespace))
         {
-            if(namespace == LWAHelper.XML)
+            if(namespace == IMGHelper.XML)
             {
                 return "xml";
             }
-            if(namespace == LWAHelper.XMLNS)
+            if(namespace == IMGHelper.XMLNS)
             {
                 return "xmlns";
             }
@@ -358,7 +358,7 @@ public class LWARequestResultHandler
     {
         String prefix=ensureNamespace(namespace,doc,null);
         org.w3c.dom.Element element= doc.createElementNS(namespace,name);
-        if(!LWAHelper.isEmpty(prefix))
+        if(!IMGHelper.isEmpty(prefix))
         {
             element.setPrefix(prefix);
         }
@@ -376,21 +376,21 @@ public class LWARequestResultHandler
 
         if (obj==null)
         {
-            propertyElement.setAttributeNS(LWAHelper.XSI,"xsi:nil","true");
+            propertyElement.setAttributeNS(IMGHelper.XSI,"xsi:nil","true");
             return null;
         }
 
-        if  (obj instanceof LWAIReferenceObject)
+        if  (obj instanceof IMGIReferenceObject)
         {
             String idStr=reverseReferencesTable.get(obj);
             if (idStr != null)
             {
-                propertyElement.setAttributeNS(LWAHelper.MS_SERIALIZATION_NS,"ms:Ref",idStr);
+                propertyElement.setAttributeNS(IMGHelper.MS_SERIALIZATION_NS,"ms:Ref",idStr);
                 return null;
             }
 
             idStr="i"+ (reverseReferencesTable.size() + 1);
-            propertyElement.setAttributeNS(LWAHelper.MS_SERIALIZATION_NS,"ms:Id",idStr);
+            propertyElement.setAttributeNS(IMGHelper.MS_SERIALIZATION_NS,"ms:Id",idStr);
             reverseReferencesTable.put(obj,idStr);
         }
 
@@ -402,56 +402,56 @@ public class LWARequestResultHandler
             {
                 String[] splitType = xmlType.split("\\^\\^");
                 String fullname=getXmlFullName(propertyElement, splitType[0],splitType[1]);
-                propertyElement.setAttributeNS(LWAHelper.XSI,"xsi:type",fullname);
+                propertyElement.setAttributeNS(IMGHelper.XSI,"xsi:type",fullname);
             }
         }
 
         return propertyElement;
     }
 
-    public org.w3c.dom.Document setResponse(LWAResponseData response) throws java.lang.Exception 
+    public org.w3c.dom.Document setResponse(IMGResponseData response) throws java.lang.Exception 
     {
-        if(LWAHelper.isEmpty(response.getBody()))
+        if(IMGHelper.isEmpty(response.getBody()))
         {
             throw new java.lang.Exception("No body content");
         }
-        org.w3c.dom.Document parsedXml = LWAHelper.loadXMLFromString(response.getBody());
+        org.w3c.dom.Document parsedXml = IMGHelper.loadXMLFromString(response.getBody());
 
         if(parsedXml.getDocumentElement()==null)
         {
             throw new java.lang.Exception(response.getBody());
         }
 
-        outputBody= LWAHelper.getElement(parsedXml.getDocumentElement(),soapNS,"Body");
-        outputHeader=LWAHelper.getElement(parsedXml.getDocumentElement(),soapNS,"Header");
+        outputBody= IMGHelper.getElement(parsedXml.getDocumentElement(),soapNS,"Body");
+        outputHeader=IMGHelper.getElement(parsedXml.getDocumentElement(),soapNS,"Header");
 
         if(outputBody==null)
         {
             throw new java.lang.Exception(response.getBody());
         }
 
-        org.w3c.dom.Element fault=LWAHelper.getElement(outputBody, soapNS,"Fault");
+        org.w3c.dom.Element fault=IMGHelper.getElement(outputBody, soapNS,"Fault");
         if (fault != null)
         {
-            org.w3c.dom.Element faultString=LWAHelper.getNodeByLocalName(fault, "faultstring",0);
+            org.w3c.dom.Element faultString=IMGHelper.getNodeByLocalName(fault, "faultstring",0);
             if (faultString == null)
             {
-                org.w3c.dom.Element reasonNode=LWAHelper.getNodeByLocalName(fault, "Reason",0);
+                org.w3c.dom.Element reasonNode=IMGHelper.getNodeByLocalName(fault, "Reason",0);
                 if( reasonNode != null)
                 {
-                    faultString=LWAHelper.getNodeByLocalName(reasonNode, "Text",0);
+                    faultString=IMGHelper.getNodeByLocalName(reasonNode, "Text",0);
                 }
             }
 
-            org.w3c.dom.Element faultDetail=LWAHelper.getNodeByLocalName( fault, "detail",0);
+            org.w3c.dom.Element faultDetail=IMGHelper.getNodeByLocalName( fault, "detail",0);
             if (faultDetail == null)
             {
-                faultDetail=LWAHelper.getNodeByLocalName(fault, "Detail",0);
+                faultDetail=IMGHelper.getNodeByLocalName(fault, "Detail",0);
             }
 
             if (faultDetail != null)
             {
-                org.w3c.dom.Element faultClass=LWAHelper.getFirstChildElement(faultDetail);
+                org.w3c.dom.Element faultClass=IMGHelper.getFirstChildElement(faultDetail);
                 if (faultClass != null)
                 {
                     String typeName=faultClass.getLocalName();
@@ -478,7 +478,7 @@ public class LWARequestResultHandler
                         java.lang.Exception faultException;
                         if(!(faultObj instanceof java.lang.Exception))
                         {
-                            faultException = new LWASoapException(faultObj);
+                            faultException = new IMGSoapException(faultObj);
                         }
                         else
                         {
@@ -488,7 +488,7 @@ public class LWARequestResultHandler
                     }
                 }
             }
-            throw new LWASoapException(faultString.getTextContent(),faultDetail);
+            throw new IMGSoapException(faultString.getTextContent(),faultDetail);
         }
 
         return parsedXml;
@@ -503,20 +503,20 @@ public class LWARequestResultHandler
         java.lang.Class objType=type;
         org.w3c.dom.Element element=node;
 
-        String refAttr=node.getAttributeNS(LWAHelper.MS_SERIALIZATION_NS,"Ref");
-        if (!LWAHelper.isEmpty(refAttr))
+        String refAttr=node.getAttributeNS(IMGHelper.MS_SERIALIZATION_NS,"Ref");
+        if (!IMGHelper.isEmpty(refAttr))
         {
             return referencesTable.get(refAttr);
         }
 
-        String nilAttr=node.getAttributeNS(LWAHelper.XSI,"nil");
-        if (nilAttr != null && LWAHelper.toBoolFromString( nilAttr))
+        String nilAttr=node.getAttributeNS(IMGHelper.XSI,"nil");
+        if (nilAttr != null && IMGHelper.toBoolFromString( nilAttr))
         {
             return null;
         }
 
-        String typeAttr=node.getAttributeNS(LWAHelper.XSI,"type");
-        if (!LWAHelper.isEmpty(typeAttr))
+        String typeAttr=node.getAttributeNS(IMGHelper.XSI,"type");
+        if (!IMGHelper.isEmpty(typeAttr))
         {
             String[] splitString=typeAttr.split(":");
             String namespace = null;
@@ -541,12 +541,12 @@ public class LWARequestResultHandler
         }
 
         String hrefAttr = node.getAttribute("href");
-        if (LWAHelper.isEmpty(hrefAttr))
+        if (IMGHelper.isEmpty(hrefAttr))
         {
             hrefAttr = node.getAttribute("ref");
         }
 
-        if (!LWAHelper.isEmpty(hrefAttr))
+        if (!IMGHelper.isEmpty(hrefAttr))
         {
             String hrefId=hrefAttr.substring(1);
             org.w3c.dom.Element tempNode=node.getOwnerDocument().getElementById(hrefId);
@@ -569,9 +569,9 @@ public class LWARequestResultHandler
     {
         try
         {
-            LWAISerializableObject obj = (LWAISerializableObject)objType.newInstance();
-            String idAttr=node.getAttributeNS(LWAHelper.MS_SERIALIZATION_NS,"Id");
-            if (!LWAHelper.isEmpty(idAttr))
+            IMGISerializableObject obj = (IMGISerializableObject)objType.newInstance();
+            String idAttr=node.getAttributeNS(IMGHelper.MS_SERIALIZATION_NS,"Id");
+            if (!IMGHelper.isEmpty(idAttr))
             {
                 referencesTable.put(idAttr,obj);
             }
@@ -587,7 +587,7 @@ public class LWARequestResultHandler
     {
         String prefix=ensureNamespace(uri,element.getOwnerDocument(),null);
         String fullname=name;
-        if (!LWAHelper.isEmpty(prefix))
+        if (!IMGHelper.isEmpty(prefix))
         {
             fullname=prefix+":"+name;
         }
@@ -597,7 +597,7 @@ public class LWARequestResultHandler
     public boolean hasAttribute(org.w3c.dom.Element node,String namespace,String name)
     {
         String ns=namespace;
-        if(LWAHelper.isEmpty(namespace))
+        if(IMGHelper.isEmpty(namespace))
         {
             ns=null;
         }
@@ -607,7 +607,7 @@ public class LWARequestResultHandler
     public org.w3c.dom.Attr getAttribute(org.w3c.dom.Element node,String namespace,String name)
     {
         String ns=namespace;
-        if(LWAHelper.isEmpty(namespace))
+        if(IMGHelper.isEmpty(namespace))
         {
             ns=null;
         }

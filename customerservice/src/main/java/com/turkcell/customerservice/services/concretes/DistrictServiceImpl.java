@@ -37,49 +37,34 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public GetDistrictResponse getById(UUID id) {
-        districtBusinessRules.districtNotFound(id);
-        districtBusinessRules.districtIsDeleted(id);
-        District foundDistrict = districtRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("District not found"));
+        districtBusinessRules.checkDistrictIdExists(id);
+        District foundDistrict = districtRepository.findById(id).get();
         return DistrictMapper.INSTANCE.getDistrictResponseFromDistrict(foundDistrict);
     }
 
     @Override
     public CreatedDistrictResponse add(CreateDistrictRequest request) {
-        districtBusinessRules.districtNameCanNotBeDuplicated(request.getName());
+        districtBusinessRules.checkDistrictNameIsUnique(request.getName());
         District district = DistrictMapper.INSTANCE.districtFromCreateDistrictRequest(request);
-        district.setId(UUID.randomUUID());
         District createdDistrict = districtRepository.save(district);
-
         return DistrictMapper.INSTANCE.createdDistrictResponseFromDistrict(createdDistrict);
     }
 
     @Override
     public UpdatedDistrictResponse update(UpdateDistrictRequest request, UUID id) {
-//        districtBusinessRules.districtNotFound(id);
-//        districtBusinessRules.districtNameCanNotBeDuplicated(updateDistrictRequest.getName());
-        District foundDistrict = districtRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("District not found"));
-
+        districtBusinessRules.checkDistrictIdExists(id);
+        districtBusinessRules.checkDistrictNameIsUnique(request.getName());
+        District foundDistrict = districtRepository.findById(id).get();
         District district = DistrictMapper.INSTANCE.districtFromUpdateDistrictRequest(request);
         district.setId(foundDistrict.getId());
         District updatedDistrict = districtRepository.save(district);
-
         return DistrictMapper.INSTANCE.updatedDistrictResponseFromDistrict(updatedDistrict);
     }
 
     @Transactional
     @Override
     public void delete(UUID id) {
-        districtBusinessRules.districtNotFound(id);
-        districtBusinessRules.districtIsDeleted(id);
+        districtBusinessRules.checkDistrictIdExists(id);
         districtRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
-    }
-
-    @Override
-    public List<GetDistrictByCityIdResponse> getByCityId(UUID cityId) {
-        List<District> districts = this.districtRepository.findByCityId(cityId);
-        return districts
-                .stream().map(DistrictMapper.INSTANCE::getDistrictByCityIdResponseFromDistrict).toList();
     }
 }

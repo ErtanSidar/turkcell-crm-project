@@ -11,7 +11,7 @@ package com.turkcell.customerservice.outservices.mernis;
 // To use it in commercial project, you need to generate this class again with Premium account.
 // Check https://EasyWsdl.com/Payment/PremiumAccountDetails to see all benefits of Premium account.
 //
-// Licence: 2B05DCA11FC0CD75F030989C93727B58978D5949169F9A9ED189A6C43D466A58E869D6B7D900DAB338FBE27C88F457D14D8F2D0E1A888337FE5AE708723DDE51
+// Licence: A2F1EE67251196CB9AE51919EA06EB20A1FCE35AAF9E7541FD2D7400525B0FAA3A2DFD7F3201633933C56F36720993FE4AF02467B2A130DCDF43CDD49FBABC5A
 //------------------------------------------------------------------------
 import java.net.URL;
 import java.io.*;
@@ -20,21 +20,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-public interface LWAConnectionProvider
+public interface IMGConnectionProvider
 {
-    LWAResponseData sendRequest(String url,String requestBody,HashMap< String,String> httpHeaders, LWARequestResultHandler handler,String contentType) throws java.lang.Exception;
+    IMGResponseData sendRequest(String url,String requestBody,HashMap< String,String> httpHeaders, IMGRequestResultHandler handler,String contentType) throws java.lang.Exception;
 }
 
-class LWAHttpConnectionProvider implements LWAConnectionProvider{
+class IMGHttpConnectionProvider implements IMGConnectionProvider{
 
-    public void prepareRequest(HttpURLConnection url,String requestBody, LWARequestResultHandler handler,String contentType ) throws java.lang.Exception {
+    public void prepareRequest(HttpURLConnection url,String requestBody, IMGRequestResultHandler handler,String contentType ) throws java.lang.Exception {
         OutputStreamWriter wr = new OutputStreamWriter(url.getOutputStream());
         wr.write(requestBody);
         wr.flush();
     }
 
     @Override
-    public LWAResponseData sendRequest(String url,String requestBody, HashMap< String, String> httpHeaders,LWARequestResultHandler handler,String contentType ) throws java.lang.Exception
+    public IMGResponseData sendRequest(String url,String requestBody, HashMap< String, String> httpHeaders,IMGRequestResultHandler handler,String contentType ) throws java.lang.Exception
     {
         URL urlObject=new URL(url);
         HttpURLConnection connection=(HttpURLConnection)urlObject.openConnection();
@@ -47,7 +47,7 @@ class LWAHttpConnectionProvider implements LWAConnectionProvider{
         prepareRequest(connection,requestBody,handler, contentType );
 
 
-        LWAResponseData response=new LWAResponseData();
+        IMGResponseData response=new IMGResponseData();
         for(Map.Entry<String, List<String>> entry : connection.getHeaderFields().entrySet())
         {
             if(entry.getKey()!=null)
@@ -62,7 +62,7 @@ class LWAHttpConnectionProvider implements LWAConnectionProvider{
         
         try(InputStream dataStream = getResponseStream(connection,response,handler))
         {
-            response.setBody(LWAHelper.streamToString(dataStream));
+            response.setBody(IMGHelper.streamToString(dataStream));
         }
         
         return response;
@@ -70,8 +70,8 @@ class LWAHttpConnectionProvider implements LWAConnectionProvider{
 
     protected InputStream getResponseStream(
         HttpURLConnection url,
-        LWAResponseData response,
-        LWARequestResultHandler handler
+        IMGResponseData response,
+        IMGRequestResultHandler handler
     ) throws java.lang.Exception
     {
         try{

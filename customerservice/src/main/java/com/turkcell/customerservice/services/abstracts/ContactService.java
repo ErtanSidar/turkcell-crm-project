@@ -2,7 +2,10 @@ package com.turkcell.customerservice.services.abstracts;
 
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.CreateContactRequest;
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.UpdateContactRequest;
-import com.turkcell.customerservice.services.dtos.responses.contactResponses.*;
+import com.turkcell.customerservice.services.dtos.responses.contactResponses.CreatedContactResponse;
+import com.turkcell.customerservice.services.dtos.responses.contactResponses.GetAllContactResponse;
+import com.turkcell.customerservice.services.dtos.responses.contactResponses.GetContactResponse;
+import com.turkcell.customerservice.services.dtos.responses.contactResponses.UpdatedContactResponse;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 
@@ -14,8 +17,6 @@ public interface ContactService {
     GetListResponse<GetAllContactResponse> getAll(PageInfo pageInfo);
 
     GetContactResponse findById(UUID id);
-
-    GetContactByCustomerIdResponse getByCustomerId(UUID customerId);
 
     UpdatedContactResponse update(UpdateContactRequest request, UUID id);
 

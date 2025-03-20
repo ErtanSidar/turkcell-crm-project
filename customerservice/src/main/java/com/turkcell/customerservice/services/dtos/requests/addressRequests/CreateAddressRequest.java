@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.services.dtos.requests.addressRequests;
 
+import com.turkcell.customerservice.entities.AddressType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,6 +33,8 @@ public class CreateAddressRequest {
     @NotNull
     @Size(max = 30, message = "Street may has maximum 20 characters")
     private String street;
+
+    private AddressType addressType;
 
     private UUID countryId;
 

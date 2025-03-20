@@ -18,19 +18,10 @@ public class AddressBusinessRules {
     private AddressRepository addressRepository;
     private MessageService messageService;
 
-    public void addressNotFound(UUID id) {
+    public void checkAddressIdExists(UUID id) {
         Optional<Address> address = addressRepository.findById(id);
-
         if (address.isEmpty()) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.ADDRESS_NOT_FOUND));
-        }
-    }
-
-    public void addressIsDeleted(UUID id) {
-        Optional<Address> address = addressRepository.findById(id);
-
-        if (address.isPresent() && address.get().getDeletedAt() != null) {
-            throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.ADDRESS_IS_DELETED));
         }
     }
 }

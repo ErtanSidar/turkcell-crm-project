@@ -19,7 +19,6 @@ public interface ContactMapper {
 
     CreatedContactResponse createdContactResponseFromContact(Contact contact);
 
-    GetContactByCustomerIdResponse getContactByCustomerIdResponseFromContact(Contact contact);
 
     GetContactResponse getContactResponseFromContact(Contact contact);
 
@@ -27,5 +26,4 @@ public interface ContactMapper {
 
     UpdatedContactResponse updatedContactResponseFromContact(Contact contact);
 
-    DeletedContactResponse deletedContactResponseFromContact(Contact contact);
 }

@@ -17,19 +17,10 @@ public class ContactBusinessRules {
     private ContactRepository contactRepository;
     private MessageService messageService;
 
-    public void contactMediumNotFound(UUID id) {
+    public void checkContactIdExists(UUID id) {
         Optional<Contact> contact = contactRepository.findById(id);
-
         if (contact.isEmpty()) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.CONTACT_NOT_FOUND));
-        }
-    }
-
-    public void contactMediumIsDeleted(UUID id) {
-        Optional<Contact> contactMedium = contactRepository.findById(id);
-
-        if (contactMedium.isPresent() && contactMedium.get().getDeletedAt() != null) {
-            throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.CONTACT_IS_DELETED));
         }
     }
 }

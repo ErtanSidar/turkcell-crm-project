@@ -26,8 +26,4 @@ public interface CityMapper {
     City cityFromUpdateCityRequest(UpdateCityRequest updateCityRequest);
 
     UpdatedCityResponse updatedCityResponseFromCity(City city);
-
-    DeletedCityResponse deletedCityResponseFromCity(City city);
-
-    GetCityByCountryIdResponse getCityByCountryIdResponseFromCity(City city);
 }

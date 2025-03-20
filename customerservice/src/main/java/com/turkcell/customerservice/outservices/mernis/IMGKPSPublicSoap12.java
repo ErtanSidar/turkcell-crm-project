@@ -11,31 +11,31 @@ package com.turkcell.customerservice.outservices.mernis;
 // To use it in commercial project, you need to generate this class again with Premium account.
 // Check https://EasyWsdl.com/Payment/PremiumAccountDetails to see all benefits of Premium account.
 //
-// Licence: 2B05DCA11FC0CD75F030989C93727B58978D5949169F9A9ED189A6C43D466A58E869D6B7D900DAB338FBE27C88F457D14D8F2D0E1A888337FE5AE708723DDE51
+// Licence: A2F1EE67251196CB9AE51919EA06EB20A1FCE35AAF9E7541FD2D7400525B0FAA3A2DFD7F3201633933C56F36720993FE4AF02467B2A130DCDF43CDD49FBABC5A
 //------------------------------------------------------------------------
 
 import java.util.*;
 
 
-public class LWAKPSPublicSoap12
+public class IMGKPSPublicSoap12
 {
     private String url = "https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx";
     private HashMap< String,String> httpHeaders = new HashMap< String,String>();
     private boolean enableLogging = false;
     private String userName=null;
     private String password=null;
-    private LWAConnectionProvider connectionProvider=new LWAHttpConnectionProvider();
+    private IMGConnectionProvider connectionProvider=new IMGHttpConnectionProvider();
 
-    public LWAKPSPublicSoap12()
+    public IMGKPSPublicSoap12()
     {
     }
 
-    public LWAKPSPublicSoap12(String url)
+    public IMGKPSPublicSoap12(String url)
     {
         this.url=url;
     }
 
-    public LWAKPSPublicSoap12 (String url,LWAConnectionProvider connectionProvider) {
+    public IMGKPSPublicSoap12 (String url,IMGConnectionProvider connectionProvider) {
         this.url=url;
         this.connectionProvider=connectionProvider;
     }
@@ -78,13 +78,13 @@ public class LWAKPSPublicSoap12
     
 
     
-    protected LWARequestResultHandler createRequestResultHandler()
+    protected IMGRequestResultHandler createRequestResultHandler()
     {
-        LWARequestResultHandler handler = new LWARequestResultHandler(LWASoapVersion.v1_2);
+        IMGRequestResultHandler handler = new IMGRequestResultHandler(IMGSoapVersion.v1_2);
         return handler;
     }
     
-    private org.w3c.dom.Document createTCKimlikNoDogrulaRequest(final Long TCKimlikNo,final String Ad,final String Soyad,final Integer DogumYili,LWARequestResultHandler __handler) throws java.lang.Exception
+    private org.w3c.dom.Document createTCKimlikNoDogrulaRequest(final Long TCKimlikNo,final String Ad,final String Soyad,final Integer DogumYili,IMGRequestResultHandler __handler) throws java.lang.Exception
     {
         org.w3c.dom.Document __xml=__handler.createEnvelopeXml();
         org.w3c.dom.Element __mainNode=__handler.writeElement("http://tckimlik.nvi.gov.tr/WS","TCKimlikNoDogrula",__xml);
@@ -119,17 +119,17 @@ public class LWAKPSPublicSoap12
     
     public Boolean TCKimlikNoDogrula(final Long TCKimlikNo,final String Ad,final String Soyad,final Integer DogumYili) throws java.lang.Exception
     {
-        LWARequestResultHandler __handler =createRequestResultHandler();
+        IMGRequestResultHandler __handler =createRequestResultHandler();
         org.w3c.dom.Document __xml=createTCKimlikNoDogrulaRequest(TCKimlikNo, Ad, Soyad, DogumYili, __handler);
         sendRequest("http://tckimlik.nvi.gov.tr/WS/TCKimlikNoDogrula",__xml,__handler);
-        org.w3c.dom.Node __result=LWAHelper.getResult(__handler.getOutputBody(), "TCKimlikNoDogrulaResult",false);
+        org.w3c.dom.Node __result=IMGHelper.getResult(__handler.getOutputBody(), "TCKimlikNoDogrulaResult",false);
         if(__result!=null)
         {
-            return LWAHelper.toBoolFromString(((org.w3c.dom.Element)__result).getTextContent());
+            return IMGHelper.toBoolFromString(((org.w3c.dom.Element)__result).getTextContent());
         }
         return null;
     }
-    protected void sendRequest(String soapAction,org.w3c.dom.Document soapBody, LWARequestResultHandler handler) throws java.lang.Exception
+    protected void sendRequest(String soapAction,org.w3c.dom.Document soapBody, IMGRequestResultHandler handler) throws java.lang.Exception
     {
         HashMap< String,String> __headers = new HashMap<>();
         __headers.putAll(httpHeaders);
@@ -143,12 +143,12 @@ public class LWAKPSPublicSoap12
             String authValue = "Basic "+data;
             __headers.put("authorization",authValue);
         }
-        String __requestBody=LWAHelper.getStringFromDocument(soapBody);
+        String __requestBody=IMGHelper.getStringFromDocument(soapBody);
         if(enableLogging)
         {
             System.out.println("requestDump: "+__requestBody);
         }
-        LWAResponseData response=connectionProvider.sendRequest(url,__requestBody, __headers,handler, __contentType);
+        IMGResponseData response=connectionProvider.sendRequest(url,__requestBody, __headers,handler, __contentType);
         if(enableLogging)
         {
              System.out.println("responseDump: "+response.getBody());

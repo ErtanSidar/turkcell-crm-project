@@ -19,6 +19,4 @@ public interface CityService {
     UpdatedCityResponse update(UpdateCityRequest request, UUID id);
 
     void delete(UUID id);
-
-    List<GetCityByCountryIdResponse> getByCountryId(UUID countryId);
 }

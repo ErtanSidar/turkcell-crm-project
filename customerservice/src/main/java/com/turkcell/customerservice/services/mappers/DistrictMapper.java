@@ -24,8 +24,4 @@ public interface DistrictMapper {
     District districtFromUpdateDistrictRequest(UpdateDistrictRequest updateDistrictRequest);
 
     UpdatedDistrictResponse updatedDistrictResponseFromDistrict(District district);
-
-    DeletedDistrictResponse deletedDistrictResponseFromDistrict(District district);
-
-    GetDistrictByCityIdResponse getDistrictByCityIdResponseFromDistrict(District district);
 }

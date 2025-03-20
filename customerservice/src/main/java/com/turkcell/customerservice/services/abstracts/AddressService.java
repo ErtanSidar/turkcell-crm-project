@@ -20,6 +20,4 @@ public interface AddressService {
     UpdatedAddressResponse update(UpdateAddressRequest request, UUID id);
 
     void delete(UUID id);
-
-    List<GetAddressByCustomerIdResponse> getByCustomerId(UUID customerId);
 }

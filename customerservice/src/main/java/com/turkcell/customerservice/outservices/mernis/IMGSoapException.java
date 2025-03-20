@@ -12,21 +12,21 @@ package com.turkcell.customerservice.outservices.mernis;
 // To use it in commercial project, you need to generate this class again with Premium account.
 // Check https://EasyWsdl.com/Payment/PremiumAccountDetails to see all benefits of Premium account.
 //
-// Licence: 2B05DCA11FC0CD75F030989C93727B58978D5949169F9A9ED189A6C43D466A58E869D6B7D900DAB338FBE27C88F457D14D8F2D0E1A888337FE5AE708723DDE51
+// Licence: A2F1EE67251196CB9AE51919EA06EB20A1FCE35AAF9E7541FD2D7400525B0FAA3A2DFD7F3201633933C56F36720993FE4AF02467B2A130DCDF43CDD49FBABC5A
 //------------------------------------------------------------------------
 
-public class LWASoapException extends java.lang.Exception
+public class IMGSoapException extends java.lang.Exception
 {
     private org.w3c.dom.Element _details=null;
     private Object _fault = null;
     
-    public LWASoapException(String message,org.w3c.dom.Element details)
+    public IMGSoapException(String message,org.w3c.dom.Element details)
     {
         super(message);
         _details=details;
     }
 
-    public LWASoapException(Object fault)
+    public IMGSoapException(Object fault)
     {
         _fault=fault;
     }

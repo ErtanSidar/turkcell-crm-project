@@ -24,6 +24,4 @@ public interface CountryMapper {
     Country countryFromUpdateCountryRequest(UpdateCountryRequest updateCountryRequest);
 
     UpdatedCountryResponse updatedCountryResponseFromCountry(Country country);
-
-    DeletedCountryResponse deletedCountryResponseFromCountry(Country country);
 }

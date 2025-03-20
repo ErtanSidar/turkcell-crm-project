@@ -12,21 +12,21 @@ package com.turkcell.customerservice.outservices.mernis;
 // To use it in commercial project, you need to generate this class again with Premium account.
 // Check https://EasyWsdl.com/Payment/PremiumAccountDetails to see all benefits of Premium account.
 //
-// Licence: 2B05DCA11FC0CD75F030989C93727B58978D5949169F9A9ED189A6C43D466A58E869D6B7D900DAB338FBE27C88F457D14D8F2D0E1A888337FE5AE708723DDE51
+// Licence: A2F1EE67251196CB9AE51919EA06EB20A1FCE35AAF9E7541FD2D7400525B0FAA3A2DFD7F3201633933C56F36720993FE4AF02467B2A130DCDF43CDD49FBABC5A
 //------------------------------------------------------------------------
 
-public class LWABinaryObject implements java.io.Serializable
+public class IMGBinaryObject implements java.io.Serializable
 {
     private byte[] _bytes = null;    
     private transient java.io.InputStream _stream = null;
 
     private String _contentType = null;
 
-    public LWABinaryObject(byte[] bytes) {
+    public IMGBinaryObject(byte[] bytes) {
         _bytes = bytes;
     }
 
-    public LWABinaryObject(java.io.InputStream stream) {
+    public IMGBinaryObject(java.io.InputStream stream) {
         _stream = stream;
     }
     

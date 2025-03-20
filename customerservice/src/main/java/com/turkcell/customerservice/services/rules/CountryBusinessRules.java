@@ -19,7 +19,6 @@ public class CountryBusinessRules {
 
     public void checkCountryNameIsUnique(String name) {
         Optional<Country> country = countryRepository.findByNameIgnoreCase(name);
-
         if (country.isPresent()) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.COUNTRY_NAME_EXISTS));
         }
@@ -27,17 +26,8 @@ public class CountryBusinessRules {
 
     public void checkCountryIdExists(UUID id) {
         Optional<Country> country = countryRepository.findById(id);
-
         if (country.isEmpty()) {
             throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.COUNTRY_NOT_FOUND));
-        }
-    }
-
-    public void checkCountryIsDeleted(UUID id) {
-        Optional<Country> country = countryRepository.findById(id);
-
-        if (country.isPresent() && country.get().getDeletedAt() != null) {
-            throw new BusinessException(messageService.getMessage(Messages.BusinessErrors.COUNTRY_IS_DELETED));
         }
     }
 }

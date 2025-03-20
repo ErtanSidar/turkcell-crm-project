@@ -37,8 +37,7 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public GetCountryResponse getById(UUID id) {
         countryBusinessRules.checkCountryIdExists(id);
-        Country foundedCountry = countryRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Country not found"));
+        Country foundedCountry = countryRepository.findById(id).get();
         return CountryMapper.INSTANCE.getCountryResponseFromCountry(foundedCountry);
     }
 
@@ -53,13 +52,10 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public UpdatedCountryResponse update(UpdateCountryRequest request, UUID id) {
         countryBusinessRules.checkCountryIdExists(id);
-        Country foundCountry = countryRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Country not found"));
-
+        Country foundCountry = countryRepository.findById(id).get();
         Country country = CountryMapper.INSTANCE.countryFromUpdateCountryRequest(request);
         country.setId(foundCountry.getId());
         Country updatedCountry = countryRepository.save(country);
-
         return CountryMapper.INSTANCE.updatedCountryResponseFromCountry(updatedCountry);
     }
 

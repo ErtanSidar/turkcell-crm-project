@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface ContactRepository extends JpaRepository<Contact, UUID> {
-    Contact findByCustomerId(UUID customerId);
 
     @Transactional
     @Modifying

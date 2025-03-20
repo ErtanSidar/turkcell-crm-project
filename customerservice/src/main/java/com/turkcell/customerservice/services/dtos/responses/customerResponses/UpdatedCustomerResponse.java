@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -22,7 +23,7 @@ public class UpdatedCustomerResponse {
 
     private String nationalityId;
 
-    private String birthDate;
+    private LocalDate birthDate;
 
     private String companyName;
 

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
+
     @Transactional
     @Modifying
     @Query("UPDATE Campaign e SET e.deletedAt = :deletedAt, e.deletedBy = :deletedBy WHERE e.id = :id")
