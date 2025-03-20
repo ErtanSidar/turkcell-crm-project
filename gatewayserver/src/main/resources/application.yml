@@ -3,6 +3,14 @@ spring:
     name: "gatewayserver"
   config:
     import: "optional:configserver:http://localhost:8888/"
+  cloud:
+    gateway:
+      routes:
+        - id: "customerservice"
+          uri: "lb://customerservice"
+          predicates:
+            - "Path=/api/v1/**"
+
 server:
   port: 8072
 
