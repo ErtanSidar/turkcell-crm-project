@@ -1,4 +1,4 @@
-package com.turkcell.contractservice.util;
+package com.turkcell.contractservice.utils;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

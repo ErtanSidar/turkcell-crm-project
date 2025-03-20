@@ -1,4 +1,4 @@
-package com.turkcell.contractservice.util;
+package com.turkcell.contractservice.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
