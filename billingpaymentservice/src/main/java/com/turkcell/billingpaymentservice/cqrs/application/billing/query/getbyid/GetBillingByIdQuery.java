@@ -21,7 +21,7 @@ public class GetBillingByIdQuery implements Command<GetBillingByIdResponse> {
 
         @Override
         public GetBillingByIdResponse handle(GetBillingByIdQuery getBillingByIdQuery) {
-            return null;  // Burada veritabanından billing bilgisi getirilip döndürülmeli
+            return null;
         }
     }
 }

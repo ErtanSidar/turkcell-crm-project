@@ -1,11 +1,14 @@
 package com.turkcell.billingpaymentservice.cqrs.application.billing.command.delete;
 
 import an.awesome.pipelinr.Command;
+import com.turkcell.billingpaymentservice.cqrs.application.payment.command.delete.DeletedPaymentResponse;
+import com.turkcell.billingpaymentservice.cqrs.core.AuditAwareImpl;
 import com.turkcell.billingpaymentservice.cqrs.persistance.billing.BillingRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -20,7 +23,7 @@ public class DeleteBillingCommand implements Command<DeletedBillingResponse> {
 
         @Override
         public DeletedBillingResponse handle(DeleteBillingCommand deleteBillingCommand) {
-            billingRepository.deleteById(deleteBillingCommand.getId());
+            billingRepository.softDelete(deleteBillingCommand.getId(), LocalDateTime.now(), AuditAwareImpl.USER);
             return new DeletedBillingResponse(deleteBillingCommand.getId());
         }
     }

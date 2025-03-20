@@ -1,11 +1,15 @@
 package com.turkcell.billingpaymentservice.cqrs.application.billing.command.create;
 
 import an.awesome.pipelinr.Command;
+import com.turkcell.billingpaymentservice.cqrs.application.billing.mapper.BillingMapper;
+import com.turkcell.billingpaymentservice.cqrs.entities.Billing;
 import com.turkcell.billingpaymentservice.cqrs.persistance.billing.BillingRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -14,7 +18,6 @@ public class CreateBillingCommand implements Command<CreatedBillingResponse> {
     private UUID subscriptionId;
     private String billingPeriod;
     private Double totalAmount;
-    private String dueDate;
     private String status;
 
     @Component
@@ -26,7 +29,11 @@ public class CreateBillingCommand implements Command<CreatedBillingResponse> {
 
         @Override
         public CreatedBillingResponse handle(CreateBillingCommand createBillingCommand) {
-            return null; // Buraya kayıt işlemi eklenecek.
+            BillingMapper billingMapper = BillingMapper.INSTANCE;
+            Billing billing = billingMapper.billingFromCreateBillingCommand(createBillingCommand);
+            billing.setDueDate(LocalDateTime.now());
+            billingRepository.save(billing);
+            return billingMapper.createdBillingResponseFromBilling(billing);
         }
     }
 }

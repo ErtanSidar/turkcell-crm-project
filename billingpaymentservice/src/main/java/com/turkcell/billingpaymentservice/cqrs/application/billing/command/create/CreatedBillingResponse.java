@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -15,6 +16,6 @@ public class CreatedBillingResponse {
     private UUID subscriptionId;
     private String billingPeriod;
     private Double totalAmount;
-    private String dueDate;
+    private LocalDateTime dueDate;
     private String status;
 }

@@ -11,5 +11,5 @@ import java.util.UUID;
 @NoArgsConstructor
 public class GetBillingByIdResponse {
     private UUID id;
-    private String billingDetails;  // Örnek olarak fatura bilgisi eklenebilir
+    private String billingDetails;
 }

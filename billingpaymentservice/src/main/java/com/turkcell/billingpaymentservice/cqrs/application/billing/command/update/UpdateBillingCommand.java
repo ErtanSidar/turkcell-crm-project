@@ -1,6 +1,9 @@
 package com.turkcell.billingpaymentservice.cqrs.application.billing.command.update;
 
 import an.awesome.pipelinr.Command;
+import com.turkcell.billingpaymentservice.cqrs.application.billing.mapper.BillingMapper;
+import com.turkcell.billingpaymentservice.cqrs.application.billing.rules.BillingBusinessRules;
+import com.turkcell.billingpaymentservice.cqrs.entities.Billing;
 import com.turkcell.billingpaymentservice.cqrs.persistance.billing.BillingRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +21,17 @@ public class UpdateBillingCommand implements Command<UpdatedBillingResponse> {
     public static class UpdateBillingCommandHandler implements Command.Handler<UpdateBillingCommand, UpdatedBillingResponse> {
 
         private final BillingRepository billingRepository;
+        private final BillingBusinessRules billingBusinessRules;
 
         @Override
         public UpdatedBillingResponse handle(UpdateBillingCommand updateBillingCommand) {
-            // Billing işlemi güncelleme işlemi burada yapılacak
-            // Örneğin, id ile veritabanından ilgili kayıt çekilip, güncellenir.
 
-            return new UpdatedBillingResponse(updateBillingCommand.getId());  // Bu örnekte sadece id dönülüyor.
+            billingBusinessRules.checkBillingIdExists(updateBillingCommand.getId());
+            BillingMapper billingMapper = BillingMapper.INSTANCE;
+            Billing billing = billingMapper.billingFromUpdateBillingCommand(updateBillingCommand);
+            billing.setId(updateBillingCommand.getId());
+            billingRepository.save(billing);
+            return billingMapper.updateBillingResponseFromBilling(billing);
         }
     }
 }

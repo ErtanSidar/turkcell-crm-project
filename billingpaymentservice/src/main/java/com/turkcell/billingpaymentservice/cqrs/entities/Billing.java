@@ -7,13 +7,17 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "billings")
+@Where(clause = "deleted_at is null")
 public class Billing extends BaseEntity<UUID> {
 
     @Column(name = "customer_id")
@@ -29,7 +33,7 @@ public class Billing extends BaseEntity<UUID> {
     private Double totalAmount;
 
     @Column(name = "due_date")
-    private String dueDate;
+    private LocalDateTime dueDate;
 
     @Column(name = "status")
     private String status;
