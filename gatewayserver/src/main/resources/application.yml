@@ -3,6 +3,71 @@ spring:
     name: "gatewayserver"
   config:
     import: "optional:configserver:http://localhost:8888/"
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: "analyticservice"
+          uri: "lb://analyticservice"
+          predicates:
+            - "Path=/analyticservice/api/**"
+          filters:
+            - RewritePath=/analyticservice(?<segment>/?.*), $\{segment}
+
+        - id: "billingpaymentservice"
+          uri: "lb://billingpaymentservice"
+          predicates:
+            - "Path=/billingpaymentservice/api/v1/**"
+          filters:
+            - RewritePath=/billingpaymentservice(?<segment>/?.*), $\{segment}
+
+        - id: "contractservice"
+          uri: "lb://contractservice"
+          predicates:
+            - "Path=/contractservice/api/v1/**"
+          filters:
+            - RewritePath=/contractservice(?<segment>/?.*), $\{segment}
+
+        - id: "customerservice"
+          uri: "lb://customerservice"
+          predicates:
+            - "Path=/customerservice/api/v1/**"
+          filters:
+            - RewritePath=/customerservice(?<segment>/?.*), $\{segment}
+
+        - id: "customersupportservice"
+          uri: "lb://customersupportservice"
+          predicates:
+            - "Path=/customersupportservice/api/v1/**"
+          filters:
+            - RewritePath=/customersupportservice(?<segment>/?.*), $\{segment}
+
+        - id: "notificationservice"
+          uri: "lb://notificationservice"
+          predicates:
+            - "Path=/notificationservice/api/v1/**"
+          filters:
+            - RewritePath=/notificationservice(?<segment>/?.*), $\{segment}
+
+        - id: "planservice"
+          uri: "lb://planservice"
+          predicates:
+            - "Path=/planservice/api/v1/**"
+          filters:
+            - RewritePath=/planservice(?<segment>/?.*), $\{segment}
+
+        - id: "userservice"
+          uri: "lb://userservice"
+          predicates:
+            - "Path=/userservice/api/v1/**"
+          filters:
+            - RewritePath=/userservice(?<segment>/?.*), $\{segment}
+
+
+
 server:
   port: 8072
 
