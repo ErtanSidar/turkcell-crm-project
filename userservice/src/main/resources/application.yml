@@ -26,7 +26,9 @@ eureka:
       defaultZone: "http://localhost:8761/eureka"
     register-with-eureka: true
     fetch-registry: true
-
+jwt:
+  expiration: 600000
+  secret: "NF20U4dirMhJFuK7G7iXxNFNa6qt6FWVbZL5e5fjufvvhFS6SJSSlgZ0O8UxUneKDJpOSzDZ4WWppe0fS1K1ETSvV2nK1qEioHwaJwTbw04fRDk"
 
 
 
