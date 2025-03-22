@@ -15,7 +15,7 @@ public interface TicketMapper {
     GetAllTicketResponse getAllTicketResponseFromTicket(Ticket ticket);
 
     GetTicketResponse getTicketResponseFromTicket(Ticket ticket);
-    @Mapping(source = "status", target = "status")
+
     Ticket ticketFromCreateTicketRequest(CreateTicketRequest createTicketRequest);
 
     CreatedTicketResponse createdTicketResponseFromTicket(Ticket ticket);

@@ -37,10 +37,11 @@ public  class TicketServiceImpl implements TicketService {
     }
 
 
-
     @Override
     public GetTicketResponse getById(UUID id) {
         ticketBusinessRules.checkTicketIdExists(id);
+        ticketBusinessRules.checkTicketIsDeleted(id);
+
         Ticket foundTicket = ticketRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Ticket not found"));
         return TicketMapper.INSTANCE.getTicketResponseFromTicket(foundTicket);
@@ -48,7 +49,8 @@ public  class TicketServiceImpl implements TicketService {
 
     @Override
     public CreatedTicketResponse add(CreateTicketRequest request) {
-        ticketBusinessRules.checkTicketCustomerExists(request.getCustomerId());
+       // ticketBusinessRules.checkTicketSubjectExists(request.getSubject());
+        // ticketBusinessRules.checkTicketCustomerExists(request.getCustomerId());
         Ticket ticket = TicketMapper.INSTANCE.ticketFromCreateTicketRequest(request);
         ticket.setId(UUID.randomUUID());
         ticket.setCreatedAt(LocalDateTime.now());
@@ -58,7 +60,9 @@ public  class TicketServiceImpl implements TicketService {
 
     @Override
     public UpdatedTicketResponse update(UpdateTicketRequest request, UUID id) {
+        ticketBusinessRules.checkIfTicketAlreadyClosed(id);
         ticketBusinessRules.checkTicketIdExists(id);
+        ticketBusinessRules.checkTicketStatusIsValid(request.getStatus());
         Ticket foundTicket = ticketRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Ticket not found"));
 
@@ -71,12 +75,15 @@ public  class TicketServiceImpl implements TicketService {
     }
 
 
-    @Transactional
     @Override
     public DeletedTicketResponse delete(UUID id) {
-        ticketBusinessRules.checkTicketIdExists(id);
-       // ticketRepository.softDelete(id, LocalDateTime.now());
-        return null;
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Ticket not found"));
+
+        ticketRepository.delete(ticket);
+
+        return TicketMapper.INSTANCE.deletedTicketResponseFromTicket(ticket);
     }
+
 }
 

@@ -16,13 +16,6 @@ public interface TicketRepository extends MongoRepository<Ticket, UUID> {
 
     Optional<Ticket> findBySubjectIgnoreCase(String subject);
 
-    @Transactional
-    @Modifying
-    @Query("{ 'id': ?0 }")
-    void softDelete(UUID id, LocalDateTime deletedAt);
 
-    @Transactional
-    @Query("{ 'id': ?0 }")
-    void updateStatus(UUID id, String status);
 
 }

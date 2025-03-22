@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.UUID;
 
 
-@Document(collation = "tickets")
+@Document(collection = "tickets")
 @Getter
 @Setter
 @AllArgsConstructor
