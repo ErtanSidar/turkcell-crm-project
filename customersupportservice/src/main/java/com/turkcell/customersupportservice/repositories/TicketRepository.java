@@ -1,12 +1,8 @@
 package com.turkcell.customersupportservice.repositories;
 
 import com.turkcell.customersupportservice.entities.Ticket;
-import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

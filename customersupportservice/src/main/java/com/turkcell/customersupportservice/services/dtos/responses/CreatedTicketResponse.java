@@ -1,7 +1,6 @@
 package com.turkcell.customersupportservice.services.dtos.responses;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

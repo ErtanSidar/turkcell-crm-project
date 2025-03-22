@@ -11,18 +11,13 @@ import com.turkcell.customersupportservice.services.rules.TicketBusinessRules;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
-import io.github.ertansidar.response.ListResponse;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.aspectj.apache.bcel.generic.RET;
-import org.hibernate.mapping.List;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
