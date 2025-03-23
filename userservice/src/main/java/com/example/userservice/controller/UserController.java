@@ -6,10 +6,7 @@ import com.example.userservice.services.abstracts.UserService;
 import com.example.userservice.services.dtos.user.CreateUserRequest;
 import com.example.userservice.services.dtos.user.UserLoginRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController

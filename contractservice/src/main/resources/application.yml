@@ -1,25 +1,9 @@
 spring:
   application:
     name: "contractservice"
+  cloud:
+    config:
+      profile: local
   config:
     import: "optional:configserver:http://localhost:8888/"
-  datasource:
-    url: jdbc:mysql://localhost:3307/contractservice?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: admin
-    password: test
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    hibernate:
-      ddl-auto: update
-    show-sql: true
 
-server:
-  port: 8082
-
-eureka:
-  client:
-    service-url:
-      defaultZone: "http://localhost:8761/eureka"
-    register-with-eureka: true
-    fetch-registry: true

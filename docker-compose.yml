@@ -97,6 +97,40 @@ services:
     networks:
       - common
 
+#  configserver:
+#    image: "essoft3/configserver:v1"
+#    container_name: configserver
+#    ports:
+#      - "8888:8888"
+#    healthcheck:
+#      test: "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1"
+#      interval: 20s
+#      timeout: 5s
+#      retries: 20
+#      start_period: 10s
+#    networks:
+#      - common
+#
+#  customerservice:
+#    image: "essoft3/customerservice:v1"
+#    container_name: customerservice
+#    ports:
+#      - "8083:8083"
+#    healthcheck:
+#      test: "curl --fail --silent localhost:8083/actuator/health/readiness | grep UP || exit 1"
+#      interval: 20s
+#      timeout: 5s
+#      retries: 20
+#      start_period: 10s
+#    environment:
+#      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+#      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+#    depends_on:
+#      configserver:
+#        condition: service_healthy
+#    networks:
+#      - common
+
 volumes:
   analytic-service-db-data:
   billing-payment-service-db-data:
