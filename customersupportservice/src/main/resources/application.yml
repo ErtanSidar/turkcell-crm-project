@@ -6,5 +6,16 @@ spring:
   cloud:
     config:
       profile: local
+    stream:
+      defaultBinder: kafka
+      function:
+        definition: ticketCreatedFunction
+      bindings:
+        ticketCreatedFunction-out-0:
+          destination: ticket-topic
+          content-type: application/json
+      kafka:
+        binder:
+          brokers: localhost:9092
   config:
     import: "optional:configserver:http://localhost:8888/"

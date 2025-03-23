@@ -1,5 +1,6 @@
 package com.turkcell.customersupportservice.services.concretes;
 
+import com.essoft.event.ticket.TicketCreatedEvent;
 import com.turkcell.customersupportservice.entities.Ticket;
 import com.turkcell.customersupportservice.repositories.TicketRepository;
 import com.turkcell.customersupportservice.services.abstracts.TicketService;
@@ -12,6 +13,7 @@ import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,7 @@ public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
     private final TicketBusinessRules ticketBusinessRules;
+    private final StreamBridge streamBridge;
 
     @Override
     public GetListResponse<GetAllTicketResponse> getAll(PageInfo pageInfo) {
@@ -75,6 +78,15 @@ public class TicketServiceImpl implements TicketService {
         ticket.setId(UUID.randomUUID());
         ticket.setCreatedAt(LocalDateTime.now());
         Ticket createdTicket = ticketRepository.save(ticket);
+
+        TicketCreatedEvent ticketCreatedEvent = new TicketCreatedEvent();
+        ticketCreatedEvent.setCustomerId(createdTicket.getCustomerId());
+        ticketCreatedEvent.setSubject(createdTicket.getSubject());
+        ticketCreatedEvent.setDescription(createdTicket.getDescription());
+        ticketCreatedEvent.setStatus(createdTicket.getStatus());
+
+        streamBridge.send("ticketCreatedFunction-out-0", ticketCreatedEvent);
+
         return TicketMapper.INSTANCE.createdTicketResponseFromTicket(createdTicket);
     }
 

@@ -4,5 +4,29 @@ spring:
   cloud:
     config:
       profile: local
+    stream:
+      defaultBinder: kafka
+      function:
+        definition: ticketCreatedFunction
+      bindings:
+        ticketCreatedFunction-in-0:
+          destination: ticket-topic
+          content-type: application/json
+          group: notification-group
+      kafka:
+        binder:
+          brokers: localhost:9092
   config:
     import: "optional:configserver:http://localhost:8888/"
+
+
+turkcell:
+  notificationservice:
+    email:
+      username: tavares.dicki@ethereal.email
+      password: ggyJnAHJTHdbm1j4pG
+      host: smtp.ethereal.email
+      port: 587
+      from: turkcell@turkcell.com
+    client:
+      host: http://localhost:5173
