@@ -1,7 +1,7 @@
 package com.turkcell.notificationservice.kafka;
 
 import com.essoft.event.ticket.TicketCreatedEvent;
-import com.turkcell.notificationservice.EmailService;
+import com.turkcell.notificationservice.services.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class TicketConsumer {
 
-    private final EmailService emailService;
+    private final NotificationService notificationService;
     private final SpringTemplateEngine templateEngine;
 
     @Bean
@@ -34,7 +34,7 @@ public class TicketConsumer {
             String title = "Müşteri Destek Bilgilendirme";
 
             String template = templateEngine.process(message.getEmailTemplateName().getName(), context);
-            emailService.sendMail("sidarertan3@gmail.com", title, template);
+            notificationService.sendNotification("sidarertan3@gmail.com", title, template);
         };
     }
 }

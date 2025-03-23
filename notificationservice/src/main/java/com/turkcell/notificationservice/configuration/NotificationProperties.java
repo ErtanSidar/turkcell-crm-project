@@ -1,4 +1,4 @@
-package com.turkcell.notificationservice;
+package com.turkcell.notificationservice.configuration;
 
 import lombok.Getter;
 import lombok.Setter;

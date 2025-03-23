@@ -1,5 +1,6 @@
-package com.turkcell.notificationservice;
+package com.turkcell.notificationservice.services;
 
+import com.turkcell.notificationservice.configuration.NotificationProperties;
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -7,13 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.Properties;
 
 @Service
 @RequiredArgsConstructor
-public class EmailService {
+public class EmailService implements NotificationService {
 
     JavaMailSenderImpl mailSender;
     private final NotificationProperties notificationProperties;
@@ -31,7 +31,8 @@ public class EmailService {
 
     }
 
-    public void sendMail(String email, String title, String template) {
+    @Override
+    public void sendNotification(String email, String title, String template) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
         try {
