@@ -12,23 +12,48 @@ import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import lombok.AllArgsConstructor;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @Service
 @AllArgsConstructor
-public  class TicketServiceImpl implements TicketService {
+public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
     private final TicketBusinessRules ticketBusinessRules;
 
     @Override
     public GetListResponse<GetAllTicketResponse> getAll(PageInfo pageInfo) {
-        return null;
+        return TicketServiceImpl.get(pageInfo, ticketRepository, TicketMapper.INSTANCE::getAllTicketResponseFromTicket);
+    }
+
+    public static <T, R, ID extends Serializable> GetListResponse<R> get(
+            PageInfo pageInfo,
+            MongoRepository<T, ID> repository,
+            Function<T, R> mapper) {
+
+        GetListResponse<R> response = new GetListResponse<>();
+        Pageable pageable = PageRequest.of(pageInfo.getPage(), pageInfo.getSize());
+        Page<T> entities = repository.findAll(pageable);
+
+        response.setItems(entities.stream().map(mapper).collect(Collectors.toList()));
+        response.setTotalElements(entities.getTotalElements());
+        response.setTotalPage(entities.getTotalPages());
+        response.setSize(entities.getSize());
+        response.setHasNext(entities.hasNext());
+        response.setHasPrevious(entities.hasPrevious());
+
+        return response;
     }
 
 
@@ -44,7 +69,7 @@ public  class TicketServiceImpl implements TicketService {
 
     @Override
     public CreatedTicketResponse add(CreateTicketRequest request) {
-       // ticketBusinessRules.checkTicketSubjectExists(request.getSubject());
+        // ticketBusinessRules.checkTicketSubjectExists(request.getSubject());
         // ticketBusinessRules.checkTicketCustomerExists(request.getCustomerId());
         Ticket ticket = TicketMapper.INSTANCE.ticketFromCreateTicketRequest(request);
         ticket.setId(UUID.randomUUID());
