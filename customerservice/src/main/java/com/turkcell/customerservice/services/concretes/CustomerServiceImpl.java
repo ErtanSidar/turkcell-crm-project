@@ -8,8 +8,12 @@ import com.turkcell.customerservice.repositories.CampaignRepository;
 import com.turkcell.customerservice.repositories.CustomerCampaignRepository;
 import com.turkcell.customerservice.repositories.CustomerRepository;
 import com.turkcell.customerservice.services.abstracts.CustomerService;
+import com.turkcell.customerservice.services.dtos.requests.corporateCustomerRequests.CreateCorporateCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.customerRequests.CreateCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.customerRequests.UpdateCustomerRequest;
+import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CreateIndividualCustomerRequest;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.CreatedIndividualCustomerResponse;
+import com.turkcell.customerservice.services.dtos.responses.corporateCustomerResponses.CreatedCorporateCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.CreatedCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.GetAllCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.GetCustomerResponse;
@@ -37,7 +41,6 @@ public class CustomerServiceImpl implements CustomerService {
     private final CampaignRepository campaignRepository;
     private final CustomerCampaignRepository customerCampaignRepository;
 
-
     @Override
     public GetListResponse<GetAllCustomerResponse> getAll(PageInfo pageInfo) {
         return ListResponse.get(pageInfo, customerRepository, CustomerMapper.INSTANCE::getAllCustomerResponseFromCustomer);
@@ -51,20 +54,22 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CreatedCustomerResponse add(CreateCustomerRequest request) throws Exception {
-//        if (request.getCustomerType() == CustomerType.INDIVIDUAL) {
-//            customerBusinessRules.checkIndividualCustomerVerifiedByMernis(
-//                    request.getNationalityId(),
-//                    request.getFirstName(),
-//                    request.getLastName(),
-//                    request.getBirthDate().getYear()
-//            );
-//        }
+    public CreatedIndividualCustomerResponse add(CreateIndividualCustomerRequest request) throws Exception {
         customerBusinessRules.checkCustomerNationalityIdIsUnique(request.getNationalityId());
-        Customer customer = CustomerMapper.INSTANCE.customerFromCreateCustomerRequest(request);
-        customer.setCustomerNumber(generateCustomerNumber(request));
+        Customer customer = CustomerMapper.INSTANCE.customerFromCreateIndividualCustomerRequest(request);
+        customer.setCustomerType(CustomerType.INDIVIDUAL);
+        customer.setCustomerNumber(generateIndividualCustomerNumber(request));
         Customer createdCustomer = customerRepository.save(customer);
-        return CustomerMapper.INSTANCE.createdCustomerResponseFromCustomer(createdCustomer);
+        return CustomerMapper.INSTANCE.createdIndividualCustomerResponseFromCustomer(createdCustomer);
+    }
+
+    @Override
+    public CreatedCorporateCustomerResponse add(CreateCorporateCustomerRequest request) {
+        Customer customer = CustomerMapper.INSTANCE.customerFromCreateCorporateCustomerRequest(request);
+        customer.setCustomerType(CustomerType.CORPORATE);
+        customer.setCustomerNumber(generateCorporateCustomerNumber(request));
+        Customer createdCustomer = customerRepository.save(customer);
+        return CustomerMapper.INSTANCE.createdCorporateCustomerResponseFromCustomer(createdCustomer);
     }
 
     @Override
@@ -93,18 +98,18 @@ public class CustomerServiceImpl implements CustomerService {
         customerCampaignRepository.save(customerCampaign);
     }
 
-    public static String generateCustomerNumber(CreateCustomerRequest request) {
+    private String generateIndividualCustomerNumber(CreateIndividualCustomerRequest request) {
         StringBuilder customerNumber = new StringBuilder();
-        if (request.getCustomerType() == CustomerType.INDIVIDUAL) {
-            customerNumber.append("IND")
-                    .append(request.getNationalityId().substring(request.getNationalityId().length() - 4))
-                    .append(request.getFirstName().charAt(0))
-                    .append(request.getLastName().charAt(0));
-        } else if (request.getCustomerType() == CustomerType.CORPORATE) {
-            customerNumber.append("CORP")
-                    .append(request.getTaxNumber().substring(request.getTaxNumber().length() - 4))
-                    .append(request.getCompanyName().charAt(0));
-        }
+            customerNumber.append(new Random().nextInt(10000))
+                    .append(request.getNationalityId().substring(request.getNationalityId().length() - 5));
+        customerNumber.append(new Random().nextInt(10000));
+        return customerNumber.toString();
+    }
+
+    private String generateCorporateCustomerNumber(CreateCorporateCustomerRequest request) {
+        StringBuilder customerNumber = new StringBuilder();
+            customerNumber.append(new Random().nextInt(10000))
+                    .append(request.getTaxNumber().substring(request.getTaxNumber().length() - 5));
         customerNumber.append(new Random().nextInt(10000));
         return customerNumber.toString();
     }

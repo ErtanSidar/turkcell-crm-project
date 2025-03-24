@@ -1,7 +1,11 @@
 package com.turkcell.customerservice.services.abstracts;
 
+import com.turkcell.customerservice.services.dtos.requests.corporateCustomerRequests.CreateCorporateCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.customerRequests.CreateCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.customerRequests.UpdateCustomerRequest;
+import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CreateIndividualCustomerRequest;
+import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.CreatedIndividualCustomerResponse;
+import com.turkcell.customerservice.services.dtos.responses.corporateCustomerResponses.CreatedCorporateCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.CreatedCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.GetAllCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.GetCustomerResponse;
@@ -13,7 +17,9 @@ import java.util.UUID;
 
 public interface CustomerService {
 
-    CreatedCustomerResponse add(CreateCustomerRequest request) throws Exception;
+    CreatedIndividualCustomerResponse add(CreateIndividualCustomerRequest request) throws Exception;
+
+    CreatedCorporateCustomerResponse add(CreateCorporateCustomerRequest request);
 
     GetListResponse<GetAllCustomerResponse> getAll(PageInfo pageInfo);
 

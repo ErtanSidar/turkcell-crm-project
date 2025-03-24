@@ -15,6 +15,7 @@ public interface ContactMapper {
 
     GetAllContactResponse getAllContactResponseFromContact(Contact contact);
 
+    @Mapping(source = "createContactRequest.customerId", target = "customer.id")
     Contact contactFromCreateContactRequest(CreateContactRequest createContactRequest);
 
     CreatedContactResponse createdContactResponseFromContact(Contact contact);

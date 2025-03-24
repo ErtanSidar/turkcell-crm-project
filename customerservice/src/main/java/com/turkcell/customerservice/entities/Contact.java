@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.ertansidar.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class Contact extends BaseEntity<UUID> {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonIgnore
     private Customer customer;
 
     @Override
