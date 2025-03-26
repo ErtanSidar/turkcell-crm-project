@@ -4,6 +4,7 @@ package com.turkcell.analyticservice.application.packages.command.create;
 import an.awesome.pipelinr.Command;
 
 import com.turkcell.analyticservice.application.packages.mapper.PackageMapper;
+import com.turkcell.analyticservice.application.packages.rules.PackageBusinessRules;
 import com.turkcell.analyticservice.domain.entity.Package;
 import com.turkcell.analyticservice.domain.entity.Product;
 import com.turkcell.analyticservice.persistence.packages.PackageRepository;
@@ -26,10 +27,12 @@ public class CreatePackageCommand implements Command<CreatedPackageResponse>
             implements Command.Handler<CreatePackageCommand, CreatedPackageResponse>
     {
         private final PackageRepository packageRepository;
+        private final PackageBusinessRules packageBusinessRules;
         @Override
         public CreatedPackageResponse handle(CreatePackageCommand createPackageCommand) {
             PackageMapper packageMapper = PackageMapper.INSTANCE;
             Package pack = packageMapper.createPackageFromCreateCommand(createPackageCommand);
+            packageBusinessRules.validateForCreate(pack);
             packageRepository.save(pack);
 
             return packageMapper.createPackageResponseFromPackage(pack);

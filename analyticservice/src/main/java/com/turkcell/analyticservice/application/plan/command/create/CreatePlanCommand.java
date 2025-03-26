@@ -2,6 +2,7 @@ package com.turkcell.analyticservice.application.plan.command.create;
 
 import an.awesome.pipelinr.Command;
 import com.turkcell.analyticservice.application.plan.mapper.PlanMapper;
+import com.turkcell.analyticservice.application.plan.rules.PlanBusinessRules;
 import com.turkcell.analyticservice.domain.entity.Plan;
 import com.turkcell.analyticservice.domain.entity.Product;
 import com.turkcell.analyticservice.persistence.plan.PlanRepository;
@@ -26,11 +27,13 @@ public class CreatePlanCommand implements Command<CreatedPlanResponse> {
     @RequiredArgsConstructor
     public static class CreatePlanCommandHandler implements Command.Handler<CreatePlanCommand, CreatedPlanResponse> {
         private final PlanRepository planRepository;
+        private final PlanBusinessRules planBusinessRules;
 
         @Override
         public CreatedPlanResponse handle(CreatePlanCommand command) {
             PlanMapper planMapper = PlanMapper.INSTANCE;
             Plan plan = planMapper.createPlanFromCreateCommand(command);
+            planBusinessRules.checkIfPlanIsValid(plan);
             planRepository.save(plan);
             return planMapper.createPlanResponseFromPlan(plan);
         }

@@ -2,6 +2,7 @@ package com.turkcell.analyticservice.application.usage.command.update;
 
 import an.awesome.pipelinr.Command;
 import com.turkcell.analyticservice.application.usage.mapper.UsageMapper;
+import com.turkcell.analyticservice.application.usage.rules.UsageBusinessRules;
 import com.turkcell.analyticservice.domain.entity.Product;
 import com.turkcell.analyticservice.domain.entity.Usage;
 import com.turkcell.analyticservice.persistence.usage.UsageRepository;
@@ -27,6 +28,7 @@ public class UpdateUsageCommand implements Command<UpdatedUsageResponse> {
     @RequiredArgsConstructor
     public static class UpdateUsageCommandHandler implements Command.Handler<UpdateUsageCommand, UpdatedUsageResponse> {
         private final UsageRepository usageRepository;
+        private final UsageBusinessRules usageBusinessRules;
 
         @Override
         public UpdatedUsageResponse handle(UpdateUsageCommand command) {
@@ -34,6 +36,7 @@ public class UpdateUsageCommand implements Command<UpdatedUsageResponse> {
                     .orElseThrow(() -> new RuntimeException("Usage record not found"));
             UsageMapper usageMapper = UsageMapper.INSTANCE;
             usageMapper.updateUsageFromUpdateCommand(command, usage);
+            usageBusinessRules.validateForUpdate(usage);
             usageRepository.save(usage);
             return usageMapper.createUpdatedUsageResponse(usage);
         }

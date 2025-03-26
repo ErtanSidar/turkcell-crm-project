@@ -1,6 +1,7 @@
 package com.turkcell.analyticservice.application.packages.command.update;
 
 import an.awesome.pipelinr.Command;
+import com.turkcell.analyticservice.application.packages.rules.PackageBusinessRules;
 import com.turkcell.analyticservice.persistence.packages.PackageRepository;
 import com.turkcell.analyticservice.domain.entity.Package;
 import lombok.*;
@@ -23,6 +24,7 @@ public class UpdatePackageCommand implements Command<UpdatedPackageResponse> {
             implements Command.Handler<UpdatePackageCommand, UpdatedPackageResponse> {
 
         private final PackageRepository packageRepository;
+        private final PackageBusinessRules packageBusinessRules;
 
         @Override
         public UpdatedPackageResponse handle(UpdatePackageCommand updatePackageCommand) {
@@ -35,6 +37,8 @@ public class UpdatePackageCommand implements Command<UpdatedPackageResponse> {
 
             existingPackage.setPackageName(updatePackageCommand.getNewPackageName());
             existingPackage.setPackageType(updatePackageCommand.getNewPackageType());
+
+            packageBusinessRules.validateForUpdate(existingPackage);
 
             packageRepository.save(existingPackage);
 

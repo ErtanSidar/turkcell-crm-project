@@ -2,6 +2,7 @@ package com.turkcell.analyticservice.application.product.command.update;
 
 import an.awesome.pipelinr.Command;
 import com.turkcell.analyticservice.application.product.mapper.ProductMapper;
+import com.turkcell.analyticservice.application.product.rules.ProductBusinessRules;
 import com.turkcell.analyticservice.domain.entity.Product;
 import com.turkcell.analyticservice.persistence.product.ProductRepository;
 import lombok.*;
@@ -23,6 +24,7 @@ public class UpdateProductCommand implements Command<UpdatedProductResponse> {
     @RequiredArgsConstructor
     public static class UpdateProductCommandHandler implements Command.Handler<UpdateProductCommand, UpdatedProductResponse> {
         private final ProductRepository productRepository;
+        private final ProductBusinessRules productBusinessRules;
 
         @Override
         public UpdatedProductResponse handle(UpdateProductCommand command) {
@@ -30,6 +32,7 @@ public class UpdateProductCommand implements Command<UpdatedProductResponse> {
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             ProductMapper productMapper = ProductMapper.INSTANCE;
             productMapper.updateProductFromUpdateCommand(command, product);
+            productBusinessRules.isProductValid(product);
             productRepository.save(product);
             return productMapper.createUpdatedProductResponse(product);
         }
