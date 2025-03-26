@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.ertansidar.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,18 +37,22 @@ public class Address extends BaseEntity<UUID> {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonIgnore
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "country_id")
+    @JsonIgnore
     private Country country;
 
     @ManyToOne
     @JoinColumn(name = "city_id")
+    @JsonIgnore
     private City city;
 
     @ManyToOne
     @JoinColumn(name = "district_id")
+    @JsonIgnore
     private District district;
 
     @Override

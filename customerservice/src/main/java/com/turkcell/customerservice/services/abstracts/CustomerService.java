@@ -23,7 +23,9 @@ public interface CustomerService {
 
     GetListResponse<GetAllCustomerResponse> getAll(PageInfo pageInfo);
 
-    GetCustomerResponse findById(UUID id);
+    GetListResponse<? extends GetAllCustomerResponse> getAllWithCustomerType(PageInfo pageInfo);
+
+    <T extends GetCustomerResponse> T findById(UUID id);
 
     UpdatedCustomerResponse update(UpdateCustomerRequest request, UUID id);
 

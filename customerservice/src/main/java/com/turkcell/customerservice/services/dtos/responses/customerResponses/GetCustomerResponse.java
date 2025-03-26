@@ -1,37 +1,25 @@
 package com.turkcell.customerservice.services.dtos.responses.customerResponses;
 
+import com.turkcell.customerservice.entities.Address;
 import com.turkcell.customerservice.entities.Contact;
 import com.turkcell.customerservice.entities.CustomerType;
+import com.turkcell.customerservice.services.dtos.responses.addressResponses.GetAddressResponse;
+import com.turkcell.customerservice.services.dtos.responses.contactResponses.GetContactResponse;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetCustomerResponse {
+public abstract class GetCustomerResponse {
 
     private UUID id;
-
-    private String firstName;
-
-    private String lastName;
-
-    private String nationalityId;
-
-    private LocalDate birthDate;
-
-    private String companyName;
-
-    private String taxNumber;
-
+    private String customerNumber;
     private CustomerType customerType;
-
-    private List<Contact> contacts;
+    private List<GetContactResponse> contacts;
+    private List<GetAddressResponse> addresses;
 }

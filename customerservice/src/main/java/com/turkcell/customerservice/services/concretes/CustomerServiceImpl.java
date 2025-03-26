@@ -9,12 +9,10 @@ import com.turkcell.customerservice.repositories.CustomerCampaignRepository;
 import com.turkcell.customerservice.repositories.CustomerRepository;
 import com.turkcell.customerservice.services.abstracts.CustomerService;
 import com.turkcell.customerservice.services.dtos.requests.corporateCustomerRequests.CreateCorporateCustomerRequest;
-import com.turkcell.customerservice.services.dtos.requests.customerRequests.CreateCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.customerRequests.UpdateCustomerRequest;
 import com.turkcell.customerservice.services.dtos.requests.individualCustomerRequests.CreateIndividualCustomerRequest;
 import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.CreatedIndividualCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.corporateCustomerResponses.CreatedCorporateCustomerResponse;
-import com.turkcell.customerservice.services.dtos.responses.customerResponses.CreatedCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.GetAllCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.GetCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.UpdatedCustomerResponse;
@@ -47,10 +45,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public GetCustomerResponse findById(UUID id) {
-        customerBusinessRules.checkCustomerIdExists(id);
+    public GetListResponse<? extends GetAllCustomerResponse> getAllWithCustomerType(PageInfo pageInfo) {
+        return null;
+    }
+
+    @Override
+    public <T extends GetCustomerResponse> T findById(UUID id) {
         Customer customer = customerRepository.findById(id).get();
-        return CustomerMapper.INSTANCE.getCustomerResponseFromCustomer(customer);
+        if (customer.isIndividualCustomer()) {
+            return (T) CustomerMapper.INSTANCE.individualCustomerResponseFromCustomer(customer);
+        } else {
+            return (T) CustomerMapper.INSTANCE.corporateCustomerResponseFromCustomer(customer);
+        }
     }
 
     @Override
@@ -100,16 +106,16 @@ public class CustomerServiceImpl implements CustomerService {
 
     private String generateIndividualCustomerNumber(CreateIndividualCustomerRequest request) {
         StringBuilder customerNumber = new StringBuilder();
-            customerNumber.append(new Random().nextInt(10000))
-                    .append(request.getNationalityId().substring(request.getNationalityId().length() - 5));
+        customerNumber.append(new Random().nextInt(10000))
+                .append(request.getNationalityId().substring(request.getNationalityId().length() - 5));
         customerNumber.append(new Random().nextInt(10000));
         return customerNumber.toString();
     }
 
     private String generateCorporateCustomerNumber(CreateCorporateCustomerRequest request) {
         StringBuilder customerNumber = new StringBuilder();
-            customerNumber.append(new Random().nextInt(10000))
-                    .append(request.getTaxNumber().substring(request.getTaxNumber().length() - 5));
+        customerNumber.append(new Random().nextInt(10000))
+                .append(request.getTaxNumber().substring(request.getTaxNumber().length() - 5));
         customerNumber.append(new Random().nextInt(10000));
         return customerNumber.toString();
     }
