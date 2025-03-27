@@ -11,6 +11,7 @@ import com.turkcell.customerservice.services.dtos.responses.contactResponses.Get
 import com.turkcell.customerservice.services.dtos.responses.contactResponses.UpdatedContactResponse;
 import com.turkcell.customerservice.services.mappers.ContactMapper;
 import com.turkcell.customerservice.services.rules.ContactBusinessRules;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import io.github.ertansidar.response.ListResponse;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class ContactServiceImpl implements ContactService {
     private ContactRepository contactRepository;
     private ContactBusinessRules contactBusinessRules;
+    private AuditAwareImpl auditAware;
 
     @Override
     public GetListResponse<GetAllContactResponse> getAll(PageInfo pageInfo) {
@@ -60,6 +62,6 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void delete(UUID id) {
         contactBusinessRules.checkContactIdExists(id);
-        contactRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
+        contactRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 }

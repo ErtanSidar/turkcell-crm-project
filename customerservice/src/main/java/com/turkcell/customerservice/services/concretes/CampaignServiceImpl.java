@@ -10,6 +10,7 @@ import com.turkcell.customerservice.services.dtos.responses.campaignResponses.*;
 import com.turkcell.customerservice.services.mappers.CampaignMapper;
 import com.turkcell.customerservice.services.mappers.CityMapper;
 import com.turkcell.customerservice.services.rules.CampaignBusinessRules;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
@@ -27,6 +28,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     private final CampaignRepository campaignRepository;
     private final CampaignBusinessRules campaignBusinessRules;
+    private final AuditAwareImpl auditAware;
 
     @Override
     public GetListResponse<GetAllCampaignResponse> getAll(PageInfo pageInfo) {
@@ -59,6 +61,6 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     public void delete(UUID id) {
         campaignBusinessRules.checkCampaignIdExists(id);
-        campaignRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
+        campaignRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 }

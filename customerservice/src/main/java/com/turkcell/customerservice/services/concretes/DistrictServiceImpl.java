@@ -8,6 +8,7 @@ import com.turkcell.customerservice.services.dtos.requests.districtRequests.Upda
 import com.turkcell.customerservice.services.dtos.responses.districtResponses.*;
 import com.turkcell.customerservice.services.mappers.DistrictMapper;
 import com.turkcell.customerservice.services.rules.DistrictBusinessRules;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class DistrictServiceImpl implements DistrictService {
     private DistrictRepository districtRepository;
     private DistrictBusinessRules districtBusinessRules;
+    private AuditAwareImpl auditAware;
 
     @Override
     public GetListResponse<GetAllDistrictResponse> getAll(PageInfo pageInfo) {
@@ -65,6 +67,6 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public void delete(UUID id) {
         districtBusinessRules.checkDistrictIdExists(id);
-        districtRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
+        districtRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 }

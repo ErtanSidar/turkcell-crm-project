@@ -1,9 +1,8 @@
 package com.turkcell.billingpaymentservice.cqrs.application.billing.command.delete;
 
 import an.awesome.pipelinr.Command;
-import com.turkcell.billingpaymentservice.cqrs.application.payment.command.delete.DeletedPaymentResponse;
-import com.turkcell.billingpaymentservice.cqrs.core.AuditAwareImpl;
 import com.turkcell.billingpaymentservice.cqrs.persistance.billing.BillingRepository;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,10 +19,11 @@ public class DeleteBillingCommand implements Command<DeletedBillingResponse> {
     public static class DeleteBillingCommandHandler implements Command.Handler<DeleteBillingCommand, DeletedBillingResponse> {
 
         private final BillingRepository billingRepository;
+        private final AuditAwareImpl auditAware;
 
         @Override
         public DeletedBillingResponse handle(DeleteBillingCommand deleteBillingCommand) {
-            billingRepository.softDelete(deleteBillingCommand.getId(), LocalDateTime.now(), AuditAwareImpl.USER);
+            billingRepository.softDelete(deleteBillingCommand.getId(), LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
             return new DeletedBillingResponse(deleteBillingCommand.getId());
         }
     }

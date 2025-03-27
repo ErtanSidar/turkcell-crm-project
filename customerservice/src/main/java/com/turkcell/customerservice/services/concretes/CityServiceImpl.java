@@ -11,6 +11,7 @@ import com.turkcell.customerservice.services.dtos.responses.cityResponses.GetCit
 import com.turkcell.customerservice.services.dtos.responses.cityResponses.UpdatedCityResponse;
 import com.turkcell.customerservice.services.mappers.CityMapper;
 import com.turkcell.customerservice.services.rules.CityBusinessRules;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import io.github.ertansidar.response.ListResponse;
@@ -26,6 +27,7 @@ public class CityServiceImpl implements CityService {
 
     private CityRepository cityRepository;
     private CityBusinessRules cityBusinessRules;
+    private AuditAwareImpl auditAware;
 
     @Override
     public GetListResponse<GetAllCityResponse> getAll(PageInfo pageInfo) {
@@ -61,7 +63,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public void delete(UUID id) {
         cityBusinessRules.checkCityIdExists(id);
-        cityRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
+        cityRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 
 }

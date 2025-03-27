@@ -11,6 +11,7 @@ import com.turkcell.customerservice.services.dtos.responses.countryResponses.Get
 import com.turkcell.customerservice.services.dtos.responses.countryResponses.UpdatedCountryResponse;
 import com.turkcell.customerservice.services.mappers.CountryMapper;
 import com.turkcell.customerservice.services.rules.CountryBusinessRules;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
@@ -28,6 +29,7 @@ public class CountryServiceImpl implements CountryService {
 
     private CountryRepository countryRepository;
     private CountryBusinessRules countryBusinessRules;
+    private AuditAwareImpl auditAware;
 
     @Override
     public GetListResponse<GetAllCountryResponse> getAll(PageInfo pageInfo) {
@@ -63,6 +65,6 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public void delete(UUID id) {
         countryBusinessRules.checkCountryIdExists(id);
-        countryRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
+        countryRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 }

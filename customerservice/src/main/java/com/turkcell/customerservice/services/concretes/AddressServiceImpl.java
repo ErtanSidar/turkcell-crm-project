@@ -8,27 +8,23 @@ import com.turkcell.customerservice.services.dtos.requests.addressRequests.Updat
 import com.turkcell.customerservice.services.dtos.responses.addressResponses.*;
 import com.turkcell.customerservice.services.mappers.AddressMapper;
 import com.turkcell.customerservice.services.rules.AddressBusinessRules;
-import io.github.ertansidar.exception.type.BusinessException;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import io.github.ertansidar.response.ListResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class AddressServiceImpl implements AddressService {
     private AddressRepository addressRepository;
     private AddressBusinessRules addressBusinessRules;
+    private AuditAwareImpl auditAware;
 
     @Override
     public GetListResponse<GetAllAddressResponse> getAll(PageInfo pageInfo) {
@@ -63,6 +59,6 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void delete(UUID id) {
         addressBusinessRules.checkAddressIdExists(id);
-        addressRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
+        addressRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 }

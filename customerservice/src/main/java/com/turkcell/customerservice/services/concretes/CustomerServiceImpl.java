@@ -18,6 +18,7 @@ import com.turkcell.customerservice.services.dtos.responses.customerResponses.Ge
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.UpdatedCustomerResponse;
 import com.turkcell.customerservice.services.mappers.CustomerMapper;
 import com.turkcell.customerservice.services.rules.CustomerBusinessRules;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import io.github.ertansidar.response.ListResponse;
@@ -38,6 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerBusinessRules customerBusinessRules;
     private final CampaignRepository campaignRepository;
     private final CustomerCampaignRepository customerCampaignRepository;
+    private final AuditAwareImpl auditAware;
 
     @Override
     public GetListResponse<GetAllCustomerResponse> getAll(PageInfo pageInfo) {
@@ -90,7 +92,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void delete(UUID id) {
         customerBusinessRules.checkCustomerIdExists(id);
-        customerRepository.softDelete(id, LocalDateTime.now(), AuditAwareImpl.USER);
+        customerRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 
     @Override
