@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface PlanService {
     GetListResponse<PlanResponse> getAllPlans(PageInfo pageInfo);
 
-    void deleById(UUID id);
+    void delete(UUID id);
 
     PlanResponse getOnePlan(UUID id);
 

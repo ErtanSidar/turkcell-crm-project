@@ -19,7 +19,7 @@ public interface PackageService {
 
     void createPackage(CreatePackageRequest createPackageRequest);
 
-    void deleteById(UUID packageId);
+    void delete(UUID packageId);
 
     /**
      * Fetches details of a single package by its ID.

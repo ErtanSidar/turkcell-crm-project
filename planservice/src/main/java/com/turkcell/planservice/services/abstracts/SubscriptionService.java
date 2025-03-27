@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface SubscriptionService {
     GetListResponse<SubscriptionResponse> getAllSubscriptions(PageInfo pageInfo);
 
-    void deleteById(UUID id);
+    void delete(UUID id);
 
     SubscriptionResponse getOneSubs(UUID id);
 

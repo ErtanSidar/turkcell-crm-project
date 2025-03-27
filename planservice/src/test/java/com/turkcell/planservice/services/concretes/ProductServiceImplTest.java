@@ -55,7 +55,8 @@ class ProductServiceImplTest {
         productService = new ProductServiceImpl(
                 productRepository,
                 subscriptionBusinessRules,
-                productBusinessRules
+                productBusinessRules,
+                auditAware
         );
     }
 
@@ -195,7 +196,7 @@ class ProductServiceImplTest {
                 .checkIfProductExists(productId);
 
         // Act
-        productService.deleteById(productId);
+        productService.delete(productId);
 
         // Assert
         verify(productBusinessRules).checkIfProductExists(productId);

@@ -12,7 +12,7 @@ public interface UsageService {
 
     GetListResponse<UsageResponse> getAllUsages(PageInfo pageInfo);
 
-    void deleteById(UUID id);
+    void delete(UUID id);
 
     Usage getOneUsage(UUID id);
 }

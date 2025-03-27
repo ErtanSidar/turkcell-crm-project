@@ -68,7 +68,7 @@ public class PackageController {
     @DeleteMapping
     public GenericResponse<String> deletePackage(@RequestParam UUID packageId) {
         log.info("Received request to delete package with id {}", packageId);
-        packageService.deleteById(packageId);
+        packageService.delete(packageId);
         return GenericResponse.success("generic.package.deleted");
     }
 

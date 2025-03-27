@@ -44,7 +44,7 @@ public class SubscriptionController {
 
     @DeleteMapping
     public GenericResponse<String> deleteSubscription(@RequestParam UUID id) {
-        subscriptionService.deleteById(id);
+        subscriptionService.delete(id);
         return GenericResponse.success("generic.subscription.deleted");
     }
 }

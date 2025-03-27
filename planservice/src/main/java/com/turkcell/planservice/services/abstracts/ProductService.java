@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface ProductService {
     GetListResponse<ProductResponse> getAllProducts(PageInfo pageInfo);
 
-    void deleteById(UUID id);
+    void delete(UUID id);
 
     ProductResponse getOneProduct(UUID id);
 

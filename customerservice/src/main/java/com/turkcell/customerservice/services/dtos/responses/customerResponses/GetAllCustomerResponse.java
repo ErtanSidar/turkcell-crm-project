@@ -1,5 +1,7 @@
 package com.turkcell.customerservice.services.dtos.responses.customerResponses;
 
+import com.essoft.dto.address.GetAddressResponse;
+import com.essoft.dto.contact.GetContactResponse;
 import com.turkcell.customerservice.entities.CustomerType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

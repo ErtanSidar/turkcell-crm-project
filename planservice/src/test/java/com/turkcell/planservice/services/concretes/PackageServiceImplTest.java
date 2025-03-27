@@ -62,7 +62,8 @@ public class PackageServiceImplTest {
         packageService = new PackageServiceImpl(
                 packageRepository,
                 productService,
-                packageBusinessRules
+                packageBusinessRules,
+                auditAware
         );
     }
 
@@ -217,7 +218,7 @@ public class PackageServiceImplTest {
                         .checkIfPackageExists(packageId);
 
         // Act
-        packageService.deleteById(packageId);
+        packageService.delete(packageId);
 
         // Assert
         verify(packageBusinessRules).checkIfPackageExists(packageId);

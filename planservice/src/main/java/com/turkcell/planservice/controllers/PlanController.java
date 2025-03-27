@@ -56,7 +56,7 @@ public class PlanController {
 
     @DeleteMapping
     public GenericResponse<String> deletePlan(@RequestParam UUID id) {
-        planService.deleById(id);
+        planService.delete(id);
         return GenericResponse.success("generic.plan.deleted");
     }
 }

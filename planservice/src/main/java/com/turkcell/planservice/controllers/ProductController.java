@@ -53,7 +53,7 @@ public class ProductController {
 
     @DeleteMapping
     public GenericResponse<String> deleteProduct(@RequestParam UUID id) {
-        productService.deleteById(id);
+        productService.delete(id);
         return GenericResponse.success("generic.product.deleted");
     }
 }

@@ -12,6 +12,7 @@ import com.turkcell.planservice.repositories.SubscriptionRepository;
 import com.turkcell.planservice.rules.SubscriptionBusinessRules;
 import com.turkcell.planservice.services.abstracts.PlanService;
 import com.turkcell.planservice.services.abstracts.SubscriptionService;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
@@ -22,7 +23,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,15 +35,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
 
     private final SubscriptionRepository subscriptionRepository;
-
     private final SubscriptionBusinessRules subscriptionBusinessRules;
+    private final AuditAwareImpl auditAware;
 
 
     private final PlanService planService;
 
-    public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository, SubscriptionBusinessRules subscriptionBusinessRules, PlanService planService) {
+    public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository, SubscriptionBusinessRules subscriptionBusinessRules, AuditAwareImpl auditAware, PlanService planService) {
         this.subscriptionRepository = subscriptionRepository;
         this.subscriptionBusinessRules = subscriptionBusinessRules;
+        this.auditAware = auditAware;
         this.planService = planService;
     }
 
@@ -84,11 +88,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 SubscriptionMapper.INSTANCE::createSubscriptionResponseFromSubscription);
     }
 
+    @Transactional
     @Override
-    public void deleteById(UUID id) {
+    public void delete(UUID id) {
         subscriptionBusinessRules.checkIfSubscriptionExists(id);
         log.info("Deleting subscription by id: " + id);
-        subscriptionRepository.deleteById(id);
+        subscriptionRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 
 

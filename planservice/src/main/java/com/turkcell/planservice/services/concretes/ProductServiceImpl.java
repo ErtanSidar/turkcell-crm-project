@@ -10,6 +10,7 @@ import com.turkcell.planservice.repositories.ProductRepository;
 import com.turkcell.planservice.rules.ProductBusinessRules;
 import com.turkcell.planservice.rules.SubscriptionBusinessRules;
 import com.turkcell.planservice.services.abstracts.ProductService;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
@@ -20,7 +21,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,11 +34,13 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final SubscriptionBusinessRules subscriptionBusinessRules;
     private final ProductBusinessRules productBusinessRules;
+    private final AuditAwareImpl auditAware;
 
-    public ProductServiceImpl(ProductRepository productRepository, SubscriptionBusinessRules subscriptionBusinessRules, ProductBusinessRules productBusinessRules) {
+    public ProductServiceImpl(ProductRepository productRepository, SubscriptionBusinessRules subscriptionBusinessRules, ProductBusinessRules productBusinessRules, AuditAwareImpl auditAware) {
         this.productRepository = productRepository;
         this.subscriptionBusinessRules = subscriptionBusinessRules;
         this.productBusinessRules = productBusinessRules;
+        this.auditAware = auditAware;
     }
 
     @Override
@@ -82,12 +87,13 @@ public class ProductServiceImpl implements ProductService {
                 ProductMapper.INSTANCE::createProductResponseFromProduct);
     }
 
+    @Transactional
     @Override
-    public void deleteById(UUID id) {
+    public void delete(UUID id) {
 //        subscriptionBusinessRules.checkIfProductCanBeDeleted(id);
         productBusinessRules.checkIfProductExists(id);
         log.info("Deleting product: " + id);
-        productRepository.deleteById(id);
+        productRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 
 

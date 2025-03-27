@@ -9,6 +9,7 @@ import com.turkcell.planservice.repositories.PlanRepository;
 import com.turkcell.planservice.rules.PlanBusinessRules;
 import com.turkcell.planservice.rules.SubscriptionBusinessRules;
 import com.turkcell.planservice.services.abstracts.PlanService;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
@@ -19,7 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,11 +33,13 @@ public class PlanServiceImpl implements PlanService {
     private final PlanRepository planRepository;
     private final PlanBusinessRules planBusinessRules;
     private final SubscriptionBusinessRules subscriptionBusinessRules;
+    private final AuditAwareImpl auditAware;
 
-    public PlanServiceImpl(PlanRepository planRepository, PlanBusinessRules planBusinessRules, SubscriptionBusinessRules subscriptionBusinessRules) {
+    public PlanServiceImpl(PlanRepository planRepository, PlanBusinessRules planBusinessRules, SubscriptionBusinessRules subscriptionBusinessRules, AuditAwareImpl auditAware) {
         this.planRepository = planRepository;
         this.planBusinessRules = planBusinessRules;
         this.subscriptionBusinessRules = subscriptionBusinessRules;
+        this.auditAware = auditAware;
     }
 
 
@@ -79,12 +84,13 @@ public class PlanServiceImpl implements PlanService {
                 PlanMapper.INSTANCE::createPlanResponseFromPlan);
     }
 
+    @Transactional
     @Override
-    public void deleById(UUID id) {
+    public void delete(UUID id) {
         planBusinessRules.checkIfPlanExists(id);
         subscriptionBusinessRules.checkIfPlanCanBeDeleted(id);
         log.info("Deleting plan {}", id);
-        planRepository.deleteById(id);
+        planRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 
 

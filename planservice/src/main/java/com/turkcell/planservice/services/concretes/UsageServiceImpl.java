@@ -6,13 +6,16 @@ import com.turkcell.planservice.mappers.UsageMapper;
 import com.turkcell.planservice.repositories.UsageRepository;
 import com.turkcell.planservice.rules.UsageBusinessRules;
 import com.turkcell.planservice.services.abstracts.UsageService;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import io.github.ertansidar.response.ListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,10 +25,12 @@ public class UsageServiceImpl implements UsageService {
 
     private final UsageRepository usageRepository;
     private final UsageBusinessRules usageBusinessRules;
+    private final AuditAwareImpl auditAware;
 
-    public UsageServiceImpl(UsageRepository usageRepository, UsageBusinessRules usageBusinessRules) {
+    public UsageServiceImpl(UsageRepository usageRepository, UsageBusinessRules usageBusinessRules, AuditAwareImpl auditAware) {
         this.usageRepository = usageRepository;
         this.usageBusinessRules = usageBusinessRules;
+        this.auditAware = auditAware;
     }
 
     @Override
@@ -41,11 +46,12 @@ public class UsageServiceImpl implements UsageService {
                 UsageMapper.INSTANCE::createUsageResponseFromUsage);
     }
 
+    @Transactional
     @Override
-    public void deleteById(UUID id) {
+    public void delete(UUID id) {
         usageBusinessRules.checkIfUsageExists(id);
         log.info("Deleting Usage by ID {}", id);
-        usageRepository.deleteById(id);
+        usageRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 
 

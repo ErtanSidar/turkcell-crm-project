@@ -34,7 +34,7 @@ public class UsageController {
 
     @DeleteMapping
     public GenericResponse<String> deleteUsage(@RequestParam UUID id) {
-        usageService.deleteById(id);
+        usageService.delete(id);
         return GenericResponse.success("generic.usage.deleted");
     }
 }

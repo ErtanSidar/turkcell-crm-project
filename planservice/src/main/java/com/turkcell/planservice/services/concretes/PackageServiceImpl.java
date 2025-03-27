@@ -12,6 +12,7 @@ import com.turkcell.planservice.repositories.PackageRepository;
 import com.turkcell.planservice.rules.PackageBusinessRules;
 import com.turkcell.planservice.services.abstracts.PackageService;
 import com.turkcell.planservice.services.abstracts.ProductService;
+import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
@@ -23,7 +24,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,11 +37,13 @@ public class PackageServiceImpl implements PackageService {
     private final PackageRepository packageRepository;
     private final ProductService productService;
     private final PackageBusinessRules packageBusinessRules;
+    private final AuditAwareImpl auditAware;
 
-    public PackageServiceImpl(PackageRepository packageRepository, @Lazy ProductService productService, PackageBusinessRules packageBusinessRules) {
+    public PackageServiceImpl(PackageRepository packageRepository, @Lazy ProductService productService, PackageBusinessRules packageBusinessRules, AuditAwareImpl auditAware) {
         this.packageRepository = packageRepository;
         this.productService = productService;
         this.packageBusinessRules = packageBusinessRules;
+        this.auditAware = auditAware;
     }
 
 
@@ -84,11 +89,12 @@ public class PackageServiceImpl implements PackageService {
         packageRepository.save(pack);
     }
 
+    @Transactional
     @Override
-    public void deleteById(UUID packageId) {
-        packageBusinessRules.checkIfPackageExists(packageId);
-        log.info("Deleting package with id: " + packageId);
-        packageRepository.deleteById(packageId);
+    public void delete(UUID id) {
+        packageBusinessRules.checkIfPackageExists(id);
+        log.info("Deleting package with id: " + id);
+        packageRepository.softDelete(id, LocalDateTime.now(), auditAware.getCurrentAuditor().toString());
     }
 
 

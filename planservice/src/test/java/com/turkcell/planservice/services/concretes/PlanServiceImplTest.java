@@ -49,7 +49,8 @@ class PlanServiceImplTest {
         planService = new PlanServiceImpl(
                 planRepository,
                 planBusinessRules,
-                subscriptionBusinessRules
+                subscriptionBusinessRules,
+                auditAware
         );
     }
 
@@ -213,7 +214,7 @@ class PlanServiceImplTest {
                 .checkIfPlanCanBeDeleted(planId);
 
         // Act
-        planService.deleById(planId);
+        planService.delete(planId);
 
         // Assert
         verify(planBusinessRules).checkIfPlanExists(planId);
@@ -239,7 +240,7 @@ class PlanServiceImplTest {
 
         // Act & Assert
         assertThrows(RuntimeException.class,
-                () -> planService.deleById(planId),
+                () -> planService.delete(planId),
                 "Cannot delete plan because there are active subscriptions"
         );
     }
