@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.services.mappers;
 
+import com.essoft.dto.address.GetAddressResponse;
 import com.turkcell.customerservice.entities.Address;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.CreateAddressRequest;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.UpdateAddressRequest;

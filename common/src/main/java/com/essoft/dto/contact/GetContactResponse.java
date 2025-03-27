@@ -1,4 +1,4 @@
-package com.turkcell.customerservice.services.dtos.responses.contactResponses;
+package com.essoft.dto.contact;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

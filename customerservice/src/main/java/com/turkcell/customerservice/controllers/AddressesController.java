@@ -1,11 +1,11 @@
 package com.turkcell.customerservice.controllers;
 
+import com.essoft.dto.address.GetAddressResponse;
 import com.turkcell.customerservice.core.business.Utility;
 import com.turkcell.customerservice.services.abstracts.AddressService;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.CreateAddressRequest;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.UpdateAddressRequest;
 import com.turkcell.customerservice.services.dtos.responses.addressResponses.CreatedAddressResponse;
-import com.turkcell.customerservice.services.dtos.responses.addressResponses.GetAddressResponse;
 import com.turkcell.customerservice.services.dtos.responses.addressResponses.GetAllAddressResponse;
 import com.turkcell.customerservice.services.dtos.responses.addressResponses.UpdatedAddressResponse;
 import io.github.ertansidar.paging.PageInfo;

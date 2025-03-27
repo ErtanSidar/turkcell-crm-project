@@ -1,6 +1,7 @@
 package com.turkcell.customerservice.services.abstracts;
 
 
+import com.essoft.dto.address.GetAddressResponse;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.CreateAddressRequest;
 import com.turkcell.customerservice.services.dtos.requests.addressRequests.UpdateAddressRequest;
 import com.turkcell.customerservice.services.dtos.responses.addressResponses.*;

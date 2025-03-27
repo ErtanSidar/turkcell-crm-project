@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.services.concretes;
 
+import com.essoft.dto.address.GetAddressResponse;
 import com.turkcell.customerservice.entities.Address;
 import com.turkcell.customerservice.repositories.AddressRepository;
 import com.turkcell.customerservice.services.abstracts.AddressService;

@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.services.concretes;
 
+import com.essoft.dto.contact.GetContactResponse;
 import com.turkcell.customerservice.entities.Contact;
 import com.turkcell.customerservice.repositories.ContactRepository;
 import com.turkcell.customerservice.services.abstracts.ContactService;
@@ -7,7 +8,6 @@ import com.turkcell.customerservice.services.dtos.requests.contactRequests.Creat
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.UpdateContactRequest;
 import com.turkcell.customerservice.services.dtos.responses.contactResponses.CreatedContactResponse;
 import com.turkcell.customerservice.services.dtos.responses.contactResponses.GetAllContactResponse;
-import com.turkcell.customerservice.services.dtos.responses.contactResponses.GetContactResponse;
 import com.turkcell.customerservice.services.dtos.responses.contactResponses.UpdatedContactResponse;
 import com.turkcell.customerservice.services.mappers.ContactMapper;
 import com.turkcell.customerservice.services.rules.ContactBusinessRules;

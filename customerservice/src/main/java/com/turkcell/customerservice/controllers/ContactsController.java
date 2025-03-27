@@ -1,12 +1,12 @@
 package com.turkcell.customerservice.controllers;
 
+import com.essoft.dto.contact.GetContactResponse;
 import com.turkcell.customerservice.core.business.Utility;
 import com.turkcell.customerservice.services.abstracts.ContactService;
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.CreateContactRequest;
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.UpdateContactRequest;
 import com.turkcell.customerservice.services.dtos.responses.contactResponses.CreatedContactResponse;
 import com.turkcell.customerservice.services.dtos.responses.contactResponses.GetAllContactResponse;
-import com.turkcell.customerservice.services.dtos.responses.contactResponses.GetContactResponse;
 import com.turkcell.customerservice.services.dtos.responses.contactResponses.UpdatedContactResponse;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;

@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.services.concretes;
 
+import com.essoft.dto.customer.GetCustomerResponse;
 import com.turkcell.customerservice.entities.Campaign;
 import com.turkcell.customerservice.entities.Customer;
 import com.turkcell.customerservice.entities.CustomerCampaign;
@@ -14,7 +15,6 @@ import com.turkcell.customerservice.services.dtos.requests.individualCustomerReq
 import com.turkcell.customerservice.services.dtos.responses.IndividualCustomerResponses.CreatedIndividualCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.corporateCustomerResponses.CreatedCorporateCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.GetAllCustomerResponse;
-import com.turkcell.customerservice.services.dtos.responses.customerResponses.GetCustomerResponse;
 import com.turkcell.customerservice.services.dtos.responses.customerResponses.UpdatedCustomerResponse;
 import com.turkcell.customerservice.services.mappers.CustomerMapper;
 import com.turkcell.customerservice.services.rules.CustomerBusinessRules;

@@ -1,5 +1,6 @@
 package com.turkcell.customerservice.services.mappers;
 
+import com.essoft.dto.contact.GetContactResponse;
 import com.turkcell.customerservice.entities.Contact;
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.CreateContactRequest;
 import com.turkcell.customerservice.services.dtos.requests.contactRequests.UpdateContactRequest;
