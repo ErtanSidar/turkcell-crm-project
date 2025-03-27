@@ -17,7 +17,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/plans")
-@Log4j2
 public class PlanController {
 
     private final PlanService planService;
@@ -32,7 +31,7 @@ public class PlanController {
     @GetMapping
     public GetListResponse<PlanResponse> getAllPlans(@RequestParam int page, @RequestParam int size) {
 
-        log.info("Received request to listing all packages");
+
         return planService.getAllPlans(new PageInfo(page,size));
     }
 

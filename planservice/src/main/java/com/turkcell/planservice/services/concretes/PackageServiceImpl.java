@@ -18,17 +18,12 @@ import io.github.ertansidar.response.GetListResponse;
 import io.github.ertansidar.response.ListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
-@Log4j2
 public class PackageServiceImpl implements PackageService {
 
     private final PackageRepository packageRepository;
@@ -44,7 +39,7 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     public PackageResponse getOnePackage(UUID id) {
-        log.info("Getting package with id: " + id);
+
         Package pack=packageRepository.findById(id).orElseThrow(
                 ()->new BusinessException("Package with id: " + id + " not found"));
 
@@ -62,7 +57,8 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     public void createPackage(CreatePackageRequest createPackageRequest) {
-        log.info("Creating package " + createPackageRequest.getPackageName());
+        packageBusinessRules.checkIfPackageNameExists(createPackageRequest.getPackageName());
+
         Package newPackage = PackageMapper.INSTANCE.CreatePackageFromCreatePackageRequest(createPackageRequest);
 
         ProductResponse productResponse = productService.getOneProduct(createPackageRequest.getProductId());
@@ -76,10 +72,10 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public void updatePackage(UUID id, UpdatePackageRequest updatePackageRequest) {
         packageBusinessRules.checkIfPackageExists(id);
-        log.info("Updating package with id: " + id);
+
         Package pack=packageRepository.findById(id).orElseThrow(
                 ()->new BusinessException("Package with id: " + id + " not found"));
-        log.info("Package found: " + pack);
+
         PackageMapper.INSTANCE.updatePackageFromRequest(updatePackageRequest, pack);
         packageRepository.save(pack);
     }
@@ -87,8 +83,8 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public void deleteById(UUID packageId) {
         packageBusinessRules.checkIfPackageExists(packageId);
-        log.info("Deleting package with id: " + packageId);
-        packageRepository.deleteById(packageId);
+
+        packageRepository.softDelete(packageId, LocalDateTime.now(), AuditServiceImpl.USER);
     }
 
 

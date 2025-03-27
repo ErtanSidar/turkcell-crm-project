@@ -13,18 +13,13 @@ import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import io.github.ertansidar.response.ListResponse;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
-@Log4j2
+
 public class PlanServiceImpl implements PlanService {
 
     private final PlanRepository planRepository;
@@ -41,7 +36,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public PlanResponse getOnePlan(UUID id) {
-        log.info("Getting one plan with id {}", id);
+
         Plan plan=planRepository.findById(id).orElseThrow(
                 ()-> new BusinessException("Plan with id: " + id + " not found"));
         PlanResponse planResponse = PlanMapper.INSTANCE.createPlanResponseFromPlan(plan);
@@ -52,7 +47,7 @@ public class PlanServiceImpl implements PlanService {
     public void createPlan(CreatePlanRequest createPlanRequest) {
         planBusinessRules.checkIfPlanNameExists(createPlanRequest.getPlanName());
 
-        log.info("Creating plan {}", createPlanRequest.getPlanName());
+
         Plan plan = PlanMapper.INSTANCE.createPlanFromCreatePlanRequest(createPlanRequest);
 
         planRepository.save(plan);
@@ -61,11 +56,11 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public void updatePlan(UUID id, UpdatePlanRequest updatePlanRequest) {
         planBusinessRules.checkIfPlanExists(id);
-        log.info("Updating plan {}", updatePlanRequest.getPlanName());
+
 
         Plan plan = planRepository.findById(id).orElseThrow(
                 ()-> new BusinessException("Package with id: " + id + " not found"));
-        log.info("Plan found: " + plan.getPlanName());
+
 
         PlanMapper.INSTANCE.updatePlanFromRequest(updatePlanRequest, plan);
         planRepository.save(plan);
@@ -83,8 +78,8 @@ public class PlanServiceImpl implements PlanService {
     public void deleById(UUID id) {
         planBusinessRules.checkIfPlanExists(id);
         subscriptionBusinessRules.checkIfPlanCanBeDeleted(id);
-        log.info("Deleting plan {}", id);
-        planRepository.deleteById(id);
+
+        planRepository.softDelete(id, LocalDateTime.now(),AuditServiceImpl.USER);
     }
 
 

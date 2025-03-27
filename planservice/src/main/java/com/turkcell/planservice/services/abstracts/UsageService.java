@@ -1,5 +1,6 @@
 package com.turkcell.planservice.services.abstracts;
 
+import com.turkcell.planservice.dtos.usagedtos.requests.CreateUsageRequest;
 import com.turkcell.planservice.dtos.usagedtos.responses.UsageResponse;
 import com.turkcell.planservice.entities.Usage;
 import io.github.ertansidar.paging.PageInfo;
@@ -15,4 +16,6 @@ public interface UsageService {
     void deleteById(UUID id);
 
     Usage getOneUsage(UUID id);
+
+    void createUsage(CreateUsageRequest createUsageRequest);
 }

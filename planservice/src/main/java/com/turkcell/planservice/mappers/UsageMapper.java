@@ -1,8 +1,10 @@
 package com.turkcell.planservice.mappers;
 
+import com.turkcell.planservice.dtos.usagedtos.requests.CreateUsageRequest;
 import com.turkcell.planservice.dtos.usagedtos.responses.UsageResponse;
 import com.turkcell.planservice.entities.Usage;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -11,4 +13,7 @@ public interface UsageMapper {
     UsageMapper INSTANCE = Mappers.getMapper(UsageMapper.class);
 
     UsageResponse createUsageResponseFromUsage(Usage usage);
+
+    @Mapping(target = "product.id", source = "productId")
+    Usage createUsageFromCreateUsageRequest(CreateUsageRequest createUsageRequest);
 }

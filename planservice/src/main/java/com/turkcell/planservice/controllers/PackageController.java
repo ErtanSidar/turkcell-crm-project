@@ -20,7 +20,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/packages")
 @CrossOrigin
-@Log4j2
 public class PackageController {
 
 
@@ -35,14 +34,14 @@ public class PackageController {
 
     @GetMapping
     public GetListResponse<PackageResponse> getAllPackages(@RequestParam int page, @RequestParam int size) {
-        log.info("Received request to listing all packages");
+
         return packageService.gelAllPackages(new PageInfo(page, size));
     }
 
 
     @GetMapping("/getOnePackage")
     public PackageResponse getOnePackage(@RequestParam UUID id) {
-        log.info("Received request to get one package with id {}", id);
+
         return packageService.getOnePackage(id);
     }
 
@@ -50,7 +49,7 @@ public class PackageController {
 
     @PostMapping
     public GenericResponse<String> createPackage(@RequestBody @Valid CreatePackageRequest createPackageRequest) {
-        log.info("Received request to create package {}", createPackageRequest.getPackageName());
+
         packageService.createPackage(createPackageRequest);
         return GenericResponse.success("generic.package.created");
     }
@@ -59,7 +58,7 @@ public class PackageController {
 
     @PutMapping
     public GenericResponse<String> updatePackage(@RequestParam UUID id, @RequestBody @Valid UpdatePackageRequest updatePackageRequest) {
-        log.info("Received request to update package with id {}", id);
+
         packageService.updatePackage(id, updatePackageRequest);
         return GenericResponse.success("generic.package.updated");
     }
@@ -67,7 +66,7 @@ public class PackageController {
 
     @DeleteMapping
     public GenericResponse<String> deletePackage(@RequestParam UUID packageId) {
-        log.info("Received request to delete package with id {}", packageId);
+
         packageService.deleteById(packageId);
         return GenericResponse.success("generic.package.deleted");
     }

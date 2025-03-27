@@ -1,5 +1,6 @@
 package com.turkcell.planservice.controllers;
 
+import com.turkcell.planservice.dtos.usagedtos.requests.CreateUsageRequest;
 import com.turkcell.planservice.dtos.usagedtos.responses.UsageResponse;
 import com.turkcell.planservice.entities.Usage;
 import com.turkcell.planservice.services.abstracts.UsageService;
@@ -30,7 +31,11 @@ public class UsageController {
     public Usage getOneUsage(@RequestParam UUID id) {
         return usageService.getOneUsage(id);
     }
-
+    @PostMapping
+    public GenericResponse<String> createUsage(@RequestBody CreateUsageRequest createUsageRequest) {
+        usageService.createUsage(createUsageRequest);
+        return GenericResponse.success("generic.usage.created");
+    }
 
     @DeleteMapping
     public GenericResponse<String> deleteUsage(@RequestParam UUID id) {

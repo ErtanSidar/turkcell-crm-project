@@ -21,11 +21,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@Log4j2
+
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -40,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getOneProduct(UUID id) {
-        log.info("Getting one product with id: " + id);
+
         Product product=productRepository.findById(id).orElseThrow(
                 ()-> new BusinessException("Product with id: " + id + " not found"));
 
@@ -54,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
         productBusinessRules.checkIfProductHasValidPlanAndPackage(
                 createProductRequest.getPlanId().toString(),
                 createProductRequest.getPackageId().toString());
-        log.info("Creating product: " + createProductRequest.getProductName());
+
         Product product = ProductMapper.INSTANCE.createProductFromCreateProductRequest(createProductRequest);
         productRepository.save(product);
 
@@ -63,11 +64,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProduct(UUID id, UpdateProductRequest updateProductRequest) {
         productBusinessRules.checkIfProductExists(id);
-        log.info("Updating product: " + updateProductRequest.getProductName());
+
 
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new BusinessException("Product with id: " + id + " not found"));
-        log.info("Product found: " + product.getProductName());
+
 
         ProductMapper.INSTANCE.updateProductFromRequest(updateProductRequest, product);
         productRepository.save(product);
@@ -86,8 +87,8 @@ public class ProductServiceImpl implements ProductService {
     public void deleteById(UUID id) {
 //        subscriptionBusinessRules.checkIfProductCanBeDeleted(id);
         productBusinessRules.checkIfProductExists(id);
-        log.info("Deleting product: " + id);
-        productRepository.deleteById(id);
+
+        productRepository.softDelete(id, LocalDateTime.now(),AuditServiceImpl.USER);
     }
 
 

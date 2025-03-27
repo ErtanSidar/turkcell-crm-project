@@ -1,8 +1,10 @@
 package com.turkcell.planservice.controllers;
 
 import com.turkcell.planservice.dtos.subscriptiondtos.requests.CreateSubscriptionRequest;
+import com.turkcell.planservice.dtos.subscriptiondtos.requests.UpdateSubscriptionRequest;
 import com.turkcell.planservice.dtos.subscriptiondtos.responses.SubscriptionResponse;
 import com.turkcell.planservice.entities.Subscription;
+import com.turkcell.planservice.feign.CustomerClient;
 import com.turkcell.planservice.services.abstracts.SubscriptionService;
 import com.turkcell.planservice.util.GenericResponse;
 import io.github.ertansidar.paging.PageInfo;
@@ -20,10 +22,12 @@ import java.util.UUID;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final CustomerClient customerClient;
 
 
-    public SubscriptionController(SubscriptionService subscriptionService) {
+    public SubscriptionController(SubscriptionService subscriptionService, CustomerClient customerClient) {
         this.subscriptionService = subscriptionService;
+        this.customerClient = customerClient;
     }
 
     @GetMapping
@@ -40,7 +44,11 @@ public class SubscriptionController {
         subscriptionService.createSubscription(createSubscriptionRequest);
         return GenericResponse.success("generic.subscription.created");
     }
-
+    @PutMapping
+    public GenericResponse<String>updateSubscription(@RequestParam UUID id,@RequestBody @Valid UpdateSubscriptionRequest updateSubscriptionRequest) {
+        subscriptionService.updateSubscription(id,updateSubscriptionRequest);
+        return GenericResponse.success("generic.subscription.updated");
+    }
 
     @DeleteMapping
     public GenericResponse<String> deleteSubscription(@RequestParam UUID id) {

@@ -10,8 +10,12 @@ import java.util.Optional;
 public class AuditServiceImpl implements AuditorAware<String> {
 
 
+    public static final String USER = "Cebrail Kaya";
+
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of("Cebrail KAYA");
+        return Optional.of(USER);
     }
+
 }
+
