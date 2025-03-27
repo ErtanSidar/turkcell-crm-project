@@ -17,6 +17,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http = baseSecurityService.configureCoreSecurity(http);
 
+        http.authorizeHttpRequests(country -> country.requestMatchers("/api/v1/countries/**").permitAll());
+
         // Özel security yapılandırması
         // http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/customers/**").authenticated());
 
