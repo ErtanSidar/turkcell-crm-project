@@ -9,11 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
-
-
-    // Kullanıcı adına göre kullanıcıyı getir
     Optional<User> findByUsername(String username);
 
-    // Kullanıcı adı mevcut mu?
     boolean existsByUsername(String username);
 }

@@ -5,7 +5,7 @@ import com.example.userservice.services.dtos.user.UserLoginRequest;
 
 public interface UserService {
 
-    void add(CreateUserRequest createUserRequest);
+    void create(CreateUserRequest createUserRequest);
 
     String login(UserLoginRequest loginUserRequest);
 }

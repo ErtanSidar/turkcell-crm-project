@@ -1,14 +1,14 @@
 package com.example.userservice.services.concretes;
 
-import com.example.userservice.core.jwt.JwtService;
 import com.example.userservice.entities.User;
 import com.example.userservice.repositories.UserRepository;
 import com.example.userservice.services.abstracts.UserService;
 import com.example.userservice.services.dtos.user.CreateUserRequest;
 import com.example.userservice.services.dtos.user.UserLoginRequest;
 import io.github.ertansidar.exception.type.BusinessException;
+import io.github.ertansidar.security.jwt.BaseJwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -20,17 +20,17 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
+    private final BaseJwtService baseJwtService;
 
 
     @Override
-    public void add(CreateUserRequest request) {
+    public void create(CreateUserRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
-        user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
-
     }
 
     @Override
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
                 .findByUsername(request.getUsername())
                 .orElseThrow(() -> new BusinessException("Invalid or wrong credentials."));
 
-        boolean isPasswordCorrect = bCryptPasswordEncoder
+        boolean isPasswordCorrect = passwordEncoder
                 .matches(request.getPassword(), dbUser.getPassword());
 
         if (!isPasswordCorrect)
@@ -47,6 +47,6 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> roles = new HashMap<>();
         roles.put("roles", dbUser.getOperationClaims().stream().map(c -> c.getName()).toList());
 
-        return this.jwtService.generateToken(dbUser.getUsername(), roles);
+        return this.baseJwtService.generateToken(dbUser.getUsername(), roles);
     }
 }

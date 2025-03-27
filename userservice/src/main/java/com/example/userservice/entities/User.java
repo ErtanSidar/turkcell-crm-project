@@ -24,6 +24,9 @@ public class User extends BaseEntity<UUID> {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "email")
+    private String email;
+
     @ManyToMany()
     @JoinTable(
             name = "user_operation_claims",

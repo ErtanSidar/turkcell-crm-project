@@ -7,10 +7,6 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8888/"
 
-jwt:
-  expiration: 600000
-  secret: "NF20U4dirMhJFuK7G7iXxNFNa6qt6FWVbZL5e5fjufvvhFS6SJSSlgZ0O8UxUneKDJpOSzDZ4WWppe0fS1K1ETSvV2nK1qEioHwaJwTbw04fRDk"
-
 
 
 
