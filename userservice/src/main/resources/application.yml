@@ -4,6 +4,17 @@ spring:
   cloud:
     config:
       profile: local
+    stream:
+      defaultBinder: kafka
+      function:
+        definition: userCreatedFunction
+      bindings:
+        userCreatedFunction-out-0:
+          destination: user-topic
+          content-type: application/json
+      kafka:
+        binder:
+          brokers: localhost:9092
   config:
     import: "optional:configserver:http://localhost:8888/"
 

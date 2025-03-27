@@ -13,7 +13,7 @@ import java.util.Properties;
 
 @Service
 @RequiredArgsConstructor
-public class EmailService implements NotificationService {
+public class EmailNotificationServiceImpl implements NotificationService {
 
     JavaMailSenderImpl mailSender;
     private final NotificationProperties notificationProperties;

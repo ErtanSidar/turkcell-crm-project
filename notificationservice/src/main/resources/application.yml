@@ -7,10 +7,14 @@ spring:
     stream:
       defaultBinder: kafka
       function:
-        definition: ticketCreatedFunction
+        definition: ticketCreatedFunction,userCreatedFunction
       bindings:
         ticketCreatedFunction-in-0:
           destination: ticket-topic
+          content-type: application/json
+          group: notification-group
+        userCreatedFunction-in-0:
+          destination: user-topic
           content-type: application/json
           group: notification-group
       kafka:
