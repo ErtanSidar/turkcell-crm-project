@@ -1,0 +1,15 @@
+package com.turkcell.customersupportservice.client;
+
+import com.essoft.dto.customer.GetCustomerResponse;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.UUID;
+
+@FeignClient(name = "customerservice")
+public interface CustomerClient {
+
+    @GetMapping("/{id}")
+    GetCustomerResponse findById(@PathVariable UUID id);
+}

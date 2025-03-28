@@ -1,6 +1,11 @@
 package com.turkcell.customersupportservice.services.concretes;
 
+import com.essoft.dto.customer.GetCorporateCustomerResponse;
+import com.essoft.dto.customer.GetCustomerResponse;
+import com.essoft.dto.customer.GetIndividualCustomerResponse;
 import com.essoft.event.ticket.TicketCreatedEvent;
+import com.turkcell.customersupportservice.client.CustomerClient;
+import com.turkcell.customersupportservice.coreBusiness.producer.TicketCreatedProducer;
 import com.turkcell.customersupportservice.entities.Ticket;
 import com.turkcell.customersupportservice.repositories.TicketRepository;
 import com.turkcell.customersupportservice.services.abstracts.TicketService;
@@ -13,7 +18,6 @@ import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +37,8 @@ public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
     private final TicketBusinessRules ticketBusinessRules;
-    private final StreamBridge streamBridge;
+    private final TicketCreatedProducer ticketCreatedProducer;
+    private final CustomerClient customerClient;
 
     @Override
     public GetListResponse<GetAllTicketResponse> getAll(PageInfo pageInfo) {
@@ -80,12 +85,22 @@ public class TicketServiceImpl implements TicketService {
         Ticket createdTicket = ticketRepository.save(ticket);
 
         TicketCreatedEvent ticketCreatedEvent = new TicketCreatedEvent();
-        ticketCreatedEvent.setCustomerId(createdTicket.getCustomerId());
+
+        GetCustomerResponse customer = customerClient.findById(createdTicket.getCustomerId());
+
+        if (customer.getCustomerType().equals("INDIVIDUAL")) {
+            GetIndividualCustomerResponse individualCustomer = (GetIndividualCustomerResponse) customer;
+            ticketCreatedEvent.setCustomerName(individualCustomer.getFirstName());
+        } else {
+            GetCorporateCustomerResponse corporateCustomer = (GetCorporateCustomerResponse) customer;
+            ticketCreatedEvent.setCustomerName(corporateCustomer.getCompanyName());
+        }
+        ticketCreatedEvent.setEmail(customer.getContacts().get(0).getEmail());
         ticketCreatedEvent.setSubject(createdTicket.getSubject());
         ticketCreatedEvent.setDescription(createdTicket.getDescription());
         ticketCreatedEvent.setStatus(createdTicket.getStatus());
 
-        streamBridge.send("ticketCreatedFunction-out-0", ticketCreatedEvent);
+        ticketCreatedProducer.sendMessage(ticketCreatedEvent);
 
         return TicketMapper.INSTANCE.createdTicketResponseFromTicket(createdTicket);
     }

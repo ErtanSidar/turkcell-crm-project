@@ -5,6 +5,7 @@ import com.turkcell.notificationservice.services.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
@@ -19,22 +20,20 @@ public class TicketConsumer {
     private final NotificationService notificationService;
     private final SpringTemplateEngine templateEngine;
 
-    @Bean
-    public Consumer<TicketCreatedEvent> ticketCreatedFunction() {
-        return message -> {
-            Map<String, Object> properties = new HashMap<>();
-            properties.put("customerName", message.getCustomerId().toString());
-            properties.put("subject", message.getSubject());
-            properties.put("description", message.getDescription());
-            properties.put("status", message.getStatus());
+    @KafkaListener(topics = "ticket-created", groupId = "create-ticket")
+    private void consume(TicketCreatedEvent event) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("customerName", event.getCustomerName());
+        properties.put("subject", event.getSubject());
+        properties.put("description", event.getDescription());
+        properties.put("status", event.getStatus());
 
-            Context context = new Context();
-            context.setVariables(properties);
+        Context context = new Context();
+        context.setVariables(properties);
 
-            String title = "Müşteri Destek Bilgilendirme";
+        String title = "Müşteri Destek Bilgilendirme";
 
-            String template = templateEngine.process(message.getEmailTemplateName().getName(), context);
-            notificationService.sendNotification("sidarertan3@gmail.com", title, template);
-        };
+        String template = templateEngine.process(event.getEmailTemplateName().getName(), context);
+        notificationService.sendNotification("sidarertan3@gmail.com", title, template);
     }
 }

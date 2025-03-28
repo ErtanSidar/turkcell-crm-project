@@ -6,16 +6,10 @@ spring:
   cloud:
     config:
       profile: local
-    stream:
-      defaultBinder: kafka
-      function:
-        definition: ticketCreatedFunction
-      bindings:
-        ticketCreatedFunction-out-0:
-          destination: ticket-topic
-          content-type: application/json
-      kafka:
-        binder:
-          brokers: localhost:9092
+  kafka:
+    producer:
+      bootstrap-servers: 127.0.0.1:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   config:
     import: "optional:configserver:http://localhost:8888/"

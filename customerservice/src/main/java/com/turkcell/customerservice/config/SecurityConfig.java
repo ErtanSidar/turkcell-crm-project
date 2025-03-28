@@ -18,7 +18,7 @@ public class SecurityConfig {
         http = baseSecurityService.configureCoreSecurity(http);
 
         http.authorizeHttpRequests(country -> country.requestMatchers("/api/v1/countries/**").permitAll());
-
+        http.authorizeHttpRequests(customer -> customer.requestMatchers("/api/v1/customers/**").permitAll());
         // Özel security yapılandırması
         // http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/customers/**").authenticated());
 

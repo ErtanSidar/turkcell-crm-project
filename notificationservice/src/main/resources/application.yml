@@ -4,22 +4,17 @@ spring:
   cloud:
     config:
       profile: local
-    stream:
-      defaultBinder: kafka
-      function:
-        definition: ticketCreatedFunction,userCreatedFunction
-      bindings:
-        ticketCreatedFunction-in-0:
-          destination: ticket-topic
-          content-type: application/json
-          group: notification-group
-        userCreatedFunction-in-0:
-          destination: user-topic
-          content-type: application/json
-          group: notification-group
-      kafka:
-        binder:
-          brokers: localhost:9092
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
   config:
     import: "optional:configserver:http://localhost:8888/"
 

@@ -6,14 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class TicketCreatedEvent {
-    private UUID customerId;
+    private String email;
+    private String customerName;
     private String subject;
     private String description;
     private String status;
