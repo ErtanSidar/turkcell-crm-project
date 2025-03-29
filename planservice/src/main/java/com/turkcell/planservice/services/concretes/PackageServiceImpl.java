@@ -68,6 +68,8 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public void createPackage(CreatePackageRequest createPackageRequest) {
         log.info("Creating package " + createPackageRequest.getPackageName());
+
+        packageBusinessRules.checkIfPackageNameExists(createPackageRequest.getPackageName());
         Package newPackage = PackageMapper.INSTANCE.CreatePackageFromCreatePackageRequest(createPackageRequest);
 
         ProductResponse productResponse = productService.getOneProduct(createPackageRequest.getProductId());

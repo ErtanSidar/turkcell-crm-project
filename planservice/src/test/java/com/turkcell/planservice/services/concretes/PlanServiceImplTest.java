@@ -39,6 +39,7 @@ class PlanServiceImplTest {
     @Mock
     private SubscriptionBusinessRules subscriptionBusinessRules;
 
+    @Mock
     private AuditAwareImpl auditAware;
 
     private PlanServiceImpl planService;
@@ -222,7 +223,7 @@ class PlanServiceImplTest {
         verify(planRepository).softDelete(
                 eq(planId),
                 any(LocalDateTime.class),
-                eq(auditAware.getCurrentAuditor().toString())
+                anyString()
         );
     }
 

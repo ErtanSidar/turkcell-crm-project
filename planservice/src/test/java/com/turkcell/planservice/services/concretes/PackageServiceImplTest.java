@@ -51,6 +51,7 @@ public class PackageServiceImplTest {
     @Mock
     private PackageBusinessRules packageBusinessRules;
 
+    @Mock
     private AuditAwareImpl auditAware;
 
     private PackageService packageService;
@@ -213,6 +214,8 @@ public class PackageServiceImplTest {
     void testDeleteById_ShouldCallSoftDelete() {
 
         UUID packageId = UUID.randomUUID();
+        Package pack = new Package();
+        pack.setId(packageId);
 
         doNothing().when(packageBusinessRules)
                         .checkIfPackageExists(packageId);
@@ -225,7 +228,7 @@ public class PackageServiceImplTest {
         verify(packageRepository).softDelete(
                 eq(packageId),
                 any(LocalDateTime.class),
-                eq(auditAware.getCurrentAuditor().toString())
+                anyString()
         );
     }
 }

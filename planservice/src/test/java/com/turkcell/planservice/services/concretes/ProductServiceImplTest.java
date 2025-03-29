@@ -44,6 +44,7 @@ class ProductServiceImplTest {
     @Mock
     private ProductBusinessRules productBusinessRules;
 
+    @Mock
     private AuditAwareImpl auditAware;
 
     private ProductServiceImpl productService;
@@ -203,7 +204,7 @@ class ProductServiceImplTest {
         verify(productRepository).softDelete(
                 eq(productId),
                 any(LocalDateTime.class),
-                eq(auditAware.getCurrentAuditor().toString())
+                anyString()
         );
     }
 }

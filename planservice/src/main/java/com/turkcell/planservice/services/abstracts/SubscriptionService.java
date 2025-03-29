@@ -1,6 +1,7 @@
 package com.turkcell.planservice.services.abstracts;
 
 import com.turkcell.planservice.dtos.subscriptiondtos.requests.CreateSubscriptionRequest;
+import com.turkcell.planservice.dtos.subscriptiondtos.requests.UpdateSubscriptionRequest;
 import com.turkcell.planservice.dtos.subscriptiondtos.responses.SubscriptionResponse;
 import com.turkcell.planservice.entities.Subscription;
 import io.github.ertansidar.paging.PageInfo;
@@ -18,4 +19,6 @@ public interface SubscriptionService {
     SubscriptionResponse getOneSubs(UUID id);
 
     void createSubscription(CreateSubscriptionRequest createSubscriptionRequest);
+
+    void updateSubscription(UUID id, UpdateSubscriptionRequest updateSubscriptionRequest);
 }

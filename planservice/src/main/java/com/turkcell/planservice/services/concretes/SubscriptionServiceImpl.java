@@ -1,14 +1,18 @@
 package com.turkcell.planservice.services.concretes;
 
+import com.essoft.dto.customer.GetCustomerResponse;
+import com.turkcell.planservice.client.CustomerClient;
 import com.turkcell.planservice.dtos.plandtos.responses.PlanResponse;
 import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
 import com.turkcell.planservice.dtos.subscriptiondtos.requests.CreateSubscriptionRequest;
+import com.turkcell.planservice.dtos.subscriptiondtos.requests.UpdateSubscriptionRequest;
 import com.turkcell.planservice.dtos.subscriptiondtos.responses.SubscriptionResponse;
 import com.turkcell.planservice.entities.Plan;
 import com.turkcell.planservice.entities.Subscription;
 import com.turkcell.planservice.mappers.PlanMapper;
 import com.turkcell.planservice.mappers.SubscriptionMapper;
 import com.turkcell.planservice.repositories.SubscriptionRepository;
+import com.turkcell.planservice.rules.PlanBusinessRules;
 import com.turkcell.planservice.rules.SubscriptionBusinessRules;
 import com.turkcell.planservice.services.abstracts.PlanService;
 import com.turkcell.planservice.services.abstracts.SubscriptionService;
@@ -36,15 +40,19 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionBusinessRules subscriptionBusinessRules;
+    private final PlanBusinessRules planBusinessRules;
     private final AuditAwareImpl auditAware;
+    private final CustomerClient customerClient;
 
 
     private final PlanService planService;
 
-    public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository, SubscriptionBusinessRules subscriptionBusinessRules, AuditAwareImpl auditAware, PlanService planService) {
+    public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository, SubscriptionBusinessRules subscriptionBusinessRules, PlanBusinessRules planBusinessRules, AuditAwareImpl auditAware, CustomerClient customerClient, PlanService planService) {
         this.subscriptionRepository = subscriptionRepository;
         this.subscriptionBusinessRules = subscriptionBusinessRules;
+        this.planBusinessRules = planBusinessRules;
         this.auditAware = auditAware;
+        this.customerClient = customerClient;
         this.planService = planService;
     }
 
@@ -59,25 +67,54 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public void createSubscription(CreateSubscriptionRequest createSubscriptionRequest) {
+        // Check if the customer is already subscribed to the plan
         subscriptionBusinessRules.checkIfCustomerAlreadySubscribedToPlan(
                 createSubscriptionRequest.getCustomerId(), createSubscriptionRequest.getPlanId());
-        subscriptionBusinessRules.checkIfPlanExistsForSubscription(
-                createSubscriptionRequest.getPlanId().toString());
 
-        log.info("Creating subscription for customer: " + createSubscriptionRequest.getCustomerId());
+        // Check if the plan exists
+        subscriptionBusinessRules.checkIfPlanExistsForSubscription(createSubscriptionRequest.getPlanId().toString());
 
+        // Fetch customer details using Feign Client
+        GetCustomerResponse customerResponse = customerClient.findById(createSubscriptionRequest.getCustomerId());
+        if (customerResponse == null) {
+            throw new BusinessException("Customer not found with ID: " + createSubscriptionRequest.getCustomerId());
+        }
 
-        Subscription subscription = SubscriptionMapper.INSTANCE.toSubscription(createSubscriptionRequest);
+        log.info("Customer found: " + customerResponse.getCustomerNumber());
 
-        PlanResponse planResponse = planService.getOnePlan(createSubscriptionRequest.getPlanId());  // Burada getOnePlanResponse metodu PlanResponse döndürmeli.
+        // Fetch plan details
+        PlanResponse planResponse = planService.getOnePlan(createSubscriptionRequest.getPlanId());
         Plan plan = PlanMapper.INSTANCE.createPlanFromPlanResponse(planResponse);
 
+        // Map request to Subscription entity
+        Subscription subscription = SubscriptionMapper.INSTANCE.createSubscriptionFromCreateSubscriptionRequest(createSubscriptionRequest);
         subscription.setPlan(plan);
+        subscription.setCustomerId(createSubscriptionRequest.getCustomerId()); // Set customer ID explicitly
 
+        // Save subscription
         subscriptionRepository.save(subscription);
 
         log.info("Subscription created successfully with ID: " + subscription.getId());
 
+    }
+
+    @Override
+    public void updateSubscription(UUID id, UpdateSubscriptionRequest updateSubscriptionRequest) {
+        subscriptionBusinessRules.checkIfSubscriptionExists(id);
+
+        Subscription subscription = subscriptionRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Subscription with id: " + id + " not found"));
+
+        SubscriptionMapper.INSTANCE.updateSubscriptionFromRequest(subscription, updateSubscriptionRequest);
+
+        if (updateSubscriptionRequest.getPlanId() != null) {
+            planBusinessRules.checkIfPlanExists(updateSubscriptionRequest.getPlanId());
+            PlanResponse planResponse = planService.getOnePlan(updateSubscriptionRequest.getPlanId());
+            Plan plan = PlanMapper.INSTANCE.createPlanFromPlanResponse(planResponse);
+            subscription.setPlan(plan);
+        }
+
+        subscriptionRepository.save(subscription);
     }
 
 
