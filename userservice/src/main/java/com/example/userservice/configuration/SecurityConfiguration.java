@@ -8,10 +8,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@RequiredArgsConstructor
 public class SecurityConfiguration {
 
     private final BaseSecurityService baseSecurityService;
+
+    public SecurityConfiguration(BaseSecurityService baseSecurityService) {
+        this.baseSecurityService = baseSecurityService;
+    }
 
 
     @Bean

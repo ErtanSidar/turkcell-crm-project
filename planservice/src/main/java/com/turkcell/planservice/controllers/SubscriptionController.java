@@ -1,6 +1,7 @@
 package com.turkcell.planservice.controllers;
 
 import com.turkcell.planservice.dtos.subscriptiondtos.requests.CreateSubscriptionRequest;
+import com.turkcell.planservice.dtos.subscriptiondtos.requests.UpdateSubscriptionRequest;
 import com.turkcell.planservice.dtos.subscriptiondtos.responses.SubscriptionResponse;
 import com.turkcell.planservice.entities.Subscription;
 import com.turkcell.planservice.services.abstracts.SubscriptionService;
@@ -41,6 +42,11 @@ public class SubscriptionController {
         return GenericResponse.success("generic.subscription.created");
     }
 
+    @PutMapping
+    public GenericResponse<String>updateSubscription(@RequestParam UUID id,@RequestBody @Valid UpdateSubscriptionRequest updateSubscriptionRequest) {
+        subscriptionService.updateSubscription(id,updateSubscriptionRequest);
+        return GenericResponse.success("generic.subscription.updated");
+    }
 
     @DeleteMapping
     public GenericResponse<String> deleteSubscription(@RequestParam UUID id) {

@@ -1,10 +1,18 @@
 package com.turkcell.planservice.services.concretes;
 
+import com.essoft.dto.customer.GetCustomerResponse;
+import com.turkcell.planservice.client.CustomerClient;
+import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
+import com.turkcell.planservice.dtos.usagedtos.requests.CreateUsageRequest;
+import com.turkcell.planservice.dtos.usagedtos.requests.UpdateUsageRequest;
 import com.turkcell.planservice.dtos.usagedtos.responses.UsageResponse;
+import com.turkcell.planservice.entities.Product;
 import com.turkcell.planservice.entities.Usage;
+import com.turkcell.planservice.mappers.ProductMapper;
 import com.turkcell.planservice.mappers.UsageMapper;
 import com.turkcell.planservice.repositories.UsageRepository;
 import com.turkcell.planservice.rules.UsageBusinessRules;
+import com.turkcell.planservice.services.abstracts.ProductService;
 import com.turkcell.planservice.services.abstracts.UsageService;
 import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
@@ -26,17 +34,70 @@ public class UsageServiceImpl implements UsageService {
     private final UsageRepository usageRepository;
     private final UsageBusinessRules usageBusinessRules;
     private final AuditAwareImpl auditAware;
+    private final CustomerClient customerClient;
+    private final ProductService productService;
 
-    public UsageServiceImpl(UsageRepository usageRepository, UsageBusinessRules usageBusinessRules, AuditAwareImpl auditAware) {
+    public UsageServiceImpl(UsageRepository usageRepository, UsageBusinessRules usageBusinessRules, AuditAwareImpl auditAware, CustomerClient customerClient, ProductService productService) {
         this.usageRepository = usageRepository;
         this.usageBusinessRules = usageBusinessRules;
         this.auditAware = auditAware;
+        this.customerClient = customerClient;
+        this.productService = productService;
     }
 
     @Override
-    public Usage getOneUsage(UUID id) {
-        return usageRepository.findById(id).orElseThrow(
+    public UsageResponse getOneUsage(UUID id) {
+        Usage usage = usageRepository.findById(id).orElseThrow(
                 () -> new BusinessException("Usage not found with id: " + id));
+
+        UsageResponse usageResponse = UsageMapper.INSTANCE.createUsageResponseFromUsage(usage);
+
+        return usageResponse;
+    }
+
+    @Override
+    public void createUsage(CreateUsageRequest createUsageRequest) {
+
+        GetCustomerResponse customerResponse = customerClient.findById(createUsageRequest.getCustomerId());
+        if (customerResponse == null) {
+            throw new BusinessException("Customer not found with ID: " + createUsageRequest.getCustomerId());
+        }
+        // Validate if the product exists
+        ProductResponse productResponse = productService.getOneProduct(createUsageRequest.getProductId());
+        if (productResponse == null) {
+            throw new BusinessException("Product not found with ID: " + createUsageRequest.getProductId());
+        }
+        Product product = ProductMapper.INSTANCE.createProductFromProductResponse(productResponse);
+
+        log.info("Product found: " + productResponse.getProductName());
+
+        // Map request to Usage entity
+        Usage usage = UsageMapper.INSTANCE.createUsageFromCreateUsageRequest(createUsageRequest);
+        usage.setProduct(product);
+
+        // Save to database
+        usageRepository.save(usage);
+
+        log.info("Usage record created successfully for customer ID: " + createUsageRequest.getCustomerId());
+
+    }
+
+    @Override
+    public void updateUsage(UUID id, UpdateUsageRequest updateUsageRequest) {
+        // Fetch existing usage entity
+        Usage usage = usageRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Usage record not found with ID: " + id));
+
+        log.info("Updating usage record with ID: " + id);
+
+        // Map the new usage details (excluding customer and product)
+        UsageMapper.INSTANCE.updateUsageFromUpdateUsageRequest(usage, updateUsageRequest);
+
+        // Save the updated entity
+        usageRepository.save(usage);
+
+        log.info("Usage record updated successfully for ID: " + id);
+
     }
 
     @Override
