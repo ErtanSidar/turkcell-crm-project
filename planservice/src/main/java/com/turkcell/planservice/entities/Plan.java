@@ -2,12 +2,17 @@ package com.turkcell.planservice.entities;
 
 import io.github.ertansidar.entities.BaseEntity;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "plans")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Plan extends BaseEntity<UUID> {
 
     @Column(name = "plan_name")
@@ -36,4 +41,11 @@ public class Plan extends BaseEntity<UUID> {
 
     @OneToMany(mappedBy = "plan")
     private List<Subscription> subscriptions;
+
+
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
+
 }

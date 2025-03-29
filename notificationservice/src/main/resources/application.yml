@@ -1,15 +1,31 @@
 spring:
   application:
     name: "notificationservice"
+  cloud:
+    config:
+      profile: local
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
   config:
     import: "optional:configserver:http://localhost:8888/"
 
-server:
-  port: 8085
 
-eureka:
-  client:
-    service-url:
-      defaultZone: "http://localhost:8761/eureka"
-    register-with-eureka: true
-    fetch-registry: true
+turkcell:
+  notificationservice:
+    email:
+      username: tavares.dicki@ethereal.email
+      password: ggyJnAHJTHdbm1j4pG
+      host: smtp.ethereal.email
+      port: 587
+      from: turkcell@turkcell.com
+    client:
+      host: http://localhost:5173

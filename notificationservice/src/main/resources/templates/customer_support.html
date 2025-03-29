@@ -1,0 +1,55 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f9f9f9;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .subject {
+            font-size: 20px;
+            color: #007bff;
+            margin-top: 10px;
+        }
+        .description {
+            font-size: 16px;
+            color: #555;
+            margin: 10px 0;
+        }
+        .status {
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">Müşteri Destek Talebi</div>
+    <p>Sayın <span th:text="${customerName}"></span>,</p>
+    <p>Destek talebiniz alınmıştır. Aşağıda talebinizin detaylarını bulabilirsiniz:</p>
+
+    <p class="subject"><strong>Konu:</strong> <span th:text="${subject}"></span></p>
+    <p class="description"><strong>Açıklama:</strong> <span th:text="${description}"></span></p>
+    <p><strong>Durum:</strong> <span class="status" th:text="${status}"></span></p>
+
+    <p class="footer">Size en kısa sürede dönüş yapacağız. İlginiz için teşekkür ederiz.</p>
+</div>
+</body>
+</html>
+

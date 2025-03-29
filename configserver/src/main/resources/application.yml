@@ -1,17 +1,12 @@
 spring:
   application:
     name: "configserver"
-  profiles:
-    active: git
   cloud:
     config:
       server:
         git:
-          uri: "https://github.com/ErtanSidar/bank-microservice-config.git"
+          uri: "https://github.com/ErtanSidar/turkcell-crm-project-configs.git"
           default-label: main
-          timeout: 5
-          clone-on-start: true
-          force-pull: true
 
 server:
   port: 8888
@@ -22,3 +17,18 @@ eureka:
       defaultZone: "http://localhost:8761/eureka"
     register-with-eureka: true
     fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true

@@ -2,11 +2,16 @@ package com.turkcell.planservice.entities;
 
 import io.github.ertansidar.entities.BaseEntity;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "packages")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Package extends BaseEntity<UUID> {
 
     @Column(name = "package_name")
@@ -27,5 +32,10 @@ public class Package extends BaseEntity<UUID> {
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
 }

@@ -1,0 +1,28 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        .amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Ödeme Bilgilendirme</h2>
+    <p>Sayın <span th:text="${customerName}"></span>,</p>
+    <p>Ödemeniz başarıyla alınmıştır.</p>
+    <p>Ödeme tutarı: <span class="amount" th:text="${amount}"></span></p>
+</div>
+</body>
+</html>
