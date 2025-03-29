@@ -2,6 +2,7 @@ package com.turkcell.analyticservice.application.subscription.command.update;
 
 import an.awesome.pipelinr.Command;
 import com.turkcell.analyticservice.application.subscription.mapper.SubscriptionMapper;
+import com.turkcell.analyticservice.application.subscription.rules.SubscriptionBusinessRules;
 import com.turkcell.analyticservice.domain.entity.Plan;
 import com.turkcell.analyticservice.domain.entity.Product;
 import com.turkcell.analyticservice.domain.entity.Subscription;
@@ -27,6 +28,7 @@ public class UpdateSubscriptionCommand implements Command<UpdatedSubscriptionRes
     @RequiredArgsConstructor
     public static class UpdateSubscriptionCommandHandler implements Command.Handler<UpdateSubscriptionCommand, UpdatedSubscriptionResponse> {
         private final SubscriptionRepository subscriptionRepository;
+        private final SubscriptionBusinessRules subscriptionBusinessRules;
 
         @Override
         public UpdatedSubscriptionResponse handle(UpdateSubscriptionCommand command) {
@@ -34,6 +36,7 @@ public class UpdateSubscriptionCommand implements Command<UpdatedSubscriptionRes
                     .orElseThrow(() -> new RuntimeException("Subscription not found"));
             SubscriptionMapper subscriptionMapper = SubscriptionMapper.INSTANCE;
             subscriptionMapper.updateSubscriptionFromUpdateCommand(command, subscription);
+            subscriptionBusinessRules.validateForUpdate(subscription);
             subscriptionRepository.save(subscription);
             return subscriptionMapper.createUpdatedSubscriptionResponse(subscription);
         }

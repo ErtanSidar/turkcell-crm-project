@@ -2,6 +2,7 @@ package com.turkcell.analyticservice.application.plan.command.update;
 
 import an.awesome.pipelinr.Command;
 import com.turkcell.analyticservice.application.plan.mapper.PlanMapper;
+import com.turkcell.analyticservice.application.plan.rules.PlanBusinessRules;
 import com.turkcell.analyticservice.domain.entity.Plan;
 import com.turkcell.analyticservice.persistence.plan.PlanRepository;
 import lombok.*;
@@ -27,6 +28,7 @@ public class UpdatePlanCommand implements Command<UpdatedPlanResponse> {
     @RequiredArgsConstructor
     public static class UpdatePlanCommandHandler implements Command.Handler<UpdatePlanCommand, UpdatedPlanResponse> {
         private final PlanRepository planRepository;
+        private final PlanBusinessRules planBusinessRules;
 
         @Override
         public UpdatedPlanResponse handle(UpdatePlanCommand command) {
@@ -34,6 +36,7 @@ public class UpdatePlanCommand implements Command<UpdatedPlanResponse> {
                     .orElseThrow(() -> new RuntimeException("Plan not found"));
             PlanMapper planMapper = PlanMapper.INSTANCE;
             planMapper.updatePlanFromUpdateCommand(command, plan);
+            planBusinessRules.checkIfPlanIsValid(plan);
             planRepository.save(plan);
             return planMapper.createUpdatedPlanResponse(plan);
         }
