@@ -1,6 +1,8 @@
 spring:
   application:
     name: "planservice"
+  profiles:
+    active: jpa
   cloud:
     config:
       profile: local

@@ -17,18 +17,12 @@ import com.turkcell.customersupportservice.services.rules.TicketBusinessRules;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
+import io.github.ertansidar.response.ListResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -42,28 +36,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public GetListResponse<GetAllTicketResponse> getAll(PageInfo pageInfo) {
-        return TicketServiceImpl.get(pageInfo, ticketRepository, TicketMapper.INSTANCE::getAllTicketResponseFromTicket);
+        return ListResponse.get(pageInfo, ticketRepository, TicketMapper.INSTANCE::getAllTicketResponseFromTicket);
     }
-
-    public static <T, R, ID extends Serializable> GetListResponse<R> get(
-            PageInfo pageInfo,
-            MongoRepository<T, ID> repository,
-            Function<T, R> mapper) {
-
-        GetListResponse<R> response = new GetListResponse<>();
-        Pageable pageable = PageRequest.of(pageInfo.getPage(), pageInfo.getSize());
-        Page<T> entities = repository.findAll(pageable);
-
-        response.setItems(entities.stream().map(mapper).collect(Collectors.toList()));
-        response.setTotalElements(entities.getTotalElements());
-        response.setTotalPage(entities.getTotalPages());
-        response.setSize(entities.getSize());
-        response.setHasNext(entities.hasNext());
-        response.setHasPrevious(entities.hasPrevious());
-
-        return response;
-    }
-
 
     @Override
     public GetTicketResponse getById(UUID id) {
@@ -80,8 +54,6 @@ public class TicketServiceImpl implements TicketService {
         // ticketBusinessRules.checkTicketSubjectExists(request.getSubject());
         // ticketBusinessRules.checkTicketCustomerExists(request.getCustomerId());
         Ticket ticket = TicketMapper.INSTANCE.ticketFromCreateTicketRequest(request);
-        ticket.setId(UUID.randomUUID());
-        ticket.setCreatedAt(LocalDateTime.now());
         Ticket createdTicket = ticketRepository.save(ticket);
 
         TicketCreatedEvent ticketCreatedEvent = new TicketCreatedEvent();

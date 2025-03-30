@@ -1,6 +1,8 @@
 spring:
   application:
     name: "analyticservice"
+  profiles:
+    active: mongo
   cloud:
     config:
       profile: local

@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>io.github.ertansidar</groupId>
 			<artifactId>turkcell-common</artifactId>
-			<version>1.2.4</version>
+			<version>1.5.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.essoft</groupId>

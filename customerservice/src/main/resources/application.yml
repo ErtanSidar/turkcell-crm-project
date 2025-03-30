@@ -1,6 +1,8 @@
 spring:
   application:
     name: "customerservice"
+  profiles:
+    active: jpa
   cloud:
     config:
       profile: local
