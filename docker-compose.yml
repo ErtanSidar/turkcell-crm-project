@@ -97,6 +97,27 @@ services:
     networks:
       - common
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: [ "redis-server", "--appendonly", "yes" ]
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8091:8081"
+    depends_on:
+      - redis
+
 #  configserver:
 #    image: "essoft3/configserver:v1"
 #    container_name: configserver
@@ -158,6 +179,7 @@ volumes:
   customer-support-service-db-data:
   plan-service-db-data:
   user-service-db-data:
+  redis_data:
 
 networks:
   common:
