@@ -2,9 +2,9 @@ name: Spring Boot Microservices Project CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ sidar ]
   pull_request:
-    branches: [ main ]
+    branches: [ sidar ]
   workflow_dispatch:
 
 jobs:
