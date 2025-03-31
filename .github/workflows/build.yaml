@@ -7,16 +7,12 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-env:
-  DOCKERHUB_TOKEN: ${{secrets.DOCKERHUB_TOKEN}}
-  DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
-
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [configserver, discoveryserver, gatewayserver]
+        service: [ configserver, discoveryserver, gatewayserver ]
 
     steps:
       - name: Checkout
@@ -36,8 +32,8 @@ jobs:
       - name: Docker Login
         uses: docker/login-action@v3
         with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_HUB_USER_NAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCSESS_TOKEN }}
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
@@ -45,7 +41,7 @@ jobs:
           context: ${{matrix.service}}
           file: ${{matrix.service}}/Dockerfile
           push: true
-          tags: ${{ env.DOCKERHUB_USERNAME }}/${{ matrix.service }}:latest
+          tags: ${{ secrets.DOCKER_HUB_USER_NAME }}/${{ matrix.service }}:latest
 
 
 #      - name: Build and push Docker images
