@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         service: [
-          analyticsservice,
+          analyticservice,
           billingpaymentservice,
           configserver,
           contractservice,
