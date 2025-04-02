@@ -2,9 +2,9 @@ name: Spring Boot Microservices Project CI/CD Pipeline
 
 on:
   push:
-    branches: [ sidar ]
+    branches: [ main ]
   pull_request:
-    branches: [ sidar ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -12,7 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [ configserver, discoveryserver, gatewayserver ]
+        service: [
+          analyticsservice,
+          billingpaymentservice,
+          configserver,
+          contractservice,
+          customerservice,
+          customersupportservice,
+          discoveryserver,
+          gatewayserver,
+          notificationservice,
+          planservice,
+          userservice
+        ]
 
     steps:
       - name: Checkout
