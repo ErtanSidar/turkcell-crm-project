@@ -19,13 +19,18 @@ spring:
     import: "optional:configserver:http://localhost:8888/"
 
 
-turkcell:
-  notificationservice:
-    email:
-      username: tavares.dicki@ethereal.email
-      password: ggyJnAHJTHdbm1j4pG
-      host: smtp.ethereal.email
-      port: 587
-      from: turkcell@turkcell.com
-    client:
-      host: http://localhost:5173
+  mail:
+    host: localhost
+    port: 1025
+    username: pair2
+    password: pair2
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enabled: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000

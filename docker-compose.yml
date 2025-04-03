@@ -97,6 +97,13 @@ services:
     networks:
       - common
 
+  mail-dev:
+    container_name: mail-dev-bsn
+    image: maildev/maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
   redis:
     image: redis:latest
     container_name: redis

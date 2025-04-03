@@ -2,6 +2,7 @@ package com.turkcell.notificationservice.kafka;
 
 import com.essoft.event.ticket.TicketCreatedEvent;
 import com.turkcell.notificationservice.services.NotificationService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,7 @@ public class TicketConsumer {
     private final SpringTemplateEngine templateEngine;
 
     @KafkaListener(topics = "ticket-created", groupId = "create-ticket")
-    private void consume(TicketCreatedEvent event) {
+    private void consume(TicketCreatedEvent event) throws MessagingException {
         Map<String, Object> properties = new HashMap<>();
         properties.put("customerName", event.getCustomerName());
         properties.put("subject", event.getSubject());
@@ -34,6 +35,6 @@ public class TicketConsumer {
         String title = "Müşteri Destek Bilgilendirme";
 
         String template = templateEngine.process(event.getEmailTemplateName().getName(), context);
-        notificationService.sendNotification("sidarertan3@gmail.com", title, template);
+        notificationService.sendNotification(event.getEmail(), title, template);
     }
 }

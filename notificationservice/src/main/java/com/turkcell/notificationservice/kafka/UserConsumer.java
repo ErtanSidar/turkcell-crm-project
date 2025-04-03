@@ -2,6 +2,7 @@ package com.turkcell.notificationservice.kafka;
 
 import com.essoft.event.user.UserCreatedEvent;
 import com.turkcell.notificationservice.services.NotificationService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,7 +21,7 @@ public class UserConsumer {
 
 
     @KafkaListener(topics = "user-created", groupId = "create-user")
-    private void consume(UserCreatedEvent event) {
+    private void consume(UserCreatedEvent event) throws MessagingException {
         Map<String, Object> properties = new HashMap<>();
         properties.put("username", event.getUsername());
         properties.put("email", event.getEmail());
