@@ -126,22 +126,22 @@ services:
       - redis
 
   configserver:
-    image: "essoft3/configserver"
+    image: "essoft3/configserver-turkcell"
     container_name: configserver
     ports:
       - "8888:8888"
     healthcheck:
-      test: "curl --fail --silent localhost:8888/actuator/health | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1"
       interval: 20s
       timeout: 5s
       retries: 20
-      start_period: 30s
+      start_period: 10s
     networks:
       - common
 
 
   discoveryserver:
-    image: "essoft3/discoveryserver"
+    image: "essoft3/discoveryserver-turkcell"
     container_name: discoveryserver
     ports:
       - "8761:8761"
@@ -155,12 +155,12 @@ services:
       - common
 
   gatewayserver:
-    image: "essoft3/gatewayserver"
+    image: "essoft3/gatewayserver-turkcell"
     container_name: gatewayserver
     ports:
       - "8072:8072"
     healthcheck:
-      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8072/actuator/health/readiness | grep UP || exit 1"
       interval: 20s
       timeout: 5s
       retries: 20
@@ -169,10 +169,13 @@ services:
       - common
 
   analyticservice:
-    image: "essoft3/analyticservice"
+    image: "essoft3/analyticservice-turkcell"
     container_name: analyticservice
     ports:
       - "8080:8080"
+    depends_on:
+      configserver:
+        condition: service_healthy
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
       interval: 20s
@@ -182,14 +185,11 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_PROFILE: "dev"
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
-    depends_on:
-      configserver:
-        condition: service_healthy
     networks:
       - common
 
 #  billingpaymentservice:
-#    image: "essoft3/billingpaymentservice"
+#    image: "essoft3/billingpaymentservice-turkcell"
 #    container_name: billingpaymentservice
 #    ports:
 #      - "8081:8081"
@@ -209,7 +209,7 @@ services:
 #      - common
 #
 #  contractservice:
-#    image: "essoft3/contractservice"
+#    image: "essoft3/contractservice-turkcell"
 #    container_name: contractservice
 #    ports:
 #      - "8082:8082"
@@ -229,7 +229,7 @@ services:
 #      - common
 #
 #  customerservice:
-#    image: "essoft3/customerservice"
+#    image: "essoft3/customerservice-turkcell"
 #    container_name: customerservice
 #    ports:
 #      - "8083:8083"
@@ -249,7 +249,7 @@ services:
 #      - common
 #
 #  customersupportservice:
-#    image: "essoft3/customersupportservice"
+#    image: "essoft3/customersupportservice-turkcell"
 #    container_name: customersupportservice
 #    ports:
 #      - "8084:8084"
@@ -269,7 +269,7 @@ services:
 #      - common
 #
 #  notificationservice:
-#    image: "essoft3/notificationservice"
+#    image: "essoft3/notificationservice-turkcell"
 #    container_name: notificationservice
 #    ports:
 #      - "8085:8085"
@@ -289,7 +289,7 @@ services:
 #      - common
 #
 #  planservice:
-#    image: "essoft3/planservice"
+#    image: "essoft3/planservice-turkcell"
 #    container_name: planservice
 #    ports:
 #      - "8086:8086"
@@ -309,7 +309,7 @@ services:
 #      - common
 #
 #  userservice:
-#    image: "essoft3/userservice"
+#    image: "essoft3/userservice-turkcell"
 #    container_name: userservice
 #    ports:
 #      - "8087:8087"
