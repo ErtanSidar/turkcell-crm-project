@@ -3,12 +3,8 @@ name: Spring Boot Microservices Project CI/CD Pipeline
 on:
   push:
     branches: [ main ]
-    paths:
-      - '${{ matrix.service }}/**'
   pull_request:
     branches: [ main ]
-    paths:
-      - '${{ matrix.service }}/**'
   workflow_dispatch:
 
 jobs:
