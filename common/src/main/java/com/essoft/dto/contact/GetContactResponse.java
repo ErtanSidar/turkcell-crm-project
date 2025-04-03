@@ -1,14 +1,11 @@
 package com.essoft.dto.contact;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class GetContactResponse {
     private UUID id;
     private String email;

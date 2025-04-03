@@ -1,8 +1,6 @@
 package com.turkcell.customersupportservice.services.concretes;
 
-import com.essoft.dto.customer.GetCorporateCustomerResponse;
-import com.essoft.dto.customer.GetCustomerResponse;
-import com.essoft.dto.customer.GetIndividualCustomerResponse;
+import com.essoft.dto.customer.GetCustomerFeignResponse;
 import com.essoft.event.ticket.TicketCreatedEvent;
 import com.turkcell.customersupportservice.client.CustomerClient;
 import com.turkcell.customersupportservice.coreBusiness.producer.TicketCreatedProducer;
@@ -58,14 +56,12 @@ public class TicketServiceImpl implements TicketService {
 
         TicketCreatedEvent ticketCreatedEvent = new TicketCreatedEvent();
 
-        GetCustomerResponse customer = customerClient.findById(createdTicket.getCustomerId());
+        GetCustomerFeignResponse customer = customerClient.findById(createdTicket.getCustomerId());
 
         if (customer.getCustomerType().equals("INDIVIDUAL")) {
-            GetIndividualCustomerResponse individualCustomer = (GetIndividualCustomerResponse) customer;
-            ticketCreatedEvent.setCustomerName(individualCustomer.getFirstName());
+            ticketCreatedEvent.setCustomerName(customer.getFirstName());
         } else {
-            GetCorporateCustomerResponse corporateCustomer = (GetCorporateCustomerResponse) customer;
-            ticketCreatedEvent.setCustomerName(corporateCustomer.getCompanyName());
+            ticketCreatedEvent.setCustomerName(customer.getCompanyName());
         }
         ticketCreatedEvent.setEmail(customer.getContacts().get(0).getEmail());
         ticketCreatedEvent.setSubject(createdTicket.getSubject());

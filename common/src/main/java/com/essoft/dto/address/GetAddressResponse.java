@@ -1,14 +1,11 @@
 package com.essoft.dto.address;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class GetAddressResponse {
     private UUID id;
     private String description;
