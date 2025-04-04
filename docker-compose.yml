@@ -131,7 +131,7 @@ services:
     ports:
       - "8888:8888"
     healthcheck:
-      test: "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1"
+      test: "wget --spider --quiet http://localhost:8888/actuator/health/readiness || exit 1"
       interval: 20s
       timeout: 5s
       retries: 20
@@ -146,7 +146,7 @@ services:
     ports:
       - "8761:8761"
     healthcheck:
-      test: "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1"
+      test: "wget --spider --quiet http://localhost:8761/actuator/health/readiness || exit 1"
       interval: 20s
       timeout: 5s
       retries: 20
@@ -160,7 +160,7 @@ services:
     ports:
       - "8072:8072"
     healthcheck:
-      test: "curl --fail --silent localhost:8072/actuator/health/readiness | grep UP || exit 1"
+      test: "wget --spider --quiet http://localhost:8072/actuator/health/readiness || exit 1"
       interval: 20s
       timeout: 5s
       retries: 20
@@ -176,8 +176,10 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
+      discoveryserver:
+        condition: service_healthy
     healthcheck:
-      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      test: "wget --spider --quiet http://localhost:8080/actuator/health/readiness || exit 1"
       interval: 20s
       timeout: 5s
       retries: 20
@@ -185,148 +187,149 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_PROFILE: "dev"
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
     networks:
       - common
 
-#  billingpaymentservice:
-#    image: "essoft3/billingpaymentservice-turkcell"
-#    container_name: billingpaymentservice
-#    ports:
-#      - "8081:8081"
-#    healthcheck:
-#      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    environment:
-#      SPRING_CLOUD_CONFIG_PROFILE: "dev"
-#      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
-#    depends_on:
-#      configserver:
-#        condition: service_healthy
-#    networks:
-#      - common
-#
-#  contractservice:
-#    image: "essoft3/contractservice-turkcell"
-#    container_name: contractservice
-#    ports:
-#      - "8082:8082"
-#    healthcheck:
-#      test: "curl --fail --silent localhost:8082/actuator/health/readiness | grep UP || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    environment:
-#      SPRING_CLOUD_CONFIG_PROFILE: "dev"
-#      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
-#    depends_on:
-#      configserver:
-#        condition: service_healthy
-#    networks:
-#      - common
-#
-#  customerservice:
-#    image: "essoft3/customerservice-turkcell"
-#    container_name: customerservice
-#    ports:
-#      - "8083:8083"
-#    healthcheck:
-#      test: "curl --fail --silent localhost:8083/actuator/health/readiness | grep UP || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    environment:
-#      SPRING_CLOUD_CONFIG_PROFILE: "dev"
-#      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
-#    depends_on:
-#      configserver:
-#        condition: service_healthy
-#    networks:
-#      - common
-#
-#  customersupportservice:
-#    image: "essoft3/customersupportservice-turkcell"
-#    container_name: customersupportservice
-#    ports:
-#      - "8084:8084"
-#    healthcheck:
-#      test: "curl --fail --silent localhost:8084/actuator/health/readiness | grep UP || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    environment:
-#      SPRING_CLOUD_CONFIG_PROFILE: "dev"
-#      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
-#    depends_on:
-#      configserver:
-#        condition: service_healthy
-#    networks:
-#      - common
-#
-#  notificationservice:
-#    image: "essoft3/notificationservice-turkcell"
-#    container_name: notificationservice
-#    ports:
-#      - "8085:8085"
-#    healthcheck:
-#      test: "curl --fail --silent localhost:8085/actuator/health/readiness | grep UP || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    environment:
-#      SPRING_CLOUD_CONFIG_PROFILE: "dev"
-#      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
-#    depends_on:
-#      configserver:
-#        condition: service_healthy
-#    networks:
-#      - common
-#
-#  planservice:
-#    image: "essoft3/planservice-turkcell"
-#    container_name: planservice
-#    ports:
-#      - "8086:8086"
-#    healthcheck:
-#      test: "curl --fail --silent localhost:8086/actuator/health/readiness | grep UP || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    environment:
-#      SPRING_CLOUD_CONFIG_PROFILE: "dev"
-#      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
-#    depends_on:
-#      configserver:
-#        condition: service_healthy
-#    networks:
-#      - common
-#
-#  userservice:
-#    image: "essoft3/userservice-turkcell"
-#    container_name: userservice
-#    ports:
-#      - "8087:8087"
-#    healthcheck:
-#      test: "curl --fail --silent localhost:8087/actuator/health/readiness | grep UP || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    environment:
-#      SPRING_CLOUD_CONFIG_PROFILE: "dev"
-#      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
-#    depends_on:
-#      configserver:
-#        condition: service_healthy
-#    networks:
-#      - common
+  billingpaymentservice:
+    image: "essoft3/billingpaymentservice-turkcell"
+    container_name: billingpaymentservice
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8081/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    environment:
+      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+    depends_on:
+      configserver:
+        condition: service_healthy
+    networks:
+      - common
+
+  contractservice:
+    image: "essoft3/contractservice-turkcell"
+    container_name: contractservice
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8082/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    environment:
+      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+    depends_on:
+      configserver:
+        condition: service_healthy
+    networks:
+      - common
+
+  customerservice:
+    image: "essoft3/customerservice-turkcell"
+    container_name: customerservice
+    ports:
+      - "8083:8083"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8083/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    environment:
+      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+    depends_on:
+      configserver:
+        condition: service_healthy
+    networks:
+      - common
+
+  customersupportservice:
+    image: "essoft3/customersupportservice-turkcell"
+    container_name: customersupportservice
+    ports:
+      - "8084:8084"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8084/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    environment:
+      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+    depends_on:
+      configserver:
+        condition: service_healthy
+    networks:
+      - common
+
+  notificationservice:
+    image: "essoft3/notificationservice-turkcell"
+    container_name: notificationservice
+    ports:
+      - "8085:8085"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8085/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    environment:
+      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+    depends_on:
+      configserver:
+        condition: service_healthy
+    networks:
+      - common
+
+  planservice:
+    image: "essoft3/planservice-turkcell"
+    container_name: planservice
+    ports:
+      - "8086:8086"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8086/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    environment:
+      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+    depends_on:
+      configserver:
+        condition: service_healthy
+    networks:
+      - common
+
+  userservice:
+    image: "essoft3/userservice-turkcell"
+    container_name: userservice
+    ports:
+      - "8087:8087"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8087/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    environment:
+      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+    depends_on:
+      configserver:
+        condition: service_healthy
+    networks:
+      - common
 
   kafka:
     image: bitnami/kafka
