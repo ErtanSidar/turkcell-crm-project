@@ -125,71 +125,71 @@ services:
     depends_on:
       - redis
 
-#  configserver:
-#    image: "essoft3/configserver-turkcell"
-#    container_name: configserver
-#    ports:
-#      - "8888:8888"
-#    healthcheck:
-#      test: "wget --spider --quiet http://localhost:8888/actuator/health/readiness || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    networks:
-#      - common
-#
-#
-#  discoveryserver:
-#    image: "essoft3/discoveryserver-turkcell"
-#    container_name: discoveryserver
-#    ports:
-#      - "8761:8761"
-#    healthcheck:
-#      test: "wget --spider --quiet http://localhost:8761/actuator/health/readiness || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    networks:
-#      - common
-#
-#  gatewayserver:
-#    image: "essoft3/gatewayserver-turkcell"
-#    container_name: gatewayserver
-#    ports:
-#      - "8072:8072"
-#    healthcheck:
-#      test: "wget --spider --quiet http://localhost:8072/actuator/health/readiness || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    networks:
-#      - common
-#
-#  analyticservice:
-#    image: "essoft3/analyticservice-turkcell"
-#    container_name: analyticservice
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      configserver:
-#        condition: service_healthy
-#      discoveryserver:
-#        condition: service_healthy
-#    healthcheck:
-#      test: "wget --spider --quiet http://localhost:8080/actuator/health/readiness || exit 1"
-#      interval: 20s
-#      timeout: 5s
-#      retries: 20
-#      start_period: 10s
-#    environment:
-#      SPRING_CLOUD_CONFIG_PROFILE: "dev"
-#      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
-#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
-#    networks:
-#      - common
+  configserver:
+    image: "essoft3/configserver-turkcell"
+    container_name: configserver
+    ports:
+      - "8888:8888"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8888/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - common
+
+
+  discoveryserver:
+    image: "essoft3/discoveryserver-turkcell"
+    container_name: discoveryserver
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8761/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - common
+
+  gatewayserver:
+    image: "essoft3/gatewayserver-turkcell"
+    container_name: gatewayserver
+    ports:
+      - "8072:8072"
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8072/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - common
+
+  analyticservice:
+    image: "essoft3/analyticservice-turkcell"
+    container_name: analyticservice
+    ports:
+      - "8080:8080"
+    depends_on:
+      configserver:
+        condition: service_healthy
+      discoveryserver:
+        condition: service_healthy
+    healthcheck:
+      test: "wget --spider --quiet http://localhost:8080/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    environment:
+      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
+    networks:
+      - common
 
 #  billingpaymentservice:
 #    image: "essoft3/billingpaymentservice-turkcell"
