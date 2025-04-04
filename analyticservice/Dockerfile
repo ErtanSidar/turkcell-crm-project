@@ -1,11 +1,4 @@
-FROM maven:3.9.6-eclipse-temurin-21 as build
-
+FROM amazoncorretto:21-alpine
 WORKDIR /app
-COPY . /app/
-
-RUN mvn clean package -DskipTests
-# -----------------------------------
-FROM eclipse-temurin:21-jdk
-COPY --from=build /app/target/*.jar /app/analyticservice.jar
-
-ENTRYPOINT ["java", "-jar", "/app/analyticservice.jar"]
+COPY ./target/*jar analyticservice.jar
+ENTRYPOINT ["java", "-jar", "analyticservice.jar"]
