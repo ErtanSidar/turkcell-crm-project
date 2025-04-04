@@ -57,4 +57,4 @@ jobs:
           context: ${{matrix.service}}
           file: ${{matrix.service}}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USER_NAME }}/${{ matrix.service }}:latest
+          tags: ${{ secrets.DOCKER_HUB_USER_NAME }}/${{ matrix.service }}-turkcell:latest
