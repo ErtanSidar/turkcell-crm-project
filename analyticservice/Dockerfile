@@ -8,5 +8,5 @@ RUN mvn clean package -DskipTests
 # -----------------------------------
 
 FROM eclipse-temurin:21-jdk
-COPY --from=build /app/target/analyticservice-0.0.1-SNAPSHOT.jar /app/contractservice.jar
+COPY --from=build /app/target/analyticservice-0.0.1-SNAPSHOT.jar /app/analyticservice.jar
 ENTRYPOINT ["java", "-jar", "/app/analyticservice.jar"]
