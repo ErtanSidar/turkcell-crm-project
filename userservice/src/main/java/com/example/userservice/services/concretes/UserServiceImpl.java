@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final BaseJwtService baseJwtService;
     private final UserCreatedProducer userCreatedProducer;
-    private final RedisService redisService;
 
 
     @Override
@@ -56,9 +55,6 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> roles = new HashMap<>();
         roles.put("roles", dbUser.getOperationClaims().stream().map(c -> c.getName()).toList());
 
-        String token = this.baseJwtService.generateToken(dbUser.getUsername(), roles);
-        redisService.saveToken(token);
-
-        return token;
+        return this.baseJwtService.generateToken(dbUser.getUsername(), roles);
     }
 }
