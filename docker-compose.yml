@@ -240,6 +240,7 @@ services:
     container_name: customerservice
     ports:
       - "8083:8083"
+      - "5003:5003"
     healthcheck:
       test: "wget --spider --quiet http://localhost:8083/actuator/health/readiness || exit 1"
       interval: 20s
