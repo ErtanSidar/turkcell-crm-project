@@ -1,7 +1,9 @@
 package com.turkcell.planservice.services.concretes;
 
 
+import com.essoft.dto.customer.GetCorporateCustomerResponse;
 import com.essoft.dto.customer.GetCustomerResponse;
+import com.essoft.dto.customer.GetIndividualCustomerResponse;
 import com.turkcell.planservice.client.CustomerClient;
 import com.turkcell.planservice.dtos.plandtos.responses.PlanResponse;
 import com.turkcell.planservice.dtos.subscriptiondtos.requests.CreateSubscriptionRequest;
@@ -98,10 +100,6 @@ class SubscriptionServiceImplTest {
         updateSubscriptionRequest.setPlanId(planId);
         updateSubscriptionRequest.setStatus("UPDATED");
 
-        // Setup GetCustomerResponse
-//        customerResponse = new GetCustomerResponse();
-//        customerResponse.setId(customerId);
-//        customerResponse.setCustomerNumber("TEST-123");
 
         // Setup PlanResponse
         planResponse = new PlanResponse();
@@ -120,50 +118,76 @@ class SubscriptionServiceImplTest {
         subscription.setPlan(plan);
         subscription.setStatus("ACTIVE");
     }
-
     @Test
-    void getOneSubs_WhenSubscriptionExists_ReturnSubscriptionResponse() {
+    void createSubscription_WithValidIndividualCustomer_ShouldCreateSuccessfully() {
         // Arrange
-        when(subscriptionRepository.findById(subscriptionId))
-                .thenReturn(Optional.of(subscription));
+        UUID customerId = UUID.randomUUID();
+        UUID planId = UUID.randomUUID();
 
-        // Act
-        SubscriptionResponse result = subscriptionService.getOneSubs(subscriptionId);
+        CreateSubscriptionRequest createSubscriptionRequest = new CreateSubscriptionRequest();
+        createSubscriptionRequest.setCustomerId(customerId);
+        createSubscriptionRequest.setPlanId(planId);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(subscriptionId, result.getId());
-        verify(subscriptionRepository).findById(subscriptionId);
-    }
 
-    @Test
-    void getOneSubs_WhenSubscriptionDoesNotExist_ThrowsBusinessException() {
-        // Arrange
-        when(subscriptionRepository.findById(subscriptionId))
-                .thenReturn(Optional.empty());
 
-        // Act & Assert
-        assertThrows(BusinessException.class, () -> {
-            subscriptionService.getOneSubs(subscriptionId);
-        });
+        // Mock Individual Customer
+        GetIndividualCustomerResponse individualCustomer = new GetIndividualCustomerResponse();
+        individualCustomer.setId(customerId);
+        individualCustomer.setCustomerNumber("ind123");
+        individualCustomer.setCustomerType("individual");
+        individualCustomer.setFirstName("Cebrail");
+        individualCustomer.setLastName("Kaya");
 
-        verify(subscriptionRepository).findById(subscriptionId);
-    }
+        // Mock Plan
+        PlanResponse planResponse = new PlanResponse();
+        planResponse.setId(planId);
+        planResponse.setPlanName("Test Plan");
 
-    @Test
-    void createSubscription_WithValidRequest_ShouldCreateSuccessfully() {
-        // Arrange
-        doNothing().when(subscriptionBusinessRules)
-                .checkIfCustomerAlreadySubscribedToPlan(customerId, planId);
-
-        doNothing().when(subscriptionBusinessRules)
-                .checkIfPlanExistsForSubscription(planId.toString());
-
-        when(customerClient.findById(customerId)).thenReturn(customerResponse);
+        // Stubbing
+        doNothing().when(subscriptionBusinessRules).checkIfCustomerAlreadySubscribedToPlan(customerId, planId);
+        doNothing().when(subscriptionBusinessRules).checkIfPlanExistsForSubscription(planId.toString());
+        when(customerClient.findById(customerId)).thenReturn(individualCustomer);
         when(planService.getOnePlan(planId)).thenReturn(planResponse);
 
-        // Setup PlanMapper mock using mockStatic - if needed
-        // Since we can't easily mock static methods in standard JUnit, we're assuming the mapper works
+        // Act
+        subscriptionService.createSubscription(createSubscriptionRequest);
+
+        // Assert
+        verify(subscriptionBusinessRules).checkIfCustomerAlreadySubscribedToPlan(customerId, planId);
+        verify(subscriptionBusinessRules).checkIfPlanExistsForSubscription(planId.toString());
+        verify(customerClient).findById(customerId);
+        verify(planService).getOnePlan(planId);
+        verify(subscriptionRepository).save(any(Subscription.class));
+    }
+
+    @Test
+    void createSubscription_WithValidCorporateCustomer_ShouldCreateSuccessfully() {
+        // Arrange
+        UUID customerId = UUID.randomUUID();
+        UUID planId = UUID.randomUUID();
+
+        CreateSubscriptionRequest createSubscriptionRequest = new CreateSubscriptionRequest();
+        createSubscriptionRequest.setCustomerId(customerId);
+        createSubscriptionRequest.setPlanId(planId);
+
+
+        // Mock Corporate Customer
+        GetCorporateCustomerResponse corporateCustomer = new GetCorporateCustomerResponse();
+        corporateCustomer.setId(customerId);
+        corporateCustomer.setCustomerNumber("corp123");
+        corporateCustomer.setCustomerType("Corporate");
+        corporateCustomer.setCompanyName("TURKCELL");
+
+        // Mock Plan
+        PlanResponse planResponse = new PlanResponse();
+        planResponse.setId(planId);
+        planResponse.setPlanName("Corporate Plan");
+
+        // Stubbing
+        doNothing().when(subscriptionBusinessRules).checkIfCustomerAlreadySubscribedToPlan(customerId, planId);
+        doNothing().when(subscriptionBusinessRules).checkIfPlanExistsForSubscription(planId.toString());
+        when(customerClient.findById(customerId)).thenReturn(corporateCustomer);
+        when(planService.getOnePlan(planId)).thenReturn(planResponse);
 
         // Act
         subscriptionService.createSubscription(createSubscriptionRequest);
@@ -197,6 +221,38 @@ class SubscriptionServiceImplTest {
         verify(customerClient).findById(customerId);
         verify(subscriptionRepository, never()).save(any());
     }
+
+    @Test
+    void getOneSubs_WhenSubscriptionExists_ReturnSubscriptionResponse() {
+        // Arrange
+        when(subscriptionRepository.findById(subscriptionId))
+                .thenReturn(Optional.of(subscription));
+
+        // Act
+        SubscriptionResponse result = subscriptionService.getOneSubs(subscriptionId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(subscriptionId, result.getId());
+        verify(subscriptionRepository).findById(subscriptionId);
+    }
+
+    @Test
+    void getOneSubs_WhenSubscriptionDoesNotExist_ThrowsBusinessException() {
+        // Arrange
+        when(subscriptionRepository.findById(subscriptionId))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(BusinessException.class, () -> {
+            subscriptionService.getOneSubs(subscriptionId);
+        });
+
+        verify(subscriptionRepository).findById(subscriptionId);
+    }
+
+
+
 
     @Test
     void updateSubscription_WithValidRequest_ShouldUpdateSubscription() {
