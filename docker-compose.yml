@@ -127,6 +127,7 @@ services:
 
   configserver:
     image: "essoft3/configserver-turkcell"
+    platform: linux/amd64
     container_name: configserver
     ports:
       - "8888:8888"
@@ -142,6 +143,7 @@ services:
 
   discoveryserver:
     image: "essoft3/discoveryserver-turkcell"
+    platform: linux/amd64
     container_name: discoveryserver
     ports:
       - "8761:8761"
@@ -156,6 +158,7 @@ services:
 
   gatewayserver:
     image: "essoft3/gatewayserver-turkcell"
+    platform: linux/amd64
     container_name: gatewayserver
     ports:
       - "8072:8072"
@@ -172,6 +175,7 @@ services:
 
   analyticservice:
     image: "essoft3/analyticservice-turkcell"
+    platform: linux/amd64
     container_name: analyticservice
     ports:
       - "8080:8080"
@@ -195,6 +199,7 @@ services:
 
   billingpaymentservice:
     image: "essoft3/billingpaymentservice-turkcell"
+    platform: linux/amd64
     container_name: billingpaymentservice
     ports:
       - "8081:8081"
@@ -216,6 +221,7 @@ services:
 
   contractservice:
     image: "essoft3/contractservice-turkcell"
+    platform: linux/amd64
     container_name: contractservice
     ports:
       - "8082:8082"
@@ -237,6 +243,7 @@ services:
 
   customerservice:
     image: "essoft3/customerservice-turkcell"
+    platform: linux/amd64
     container_name: customerservice
     ports:
       - "8083:8083"
@@ -259,6 +266,7 @@ services:
 
   customersupportservice:
     image: "essoft3/customersupportservice-turkcell"
+    platform: linux/amd64
     container_name: customersupportservice
     ports:
       - "8084:8084"
@@ -280,6 +288,7 @@ services:
 
   notificationservice:
     image: "essoft3/notificationservice-turkcell"
+    platform: linux/amd64
     container_name: notificationservice
     ports:
       - "8085:8085"
@@ -301,6 +310,7 @@ services:
 
   planservice:
     image: "essoft3/planservice-turkcell"
+    platform: linux/amd64
     container_name: planservice
     ports:
       - "8086:8086"
@@ -322,6 +332,7 @@ services:
 
   userservice:
     image: "essoft3/userservice-turkcell"
+    platform: linux/amd64
     container_name: userservice
     ports:
       - "8087:8087"
@@ -359,6 +370,9 @@ services:
       - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
       - BITNAMI_DEBUG=yes
       - KAFKA_CFG_NUM_PARTITIONS=2
+    networks:
+      - common
+
 
 volumes:
   analytic-service-db-data:
