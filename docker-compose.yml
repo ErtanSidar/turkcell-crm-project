@@ -359,6 +359,9 @@ services:
       - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
       - BITNAMI_DEBUG=yes
       - KAFKA_CFG_NUM_PARTITIONS=2
+    networks:
+      - common
+
 
 volumes:
   analytic-service-db-data:
