@@ -1,6 +1,8 @@
 package com.turkcell.planservice.services.concretes;
 
+import com.essoft.dto.customer.GetCorporateCustomerResponse;
 import com.essoft.dto.customer.GetCustomerResponse;
+import com.essoft.dto.customer.GetIndividualCustomerResponse;
 import com.turkcell.planservice.client.CustomerClient;
 import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
 import com.turkcell.planservice.dtos.usagedtos.requests.CreateUsageRequest;
@@ -138,9 +140,35 @@ class UsageServiceImplTest {
     }
 
     @Test
-    void createUsage_WhenCustomerAndProductExist_ShouldCreateUsage() {
+    void createUsage_WithIndividualCustomerAndValidProduct_ShouldCreateUsageSuccessfully() {
         // Arrange
-        when(customerClient.findById(testCustomerId)).thenReturn(testCustomerResponse);
+        UUID testCustomerId = UUID.randomUUID();
+        UUID testProductId = UUID.randomUUID();
+
+        // Create request
+        CreateUsageRequest testCreateUsageRequest = CreateUsageRequest.builder()
+                .customerId(testCustomerId)
+                .productId(testProductId)
+                .internetUsed(100)
+                .callMinutesUsed(50)
+                .smsUsed(10)
+                .tvHoursWatched(5)
+                .build();
+
+        // Individual Customer mock
+        GetIndividualCustomerResponse individualCustomer = new GetIndividualCustomerResponse();
+        individualCustomer.setId(testCustomerId);
+        individualCustomer.setCustomerNumber("IND-1001");
+        individualCustomer.setCustomerType("INDIVIDUAL");
+        individualCustomer.setFirstName("Jane");
+        individualCustomer.setLastName("Doe");
+
+        // Product mock
+        ProductResponse testProductResponse = new ProductResponse();
+        testProductResponse.setId(testProductId);
+        testProductResponse.setProductName("Test Product");
+
+        when(customerClient.findById(testCustomerId)).thenReturn(individualCustomer);
         when(productService.getOneProduct(testProductId)).thenReturn(testProductResponse);
 
         // Act
@@ -151,6 +179,48 @@ class UsageServiceImplTest {
         verify(productService).getOneProduct(testProductId);
         verify(usageRepository).save(any(Usage.class));
     }
+
+    @Test
+    void createUsage_WithCorporateCustomerAndValidProduct_ShouldCreateUsageSuccessfully() {
+        // Arrange
+        UUID testCustomerId = UUID.randomUUID();
+        UUID testProductId = UUID.randomUUID();
+
+        CreateUsageRequest testCreateUsageRequest = CreateUsageRequest.builder()
+                .customerId(testCustomerId)
+                .productId(testProductId)
+                .internetUsed(300)
+                .callMinutesUsed(150)
+                .smsUsed(25)
+                .tvHoursWatched(20)
+                .build();
+
+        // Corporate Customer mock
+        GetCorporateCustomerResponse corporateCustomer = new GetCorporateCustomerResponse();
+        corporateCustomer.setId(testCustomerId);
+        corporateCustomer.setCustomerNumber("CORP-2001");
+        corporateCustomer.setCustomerType("CORPORATE");
+        corporateCustomer.setCompanyName("GlobalTech");
+
+        // Product mock
+        ProductResponse testProductResponse = new ProductResponse();
+        testProductResponse.setId(testProductId);
+        testProductResponse.setProductName("Corporate Plan");
+
+        when(customerClient.findById(testCustomerId)).thenReturn(corporateCustomer);
+        when(productService.getOneProduct(testProductId)).thenReturn(testProductResponse);
+
+        // Act
+        usageService.createUsage(testCreateUsageRequest);
+
+        // Assert
+        verify(customerClient).findById(testCustomerId);
+        verify(productService).getOneProduct(testProductId);
+        verify(usageRepository).save(any(Usage.class));
+    }
+
+
+
 
     @Test
     void createUsage_WhenCustomerNotExists_ShouldThrowBusinessException() {
@@ -167,20 +237,45 @@ class UsageServiceImplTest {
     }
 
     @Test
-    void createUsage_WhenProductNotExists_ShouldThrowBusinessException() {
+    void createUsage_WhenProductDoesNotExist_ShouldThrowBusinessException() {
         // Arrange
-        when(customerClient.findById(testCustomerId)).thenReturn(testCustomerResponse);
+        UUID testCustomerId = UUID.randomUUID();
+        UUID testProductId = UUID.randomUUID();
+
+        CreateUsageRequest testCreateUsageRequest = CreateUsageRequest.builder()
+                .customerId(testCustomerId)
+                .productId(testProductId)
+                .internetUsed(100)
+                .callMinutesUsed(50)
+                .smsUsed(10)
+                .tvHoursWatched(5)
+                .build();
+
+        // Mock customer (valid)
+        GetIndividualCustomerResponse individualCustomer = new GetIndividualCustomerResponse();
+        individualCustomer.setId(testCustomerId);
+        individualCustomer.setCustomerNumber("ind123");
+        individualCustomer.setCustomerType("indiviual");
+        individualCustomer.setFirstName("Cebrail");
+        individualCustomer.setLastName("Kaya");
+
+
+        when(customerClient.findById(testCustomerId)).thenReturn(individualCustomer);
         when(productService.getOneProduct(testProductId)).thenReturn(null);
 
         // Act & Assert
-        assertThrows(BusinessException.class, () -> {
-            usageService.createUsage(testCreateUsageRequest);
-        });
+        BusinessException exception = assertThrows(
+                BusinessException.class,
+                () -> usageService.createUsage(testCreateUsageRequest)
+        );
 
+        assertEquals("Product not found with ID: " + testProductId, exception.getMessage());
         verify(customerClient).findById(testCustomerId);
         verify(productService).getOneProduct(testProductId);
-        verify(usageRepository, never()).save(any());
+        verify(usageRepository, never()).save(any()); // hiç kayıt yapılmamalı
     }
+
+
 
     @Test
     void updateUsage_WhenUsageExists_ShouldUpdateUsage() {
