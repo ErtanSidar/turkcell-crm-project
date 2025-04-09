@@ -1,6 +1,7 @@
 package com.turkcell.planservice.rules;
 
 import com.turkcell.planservice.repositories.PackageRepository;
+import io.github.ertansidar.exception.type.BusinessException;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -16,7 +17,7 @@ public class PackageBusinessRules {
 
     public void checkIfPackageExists(UUID packageId) {
         if (packageRepository.findByIdAndDeletedAtIsNull(packageId).isEmpty()) {
-            throw new RuntimeException("Package not found or deleted");
+            throw new BusinessException("Package not found or deleted");
         }
     }
 

@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>io.github.ertansidar</groupId>
 			<artifactId>turkcell-common</artifactId>
-			<version>1.5.2</version>
+			<version>1.6.0</version>
 		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
