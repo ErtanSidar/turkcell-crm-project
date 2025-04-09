@@ -4,33 +4,5 @@ spring:
   cloud:
     config:
       profile: local
-  kafka:
-    consumer:
-      auto-offset-reset: earliest
-      bootstrap-servers: localhost:9092
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      properties:
-        spring:
-          json:
-            trusted:
-              packages: "*"
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
   config:
     import: "optional:configserver:http://localhost:8888/"
-
-
-  mail:
-    host: localhost
-    port: 1025
-    username: pair2
-    password: pair2
-    properties:
-      mail:
-        smtp:
-          trust: "*"
-        auth: true
-        starttls:
-          enabled: true
-        connectiontimeout: 5000
-        timeout: 3000
-        writetimeout: 5000

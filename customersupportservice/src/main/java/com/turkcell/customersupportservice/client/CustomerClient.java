@@ -1,8 +1,6 @@
 package com.turkcell.customersupportservice.client;
 
 import com.essoft.dto.customer.GetCustomerFeignResponse;
-import com.essoft.dto.customer.GetCustomerResponse;
-import com.essoft.dto.customer.GetIndividualCustomerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
