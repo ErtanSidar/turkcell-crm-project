@@ -16,10 +16,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http = baseSecurityService.configureCoreSecurity(http);
+        http.authorizeHttpRequests(actuator -> actuator.requestMatchers("/actuator/**").permitAll());
         http.authorizeHttpRequests(district -> district.requestMatchers("/api/v1/districts/**").permitAll());
         http.authorizeHttpRequests(city -> city.requestMatchers("/api/v1/cities/**").permitAll());
         http.authorizeHttpRequests(country -> country.requestMatchers("/api/v1/countries/**").permitAll());
         http.authorizeHttpRequests(customer -> customer.requestMatchers("/api/v1/customers/**").permitAll());
+
         return http.build();
     }
 }
