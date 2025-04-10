@@ -1,0 +1,11 @@
+groups:
+  - name: "configserver-app"
+    rules:
+      - alert: "ConfigServerDown"
+        expr: up{job="configserver-app"} == 0
+        for: 1m
+        labels:
+          severity: "critical"
+        annotations:
+          description: "Config server is down"
+          summary: "Config server is down"
