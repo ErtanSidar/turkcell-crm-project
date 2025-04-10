@@ -352,6 +352,12 @@ services:
     networks:
       - common
 
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+
   kafka:
     image: bitnami/kafka
     ports:
