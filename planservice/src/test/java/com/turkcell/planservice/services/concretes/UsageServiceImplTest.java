@@ -10,6 +10,7 @@ import com.turkcell.planservice.dtos.usagedtos.requests.UpdateUsageRequest;
 import com.turkcell.planservice.dtos.usagedtos.responses.UsageResponse;
 import com.turkcell.planservice.entities.Product;
 import com.turkcell.planservice.entities.Usage;
+import com.turkcell.planservice.kafka.UsageCreatedProducer;
 import com.turkcell.planservice.mappers.ProductMapper;
 import com.turkcell.planservice.mappers.UsageMapper;
 import com.turkcell.planservice.repositories.UsageRepository;
@@ -58,6 +59,8 @@ class UsageServiceImplTest {
 
     private UsageServiceImpl usageService;
 
+    private UsageCreatedProducer usageCreatedProducer;
+
     private UUID testUsageId;
     private UUID testCustomerId;
     private UUID testProductId;
@@ -76,7 +79,8 @@ class UsageServiceImplTest {
                 usageBusinessRules,
                 auditAware,
                 customerClient,
-                productService
+                productService,
+                usageCreatedProducer
         );
 
         // Setup test data

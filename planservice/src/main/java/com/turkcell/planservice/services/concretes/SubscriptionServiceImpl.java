@@ -46,7 +46,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final AuditAwareImpl auditAware;
     private final CustomerClient customerClient;
     private final SubscriptionCreatedProducer subscriptionCreatedProducer;
-
     private final PlanService planService;
 
     public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository, SubscriptionBusinessRules subscriptionBusinessRules, PlanBusinessRules planBusinessRules, AuditAwareImpl auditAware, CustomerClient customerClient, SubscriptionCreatedProducer subscriptionCreatedProducer, PlanService planService) {

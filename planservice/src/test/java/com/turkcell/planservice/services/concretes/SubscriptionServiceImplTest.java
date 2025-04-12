@@ -11,6 +11,7 @@ import com.turkcell.planservice.dtos.subscriptiondtos.requests.UpdateSubscriptio
 import com.turkcell.planservice.dtos.subscriptiondtos.responses.SubscriptionResponse;
 import com.turkcell.planservice.entities.Plan;
 import com.turkcell.planservice.entities.Subscription;
+import com.turkcell.planservice.kafka.SubscriptionCreatedProducer;
 import com.turkcell.planservice.repositories.SubscriptionRepository;
 import com.turkcell.planservice.rules.PlanBusinessRules;
 import com.turkcell.planservice.rules.SubscriptionBusinessRules;
@@ -22,7 +23,6 @@ import io.github.ertansidar.response.GetListResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -62,6 +62,8 @@ class SubscriptionServiceImplTest {
 
     private SubscriptionServiceImpl subscriptionService;
 
+    private SubscriptionCreatedProducer subscriptionCreatedProducer;
+
     private UUID customerId;
     private UUID planId;
     private UUID subscriptionId;
@@ -81,6 +83,7 @@ class SubscriptionServiceImplTest {
                 planBusinessRules,
                 auditAware,
                 customerClient,
+                subscriptionCreatedProducer,
                 planService
         );
 
