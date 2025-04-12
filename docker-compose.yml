@@ -153,6 +153,12 @@ services:
       timeout: 5s
       retries: 20
       start_period: 10s
+    environment:
+      SPRING_CLOUD_CONFIG_PROFILE: "dev"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
+    depends_on:
+      configserver:
+        condition: service_healthy
     networks:
       - common
 
@@ -170,6 +176,9 @@ services:
       start_period: 10s
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
+    depends_on:
+      discoveryserver:
+        condition: service_healthy
     networks:
       - common
 
@@ -180,8 +189,6 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      configserver:
-        condition: service_healthy
       discoveryserver:
         condition: service_healthy
     healthcheck:
@@ -214,7 +221,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
     depends_on:
-      configserver:
+      discoveryserver:
         condition: service_healthy
     networks:
       - common
@@ -236,7 +243,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
     depends_on:
-      configserver:
+      discoveryserver:
         condition: service_healthy
     networks:
       - common
@@ -259,7 +266,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
     depends_on:
-      configserver:
+      discoveryserver:
         condition: service_healthy
     networks:
       - common
@@ -281,7 +288,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
     depends_on:
-      configserver:
+      discoveryserver:
         condition: service_healthy
     networks:
       - common
@@ -303,7 +310,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
     depends_on:
-      configserver:
+      discoveryserver:
         condition: service_healthy
     networks:
       - common
@@ -325,7 +332,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
     depends_on:
-      configserver:
+      discoveryserver:
         condition: service_healthy
     networks:
       - common
@@ -347,7 +354,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8888/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discoveryserver:8761/eureka
     depends_on:
-      configserver:
+      discoveryserver:
         condition: service_healthy
     networks:
       - common
