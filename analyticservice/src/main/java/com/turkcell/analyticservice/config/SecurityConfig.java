@@ -19,7 +19,7 @@ public class SecurityConfig {
 
         // Özel security yapılandırması
         // http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/customers/**").authenticated());
-
+        http.authorizeHttpRequests(req -> req.requestMatchers("/actuator/**").permitAll());
         return http.build();
     }
 }

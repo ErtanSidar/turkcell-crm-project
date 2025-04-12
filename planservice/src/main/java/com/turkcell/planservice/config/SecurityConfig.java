@@ -18,6 +18,7 @@ public class SecurityConfig {
         http = baseSecurityService.configureCoreSecurity(http);
 
         // Özel security yapılandırması
+        http.authorizeHttpRequests(req -> req.requestMatchers("/actuator/**").permitAll());
         http.authorizeHttpRequests(pack -> pack.requestMatchers("/api/v1/packages/**").permitAll());
         http.authorizeHttpRequests(pack -> pack.requestMatchers("/api/v1/plans/**").permitAll());
 

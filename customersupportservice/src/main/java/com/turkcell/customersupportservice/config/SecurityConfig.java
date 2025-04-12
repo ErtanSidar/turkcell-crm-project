@@ -16,6 +16,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http = baseSecurityService.configureCoreSecurity(http);
+        http.authorizeHttpRequests(req -> req.requestMatchers("/actuator/**").permitAll());
         http.authorizeHttpRequests(ticket -> ticket.requestMatchers("/api/v1/tickets/**").permitAll());
         return http.build();
     }

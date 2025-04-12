@@ -21,7 +21,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http = baseSecurityService.configureCoreSecurity(http);
 
-        // Özel security yapılandırması
+        http.authorizeHttpRequests(req -> req.requestMatchers("/actuator/**").permitAll());
         http.authorizeHttpRequests(pack -> pack.requestMatchers("/api/v1/auth/**").permitAll());
 
         return http.build();
