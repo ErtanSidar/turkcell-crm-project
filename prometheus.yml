@@ -41,7 +41,7 @@ scrape_configs:
     static_configs:
       - targets: ["billingpaymentservice:8081"]
 
-  - job_name: "contractservice-app1"
+  - job_name: "contractservice-app"
     scrape_interval: 30s
     metrics_path: "/actuator/prometheus"
     static_configs:
