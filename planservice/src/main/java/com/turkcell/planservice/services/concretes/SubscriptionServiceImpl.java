@@ -1,6 +1,7 @@
 package com.turkcell.planservice.services.concretes;
 
 import com.essoft.dto.customer.GetCustomerResponse;
+import com.essoft.event.subscription.SubscriptionCreatedEvent;
 import com.turkcell.planservice.client.CustomerClient;
 import com.turkcell.planservice.dtos.plandtos.responses.PlanResponse;
 import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
@@ -9,6 +10,7 @@ import com.turkcell.planservice.dtos.subscriptiondtos.requests.UpdateSubscriptio
 import com.turkcell.planservice.dtos.subscriptiondtos.responses.SubscriptionResponse;
 import com.turkcell.planservice.entities.Plan;
 import com.turkcell.planservice.entities.Subscription;
+import com.turkcell.planservice.kafka.SubscriptionCreatedProducer;
 import com.turkcell.planservice.mappers.PlanMapper;
 import com.turkcell.planservice.mappers.SubscriptionMapper;
 import com.turkcell.planservice.repositories.SubscriptionRepository;
@@ -43,16 +45,17 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final PlanBusinessRules planBusinessRules;
     private final AuditAwareImpl auditAware;
     private final CustomerClient customerClient;
-
+    private final SubscriptionCreatedProducer subscriptionCreatedProducer;
 
     private final PlanService planService;
 
-    public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository, SubscriptionBusinessRules subscriptionBusinessRules, PlanBusinessRules planBusinessRules, AuditAwareImpl auditAware, CustomerClient customerClient, PlanService planService) {
+    public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository, SubscriptionBusinessRules subscriptionBusinessRules, PlanBusinessRules planBusinessRules, AuditAwareImpl auditAware, CustomerClient customerClient, SubscriptionCreatedProducer subscriptionCreatedProducer, PlanService planService) {
         this.subscriptionRepository = subscriptionRepository;
         this.subscriptionBusinessRules = subscriptionBusinessRules;
         this.planBusinessRules = planBusinessRules;
         this.auditAware = auditAware;
         this.customerClient = customerClient;
+        this.subscriptionCreatedProducer = subscriptionCreatedProducer;
         this.planService = planService;
     }
 
@@ -95,6 +98,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscriptionRepository.save(subscription);
 
         log.info("Subscription created successfully with ID: " + subscription.getId());
+
+        SubscriptionCreatedEvent event = new SubscriptionCreatedEvent();
+        event.setCustomerId(createSubscriptionRequest.getCustomerId());
+        event.setStartDate(createSubscriptionRequest.getStartDate());
+        event.setStatus(createSubscriptionRequest.getStatus());
+        event.setPlanId(createSubscriptionRequest.getPlanId());
+        subscriptionCreatedProducer.sendMessage(event);
 
     }
 

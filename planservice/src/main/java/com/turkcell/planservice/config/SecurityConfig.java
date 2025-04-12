@@ -19,6 +19,7 @@ public class SecurityConfig {
 
         // Özel security yapılandırması
         http.authorizeHttpRequests(pack -> pack.requestMatchers("/api/v1/packages/**").permitAll());
+        http.authorizeHttpRequests(pack -> pack.requestMatchers("/api/v1/plans/**").permitAll());
 
 
         return http.build();

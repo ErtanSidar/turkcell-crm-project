@@ -1,11 +1,13 @@
 package com.turkcell.planservice.services.concretes;
 
+import com.essoft.event.packageEntity.PackageCreatedEvent;
 import com.turkcell.planservice.dtos.packagedtos.requests.CreatePackageRequest;
 import com.turkcell.planservice.dtos.packagedtos.requests.UpdatePackageRequest;
 import com.turkcell.planservice.dtos.packagedtos.responses.PackageResponse;
 import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
 import com.turkcell.planservice.entities.Package;
 import com.turkcell.planservice.entities.Product;
+import com.turkcell.planservice.kafka.PackageCreatedProducer;
 import com.turkcell.planservice.mappers.PackageMapper;
 import com.turkcell.planservice.mappers.ProductMapper;
 import com.turkcell.planservice.repositories.PackageRepository;
@@ -38,12 +40,14 @@ public class PackageServiceImpl implements PackageService {
     private final ProductService productService;
     private final PackageBusinessRules packageBusinessRules;
     private final AuditAwareImpl auditAware;
+    private final PackageCreatedProducer packageCreatedProducer;
 
-    public PackageServiceImpl(PackageRepository packageRepository, @Lazy ProductService productService, PackageBusinessRules packageBusinessRules, AuditAwareImpl auditAware) {
+    public PackageServiceImpl(PackageRepository packageRepository, @Lazy ProductService productService, PackageBusinessRules packageBusinessRules, AuditAwareImpl auditAware, PackageCreatedProducer packageCreatedProducer) {
         this.packageRepository = packageRepository;
         this.productService = productService;
         this.packageBusinessRules = packageBusinessRules;
         this.auditAware = auditAware;
+        this.packageCreatedProducer = packageCreatedProducer;
     }
 
 
@@ -78,6 +82,15 @@ public class PackageServiceImpl implements PackageService {
         newPackage.setProduct(product);
 
         packageRepository.save(newPackage);
+
+        PackageCreatedEvent event = new PackageCreatedEvent();
+        event.setPackageName(createPackageRequest.getPackageName());
+        event.setPackageType(createPackageRequest.getPackageType());
+        event.setQuota(createPackageRequest.getQuota());
+        event.setPrice(createPackageRequest.getPrice());
+        event.setValidityPeriod(createPackageRequest.getValidityPeriod());
+        event.setProductId(newPackage.getId());
+        packageCreatedProducer.sendMessage(event);
     }
 
     @Override

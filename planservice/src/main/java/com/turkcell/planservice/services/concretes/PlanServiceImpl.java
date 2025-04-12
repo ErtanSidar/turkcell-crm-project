@@ -1,9 +1,11 @@
 package com.turkcell.planservice.services.concretes;
 
+import com.essoft.event.plan.PlanCreatedEvent;
 import com.turkcell.planservice.dtos.plandtos.requests.CreatePlanRequest;
 import com.turkcell.planservice.dtos.plandtos.requests.UpdatePlanRequest;
 import com.turkcell.planservice.dtos.plandtos.responses.PlanResponse;
 import com.turkcell.planservice.entities.Plan;
+import com.turkcell.planservice.kafka.PlanCreatedProducer;
 import com.turkcell.planservice.mappers.PlanMapper;
 import com.turkcell.planservice.repositories.PlanRepository;
 import com.turkcell.planservice.rules.PlanBusinessRules;
@@ -15,15 +17,10 @@ import io.github.ertansidar.paging.PageInfo;
 import io.github.ertansidar.response.GetListResponse;
 import io.github.ertansidar.response.ListResponse;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,12 +31,14 @@ public class PlanServiceImpl implements PlanService {
     private final PlanBusinessRules planBusinessRules;
     private final SubscriptionBusinessRules subscriptionBusinessRules;
     private final AuditAwareImpl auditAware;
+    private final PlanCreatedProducer planCreatedProducer;
 
-    public PlanServiceImpl(PlanRepository planRepository, PlanBusinessRules planBusinessRules, SubscriptionBusinessRules subscriptionBusinessRules, AuditAwareImpl auditAware) {
+    public PlanServiceImpl(PlanRepository planRepository, PlanBusinessRules planBusinessRules, SubscriptionBusinessRules subscriptionBusinessRules, AuditAwareImpl auditAware, PlanCreatedProducer planCreatedProducer) {
         this.planRepository = planRepository;
         this.planBusinessRules = planBusinessRules;
         this.subscriptionBusinessRules = subscriptionBusinessRules;
         this.auditAware = auditAware;
+        this.planCreatedProducer = planCreatedProducer;
     }
 
 
@@ -61,6 +60,16 @@ public class PlanServiceImpl implements PlanService {
         Plan plan = PlanMapper.INSTANCE.createPlanFromCreatePlanRequest(createPlanRequest);
 
         planRepository.save(plan);
+
+        PlanCreatedEvent event =new PlanCreatedEvent();
+        event.setPlanName(createPlanRequest.getPlanName());
+        event.setPlanType(createPlanRequest.getPlanType());
+        event.setMonthlyFee(createPlanRequest.getMonthlyFee());
+        event.setInternetQuota(createPlanRequest.getInternetQuota());
+        event.setCallMinutes(createPlanRequest.getCallMinutes());
+        event.setSmsCount(createPlanRequest.getSmsCount());
+        event.setDescription(createPlanRequest.getDescription());
+        planCreatedProducer.sendMessage(event);
     }
 
     @Override
