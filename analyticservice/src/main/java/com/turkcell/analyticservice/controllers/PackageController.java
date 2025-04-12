@@ -30,6 +30,7 @@ public class PackageController {
     @PostMapping
     public ResponseEntity<CreatedPackageResponse> createPackage(@RequestBody CreatePackageCommand command) {
         return ResponseEntity.ok(pipeline.send(command));
+
     }
 
     @PutMapping("/{id}")
