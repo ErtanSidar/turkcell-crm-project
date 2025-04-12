@@ -1,0 +1,15 @@
+global:
+  resolve_timeout: 5m
+  smtp_smarthost: "mail-dev:1025"
+  smtp_from: "alertmanager@example.com"
+  smtp_require_tls: false
+
+route:
+  receiver: "email-alert"
+
+receivers:
+  - name: "email-alert"
+    email_configs:
+      - to: "test@example.com"
+        from: "alertmanager@example.com"
+        require_tls: false

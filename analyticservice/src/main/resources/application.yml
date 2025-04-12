@@ -1,6 +1,8 @@
 spring:
   application:
     name: "analyticservice"
+  profiles:
+    active: mongo
   cloud:
     config:
       profile: local
@@ -8,3 +10,14 @@ spring:
     import: "optional:configserver:http://localhost:8888/"
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer

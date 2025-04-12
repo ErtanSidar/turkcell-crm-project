@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        .status {
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Kargo Süreci Hakkında Bilgilendirme</h2>
+    <p>Sayın <span th:text="${customerName}"></span>,</p>
+    <p>Kargonuzun durumu güncellendi:</p>
+    <p class="status" th:text="${shippingStatus}"></p>
+    <p>Takip numaranız: <b th:text="${trackingNumber}"></b></p>
+</div>
+</body>
+</html>

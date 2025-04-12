@@ -2,11 +2,16 @@ package com.turkcell.planservice.entities;
 
 import io.github.ertansidar.entities.BaseEntity;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "usages")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Usage extends BaseEntity<UUID> {
 
     @Column(name = "customer_id")
@@ -27,5 +32,11 @@ public class Usage extends BaseEntity<UUID> {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+
+    @Override
+    protected UUID generateId() {
+        return UUID.randomUUID();
+    }
 
 }
