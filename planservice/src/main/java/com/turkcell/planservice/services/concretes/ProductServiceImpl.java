@@ -1,10 +1,12 @@
 package com.turkcell.planservice.services.concretes;
 
 
+import com.essoft.event.product.ProductCreatedEvent;
 import com.turkcell.planservice.dtos.productdtos.requests.CreateProductRequest;
 import com.turkcell.planservice.dtos.productdtos.requests.UpdateProductRequest;
 import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
 import com.turkcell.planservice.entities.Product;
+import com.turkcell.planservice.kafka.ProductCreatedProducer;
 import com.turkcell.planservice.mappers.ProductMapper;
 import com.turkcell.planservice.repositories.ProductRepository;
 import com.turkcell.planservice.rules.ProductBusinessRules;
@@ -35,12 +37,14 @@ public class ProductServiceImpl implements ProductService {
     private final SubscriptionBusinessRules subscriptionBusinessRules;
     private final ProductBusinessRules productBusinessRules;
     private final AuditAwareImpl auditAware;
+    private final ProductCreatedProducer productCreatedProducer;
 
-    public ProductServiceImpl(ProductRepository productRepository, SubscriptionBusinessRules subscriptionBusinessRules, ProductBusinessRules productBusinessRules, AuditAwareImpl auditAware) {
+    public ProductServiceImpl(ProductRepository productRepository, SubscriptionBusinessRules subscriptionBusinessRules, ProductBusinessRules productBusinessRules, AuditAwareImpl auditAware, ProductCreatedProducer productCreatedProducer) {
         this.productRepository = productRepository;
         this.subscriptionBusinessRules = subscriptionBusinessRules;
         this.productBusinessRules = productBusinessRules;
         this.auditAware = auditAware;
+        this.productCreatedProducer = productCreatedProducer;
     }
 
     @Override
@@ -62,6 +66,15 @@ public class ProductServiceImpl implements ProductService {
         log.info("Creating product: " + createProductRequest.getProductName());
         Product product = ProductMapper.INSTANCE.createProductFromCreateProductRequest(createProductRequest);
         productRepository.save(product);
+
+        ProductCreatedEvent event = new ProductCreatedEvent();
+        event.setProductName(createProductRequest.getProductName());
+        event.setDescription(createProductRequest.getDescription());
+        event.setProductType(createProductRequest.getProductType());
+        event.setPlanId(createProductRequest.getPlanId());
+        event.setPackageId(createProductRequest.getPackageId());
+        event.setSubscriptionId(createProductRequest.getSubscriptionId());
+        productCreatedProducer.sendMessage(event);
 
     }
 

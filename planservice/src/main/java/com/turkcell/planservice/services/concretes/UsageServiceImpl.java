@@ -1,6 +1,7 @@
 package com.turkcell.planservice.services.concretes;
 
 import com.essoft.dto.customer.GetCustomerResponse;
+import com.essoft.event.usage.UsageCreatedEvent;
 import com.turkcell.planservice.client.CustomerClient;
 import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
 import com.turkcell.planservice.dtos.usagedtos.requests.CreateUsageRequest;
@@ -8,6 +9,7 @@ import com.turkcell.planservice.dtos.usagedtos.requests.UpdateUsageRequest;
 import com.turkcell.planservice.dtos.usagedtos.responses.UsageResponse;
 import com.turkcell.planservice.entities.Product;
 import com.turkcell.planservice.entities.Usage;
+import com.turkcell.planservice.kafka.UsageCreatedProducer;
 import com.turkcell.planservice.mappers.ProductMapper;
 import com.turkcell.planservice.mappers.UsageMapper;
 import com.turkcell.planservice.repositories.UsageRepository;
@@ -36,13 +38,15 @@ public class UsageServiceImpl implements UsageService {
     private final AuditAwareImpl auditAware;
     private final CustomerClient customerClient;
     private final ProductService productService;
+    private final UsageCreatedProducer usageCreatedProducer;
 
-    public UsageServiceImpl(UsageRepository usageRepository, UsageBusinessRules usageBusinessRules, AuditAwareImpl auditAware, CustomerClient customerClient, ProductService productService) {
+    public UsageServiceImpl(UsageRepository usageRepository, UsageBusinessRules usageBusinessRules, AuditAwareImpl auditAware, CustomerClient customerClient, ProductService productService, UsageCreatedProducer usageCreatedProducer) {
         this.usageRepository = usageRepository;
         this.usageBusinessRules = usageBusinessRules;
         this.auditAware = auditAware;
         this.customerClient = customerClient;
         this.productService = productService;
+        this.usageCreatedProducer = usageCreatedProducer;
     }
 
     @Override
@@ -79,6 +83,15 @@ public class UsageServiceImpl implements UsageService {
         usageRepository.save(usage);
 
         log.info("Usage record created successfully for customer ID: " + createUsageRequest.getCustomerId());
+
+        UsageCreatedEvent event = new UsageCreatedEvent();
+        event.setCustomerId(createUsageRequest.getCustomerId());
+        event.setInternetUsed(createUsageRequest.getInternetUsed());
+        event.setCallMinutesUsed(createUsageRequest.getCallMinutesUsed());
+        event.setSmsUsed(createUsageRequest.getSmsUsed());
+        event.setTvHoursWatched(createUsageRequest.getTvHoursWatched());
+        event.setProductId(createUsageRequest.getProductId());
+        usageCreatedProducer.sendMessage(event);
 
     }
 

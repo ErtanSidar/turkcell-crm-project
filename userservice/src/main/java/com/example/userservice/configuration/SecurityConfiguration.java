@@ -22,6 +22,7 @@ public class SecurityConfiguration {
         http = baseSecurityService.configureCoreSecurity(http);
 
         // Özel security yapılandırması
+        http.authorizeHttpRequests(pack -> pack.requestMatchers("/api/v1/auth/**").permitAll());
 
         return http.build();
     }

@@ -4,6 +4,7 @@ import com.turkcell.planservice.dtos.plandtos.requests.CreatePlanRequest;
 import com.turkcell.planservice.dtos.plandtos.requests.UpdatePlanRequest;
 import com.turkcell.planservice.dtos.plandtos.responses.PlanResponse;
 import com.turkcell.planservice.entities.Plan;
+import com.turkcell.planservice.kafka.PlanCreatedProducer;
 import com.turkcell.planservice.repositories.PlanRepository;
 import com.turkcell.planservice.rules.PlanBusinessRules;
 import com.turkcell.planservice.rules.SubscriptionBusinessRules;
@@ -44,6 +45,8 @@ class PlanServiceImplTest {
 
     private PlanServiceImpl planService;
 
+    private PlanCreatedProducer planCreatedProducer;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -51,7 +54,8 @@ class PlanServiceImplTest {
                 planRepository,
                 planBusinessRules,
                 subscriptionBusinessRules,
-                auditAware
+                auditAware,
+                planCreatedProducer
         );
     }
 

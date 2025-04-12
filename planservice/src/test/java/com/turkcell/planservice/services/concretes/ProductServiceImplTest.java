@@ -4,6 +4,7 @@ import com.turkcell.planservice.dtos.productdtos.requests.CreateProductRequest;
 import com.turkcell.planservice.dtos.productdtos.requests.UpdateProductRequest;
 import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
 import com.turkcell.planservice.entities.Product;
+import com.turkcell.planservice.kafka.ProductCreatedProducer;
 import com.turkcell.planservice.repositories.ProductRepository;
 import com.turkcell.planservice.rules.ProductBusinessRules;
 import com.turkcell.planservice.rules.SubscriptionBusinessRules;
@@ -49,6 +50,8 @@ class ProductServiceImplTest {
 
     private ProductServiceImpl productService;
 
+    private ProductCreatedProducer productCreatedProducer;
+
 
     @BeforeEach
     void setUp() {
@@ -57,7 +60,8 @@ class ProductServiceImplTest {
                 productRepository,
                 subscriptionBusinessRules,
                 productBusinessRules,
-                auditAware
+                auditAware,
+                productCreatedProducer
         );
     }
 

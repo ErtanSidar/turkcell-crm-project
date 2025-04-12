@@ -3,14 +3,9 @@ package com.turkcell.planservice.services.concretes;
 import com.turkcell.planservice.dtos.packagedtos.requests.CreatePackageRequest;
 import com.turkcell.planservice.dtos.packagedtos.requests.UpdatePackageRequest;
 import com.turkcell.planservice.dtos.packagedtos.responses.PackageResponse;
-import com.turkcell.planservice.dtos.plandtos.requests.CreatePlanRequest;
-import com.turkcell.planservice.dtos.plandtos.responses.PlanResponse;
-import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
 import com.turkcell.planservice.entities.Package;
-import com.turkcell.planservice.entities.Plan;
-import com.turkcell.planservice.entities.Product;
-import com.turkcell.planservice.mappers.PackageMapper;
-import com.turkcell.planservice.mappers.ProductMapper;
+import com.turkcell.planservice.kafka.PackageCreatedProducer;
+import com.turkcell.planservice.kafka.PlanCreatedProducer;
 import com.turkcell.planservice.repositories.PackageRepository;
 import com.turkcell.planservice.rules.PackageBusinessRules;
 import com.turkcell.planservice.services.abstracts.PackageService;
@@ -22,12 +17,12 @@ import io.github.ertansidar.response.GetListResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -57,6 +52,9 @@ public class PackageServiceImplTest {
     private PackageService packageService;
 
 
+    private PackageCreatedProducer packageCreatedProducer;
+
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -64,7 +62,8 @@ public class PackageServiceImplTest {
                 packageRepository,
                 productService,
                 packageBusinessRules,
-                auditAware
+                auditAware,
+                packageCreatedProducer
         );
     }
 
