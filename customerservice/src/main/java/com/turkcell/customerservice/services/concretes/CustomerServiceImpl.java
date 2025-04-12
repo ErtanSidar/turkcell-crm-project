@@ -53,6 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public <T extends GetCustomerResponse> T findById(UUID id) {
+        customerBusinessRules.checkCustomerIdExists(id);
         Customer customer = customerRepository.findById(id).get();
         if (customer.isIndividualCustomer()) {
             return (T) CustomerMapper.INSTANCE.individualCustomerResponseFromCustomer(customer);
