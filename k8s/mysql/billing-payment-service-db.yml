@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: billing-payment-service-db-service
+  labels:
+    app: billing-payment-service-db
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      targetPort: 3306
+      nodePort: 30011 # 30000 and 32767
+  selector:
+    app: billing-payment-service-db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: billing-payment-service-db-pvc
+  labels:
+    app: billing-payment-service-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-payment-service-db
+  labels:
+    app: billing-payment-service-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billing-payment-service-db
+  template:
+    metadata:
+      labels:
+        app: billing-payment-service-db
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:latest
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - configMapRef:
+                name: billing-payment-service-db-config
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: billing-payment-service-db-storage
+      volumes:
+        - name: billing-payment-service-db-storage
+          persistentVolumeClaim:
+            claimName: billing-payment-service-db-pvc
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: billing-payment-service-db-config
+  labels:
+    app: billing-payment-service-db
+data:
+  MYSQL_ROOT_PASSWORD: "test"
+  MYSQL_DATABASE: "billingpaymentservice"
+  MYSQL_USER: "admin"
+  MYSQL_PASSWORD: "test"

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discoveryserver
+  labels:
+    app: discoveryserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discoveryserver
+  template:
+    metadata:
+      labels:
+        app: discoveryserver
+    spec:
+      containers:
+        - name: discoveryserver
+          image: essoft3/discoveryserver-turkcell
+          ports:
+            - containerPort: 8761
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: http://configserver:8888
+            - name: SPRING_CLOUD_CONFIG_PROFILE
+              value: prod
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: discoveryserver
+spec:
+  selector:
+    app: discoveryserver
+  ports:
+    - port: 8761
+      targetPort: 8761
+      nodePort: 30903
+  type: NodePort

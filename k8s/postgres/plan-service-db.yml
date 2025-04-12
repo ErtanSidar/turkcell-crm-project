@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: plan-service-db-service
+  labels:
+    app: plan-service-db
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+      targetPort: 5432
+      nodePort: 30009 # 30000 and 32767
+  selector:
+    app: plan-service-db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plan-service-db-pvc
+  labels:
+    app: plan-service-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plan-service-db
+  labels:
+    app: plan-service-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plan-service-db
+  template:
+    metadata:
+      labels:
+        app: plan-service-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: plan-service-db-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: plan-service-db-storage
+      volumes:
+        - name: plan-service-db-storage
+          persistentVolumeClaim:
+            claimName: plan-service-db-pvc
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: plan-service-db-config
+  labels:
+    app: plan-service-db
+data:
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "postgres"
+  POSTGRES_DB: "planservice"
