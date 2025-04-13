@@ -20,6 +20,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(req -> req.requestMatchers("/actuator/**").permitAll());
 
         http.authorizeHttpRequests(pack -> pack.requestMatchers("/api/v1/billings/**").permitAll());
+        http.authorizeHttpRequests(payment -> payment.requestMatchers("/api/v1/payments/**").permitAll());
         return http.build();
 
 

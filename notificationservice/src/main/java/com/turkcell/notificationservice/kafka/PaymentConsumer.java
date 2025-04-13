@@ -1,6 +1,6 @@
 package com.turkcell.notificationservice.kafka;
 
-import com.essoft.event.ticket.TicketCreatedEvent;
+import com.essoft.event.payment.PaymentCreatedEvent;
 import com.turkcell.notificationservice.services.NotificationService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +20,20 @@ public class PaymentConsumer {
     private final SpringTemplateEngine templateEngine;
 
     @KafkaListener(topics = "payment-created", groupId = "create-payment")
-    private void consume(TicketCreatedEvent event) throws MessagingException {
+    private void consume(PaymentCreatedEvent event) throws MessagingException {
         Map<String, Object> properties = new HashMap<>();
         properties.put("customerName", event.getCustomerName());
-        properties.put("subject", event.getSubject());
-        properties.put("description", event.getDescription());
+        properties.put("amount", event.getAmount());
+        properties.put("paymentDate", event.getPaymentDate());
+        properties.put("paymentMethod", event.getPaymentMethod());
         properties.put("status", event.getStatus());
 
         Context context = new Context();
         context.setVariables(properties);
 
-        String title = "Müşteri Destek Bilgilendirme";
+        String title = "Müşteri Odeme Bilgilendirme";
 
         String template = templateEngine.process(event.getEmailTemplateName().getName(), context);
-        notificationService.sendNotification(event.getEmail(), title, template);
+        notificationService.sendNotification(event.getCustomerEmail(), title, template);
     }
 }

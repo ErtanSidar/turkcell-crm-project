@@ -21,7 +21,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(city -> city.requestMatchers("/api/v1/cities/**").permitAll());
         http.authorizeHttpRequests(country -> country.requestMatchers("/api/v1/countries/**").permitAll());
         http.authorizeHttpRequests(customer -> customer.requestMatchers("/api/v1/customers/**").permitAll());
-
+        http.authorizeHttpRequests(contact -> contact.requestMatchers("/api/v1/contacts/**").permitAll());
+        http.authorizeHttpRequests(address -> address.requestMatchers("/api/v1/addresses/**").permitAll());
         return http.build();
     }
 }

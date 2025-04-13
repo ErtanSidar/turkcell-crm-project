@@ -1,28 +1,73 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <style>
-        .container {
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f7;
+            color: #333;
+            padding: 20px;
+        }
+        .mail-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             max-width: 600px;
             margin: auto;
-            font-family: Arial, sans-serif;
-            border: 1px solid #ddd;
-            padding: 20px;
-            background-color: #f9f9f9;
-            text-align: center;
         }
-        .amount {
-            font-size: 20px;
-            font-weight: bold;
-            color: #007bff;
+        h2 {
+            color: #007BFF;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .info-table th, .info-table td {
+            text-align: left;
+            padding: 8px;
+        }
+        .info-table th {
+            background-color: #f0f0f0;
+            color: #555;
+        }
+        .info-table tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>Ödeme Bilgilendirme</h2>
-    <p>Sayın <span th:text="${customerName}"></span>,</p>
-    <p>Ödemeniz başarıyla alınmıştır.</p>
-    <p>Ödeme tutarı: <span class="amount" th:text="${amount}"></span></p>
+<div class="mail-container">
+    <h2>Ödeme Bildirimi</h2>
+    <p>Sayın <span th:text="${customerName}">Müşteri Adı</span>,</p>
+    <p>Yapmış olduğunuz ödeme başarıyla alınmıştır. Detaylar aşağıda yer almaktadır:</p>
+
+    <table class="info-table">
+        <tr>
+            <th>Müşteri Adı</th>
+            <td th:text="${customerName}">Müşteri Adı</td>
+        </tr>
+        <tr>
+            <th>Tutar</th>
+            <td th:text="${amount}">0.00</td>
+        </tr>
+        <tr>
+            <th>Ödeme Tarihi</th>
+            <td th:text="${paymentDate}">01.01.2025</td>
+        </tr>
+        <tr>
+            <th>Ödeme Yöntemi</th>
+            <td th:text="${paymentMethod}">Kredi Kartı</td>
+        </tr>
+        <tr>
+            <th>Durum</th>
+            <td th:text="${status}">Başarılı</td>
+        </tr>
+    </table>
+
+    <p>Ödemeniz için teşekkür ederiz.</p>
+    <p>Saygılarımızla,<br>Şirketiniz</p>
 </div>
 </body>
 </html>
