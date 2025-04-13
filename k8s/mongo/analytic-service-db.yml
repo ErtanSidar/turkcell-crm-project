@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: analytic-service-db-service
+  labels:
+    app: analytic-service-db
+spec:
+  type: NodePort
+  ports:
+    - port: 27017
+      targetPort: 27017
+      nodePort: 30012 # 30000 and 32767
+  selector:
+    app: analytic-service-db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: analytic-service-db-pvc
+  labels:
+    app: analytic-service-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytic-service-db
+  labels:
+    app: analytic-service-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytic-service-db
+  template:
+    metadata:
+      labels:
+        app: analytic-service-db
+    spec:
+      containers:
+        - name: mongo
+          image: mongo
+          ports:
+            - containerPort: 27017
+          envFrom:
+            - configMapRef:
+                name: analytic-service-db-config
+          volumeMounts:
+            - mountPath: /data/db
+              name: analytic-service-db-storage
+      volumes:
+        - name: analytic-service-db-storage
+          persistentVolumeClaim:
+            claimName: analytic-service-db-pvc
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: analytic-service-db-config
+  labels:
+    app: analytic-service-db
+data:
+  MONGO_INITDB_ROOT_USERNAME: "root"
+  MONGO_INITDB_ROOT_PASSWORD: "root"

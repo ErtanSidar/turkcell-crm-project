@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: contract-service-db-service
+  labels:
+    app: contract-service-db
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      targetPort: 3306
+      nodePort: 30010 # 30000 and 32767
+  selector:
+    app: contract-service-db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: contract-service-db-pvc
+  labels:
+    app: contract-service-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: contract-service-db
+  labels:
+    app: contract-service-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: contract-service-db
+  template:
+    metadata:
+      labels:
+        app: contract-service-db
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:latest
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - configMapRef:
+                name: contract-service-db-config
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: contract-service-db-storage
+      volumes:
+        - name: contract-service-db-storage
+          persistentVolumeClaim:
+            claimName: contract-service-db-pvc
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contract-service-db-config
+  labels:
+    app: contract-service-db
+data:
+  MYSQL_ROOT_PASSWORD: "test"
+  MYSQL_DATABASE: "contractservice"
+  MYSQL_USER: "admin"
+  MYSQL_PASSWORD: "test"
