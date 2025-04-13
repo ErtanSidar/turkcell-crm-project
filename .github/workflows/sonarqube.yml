@@ -44,7 +44,7 @@ jobs:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         with:
-          -Dsonar.projectKey=${{ matrix.service }}
+          -Dsonar.projectKey=ErtanSidar_turkcell-crm-project
           -Dsonar.organization=ertansidar
           -Dsonar.sources=${{ matrix.service }}/src
           -Dsonar.java.binaries=${{ matrix.service }}/target/classes
