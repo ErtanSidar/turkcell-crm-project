@@ -125,6 +125,7 @@ services:
 #    depends_on:
 #      - redis
 
+
   configserver:
     image: "essoft3/configserver-turkcell:latest"
     platform: linux/amd64
