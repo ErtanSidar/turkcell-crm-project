@@ -62,6 +62,7 @@ class SubscriptionServiceImplTest {
 
     private SubscriptionServiceImpl subscriptionService;
 
+    @Mock
     private SubscriptionCreatedProducer subscriptionCreatedProducer;
 
     private UUID customerId;

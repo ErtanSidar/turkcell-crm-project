@@ -50,6 +50,7 @@ class ProductServiceImplTest {
 
     private ProductServiceImpl productService;
 
+    @Mock
     private ProductCreatedProducer productCreatedProducer;
 
 

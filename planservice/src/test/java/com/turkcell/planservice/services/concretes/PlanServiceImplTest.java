@@ -45,6 +45,7 @@ class PlanServiceImplTest {
 
     private PlanServiceImpl planService;
 
+    @Mock
     private PlanCreatedProducer planCreatedProducer;
 
     @BeforeEach
