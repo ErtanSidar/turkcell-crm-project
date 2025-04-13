@@ -44,7 +44,10 @@ jobs:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         with:
-          projectBaseDir: ${{matrix.service}}
+          -Dsonar.projectKey=${{ matrix.service }}
+          -Dsonar.organization=ertansidar
+          -Dsonar.sources=${{ matrix.service }}/src
+          -Dsonar.java.binaries=${{ matrix.service }}/target/classes
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: 'https://sonarcloud.io/'
