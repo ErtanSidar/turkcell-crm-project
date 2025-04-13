@@ -21,7 +21,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests(req -> req.requestMatchers("/actuator/**").permitAll());
         http.authorizeHttpRequests(pack -> pack.requestMatchers("/api/v1/packages/**").permitAll());
         http.authorizeHttpRequests(plan -> plan.requestMatchers("/api/v1/plans/**").permitAll());
-
+        http.authorizeHttpRequests(sub -> sub.requestMatchers("/api/v1/subscriptions/**").permitAll());
+        http.authorizeHttpRequests(product -> product.requestMatchers("/api/v1/products/**").permitAll());
+        http.authorizeHttpRequests(usage -> usage.requestMatchers("/api/v1/usages/**").permitAll());
 
         return http.build();
     }
