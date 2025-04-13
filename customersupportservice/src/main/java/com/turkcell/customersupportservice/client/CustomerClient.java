@@ -10,6 +10,6 @@ import java.util.UUID;
 @FeignClient(name = "customerservice", url = "http://customerservice:8083")
 public interface CustomerClient {
 
-    @GetMapping("/api/v1/customers/{id}")
+    @GetMapping("/api/v2/customers/{id}")
     GetCustomerFeignResponse findById(@PathVariable UUID id);
 }
