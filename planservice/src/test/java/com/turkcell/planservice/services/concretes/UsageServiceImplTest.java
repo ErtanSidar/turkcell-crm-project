@@ -59,6 +59,7 @@ class UsageServiceImplTest {
 
     private UsageServiceImpl usageService;
 
+    @Mock
     private UsageCreatedProducer usageCreatedProducer;
 
     private UUID testUsageId;

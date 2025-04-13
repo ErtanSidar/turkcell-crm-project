@@ -1,11 +1,16 @@
 package com.turkcell.planservice.services.concretes;
 
+import com.essoft.event.packageEntity.PackageCreatedEvent;
 import com.turkcell.planservice.dtos.packagedtos.requests.CreatePackageRequest;
 import com.turkcell.planservice.dtos.packagedtos.requests.UpdatePackageRequest;
 import com.turkcell.planservice.dtos.packagedtos.responses.PackageResponse;
+import com.turkcell.planservice.dtos.productdtos.responses.ProductResponse;
 import com.turkcell.planservice.entities.Package;
+import com.turkcell.planservice.entities.Product;
 import com.turkcell.planservice.kafka.PackageCreatedProducer;
 import com.turkcell.planservice.kafka.PlanCreatedProducer;
+import com.turkcell.planservice.mappers.PackageMapper;
+import com.turkcell.planservice.mappers.ProductMapper;
 import com.turkcell.planservice.repositories.PackageRepository;
 import com.turkcell.planservice.rules.PackageBusinessRules;
 import com.turkcell.planservice.services.abstracts.PackageService;
@@ -24,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +57,7 @@ public class PackageServiceImplTest {
 
     private PackageService packageService;
 
-
+    @Mock
     private PackageCreatedProducer packageCreatedProducer;
 
 
@@ -143,6 +149,7 @@ public class PackageServiceImplTest {
 
         verify(packageBusinessRules).checkIfPackageNameExists(request.getPackageName());
         verify(packageRepository).save(any(Package.class));
+        verify(packageCreatedProducer).sendMessage(any(PackageCreatedEvent.class));
 
 
     }
