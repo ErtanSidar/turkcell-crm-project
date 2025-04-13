@@ -25,5 +25,4 @@ public class PackageCreatedEvent {
 
     private int validityPeriod;
 
-    private UUID productId;
 }

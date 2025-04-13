@@ -30,8 +30,7 @@ public class CreatePackageRequest {
     @Max(value = 36, message = "Validity period cannot exceed 36 months")
     private int validityPeriod;
 
-    @NotNull(message = "Product ID cannot be null")
-    private UUID productId;
+
 
 
 

@@ -29,10 +29,6 @@ public class Package extends BaseEntity<UUID> {
     @Column(name = "validity_period")
     private int validityPeriod;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
     @Override
     protected UUID generateId() {
         return UUID.randomUUID();

@@ -22,7 +22,7 @@ public class UsageBusinessRules {
         }
     }
 
-    public void checkIfUsageIsValid(String planName, String packageName) {
-        productBusinessRules.checkIfProductHasValidPlanAndPackage(planName, packageName);
+    public void checkIfUsageIsValid(String planName) {
+        productBusinessRules.checkIfProductHasValidPlanAndPackage(planName);
     }
 }

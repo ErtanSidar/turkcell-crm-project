@@ -16,18 +16,15 @@ import org.springframework.kafka.annotation.KafkaListener;
 public class PackageConsumer {
 
     private final PackageRepository packageRepository;
-    private final ProductRepository productRepository;
 
     @KafkaListener(topics = "package-created",groupId = "create-package")
     private void consumePlan(PackageCreatedEvent event) {
-        Product product = productRepository.findById(event.getProductId()).orElseThrow();
         Package pack = new Package();
         pack.setPackageName(event.getPackageName());
         pack.setPackageType(event.getPackageType());
         pack.setQuota(event.getQuota());
         pack.setPrice(event.getPrice());
         pack.setValidityPeriod(event.getValidityPeriod());
-        pack.setProduct(product);
         packageRepository.save(pack);
     }
 }

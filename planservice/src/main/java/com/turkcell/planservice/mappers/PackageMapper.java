@@ -16,7 +16,6 @@ public interface PackageMapper {
 
     PackageResponse createPackageResponseFromPackage(Package pack);
 
-    @Mapping(source = "productId",target = "product.id")
     Package CreatePackageFromCreatePackageRequest(CreatePackageRequest request);
 
     void updatePackageFromRequest(UpdatePackageRequest request, @MappingTarget Package pack);

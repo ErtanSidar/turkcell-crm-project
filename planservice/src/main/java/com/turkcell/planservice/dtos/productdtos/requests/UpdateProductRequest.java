@@ -25,9 +25,6 @@ public class UpdateProductRequest {
     @NotNull(message = "Plan ID cannot be null")
     private UUID planId;
 
-    @NotNull(message = "Package ID cannot be null")
-    private UUID packageId;
-
     @NotNull(message = "Subscription ID cannot be null")
     private UUID subscriptionId;
 }

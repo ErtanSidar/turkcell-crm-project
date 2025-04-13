@@ -15,6 +15,7 @@ public interface SubscriptionMapper {
     SubscriptionMapper INSTANCE = Mappers.getMapper(SubscriptionMapper.class);
 
     SubscriptionResponse createSubscriptionResponseFromSubscription(Subscription subscription);
+    Subscription createSubscriptionFromSubscriptionResponse(SubscriptionResponse subscriptionResponse);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "plan", ignore = true)

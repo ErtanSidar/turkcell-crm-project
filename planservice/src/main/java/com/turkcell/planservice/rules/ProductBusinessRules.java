@@ -8,12 +8,11 @@ import java.util.UUID;
 @Component
 public class ProductBusinessRules {
 
-    private final PackageBusinessRules packageBusinessRules;
+
     private final PlanBusinessRules planBusinessRules;
     private final ProductRepository productRepository;
 
-    public ProductBusinessRules(PackageBusinessRules packageBusinessRules, PlanBusinessRules planBusinessRules, ProductRepository productRepository) {
-        this.packageBusinessRules = packageBusinessRules;
+    public ProductBusinessRules(PlanBusinessRules planBusinessRules, ProductRepository productRepository) {
         this.planBusinessRules = planBusinessRules;
         this.productRepository = productRepository;
     }
@@ -24,8 +23,7 @@ public class ProductBusinessRules {
         }
     }
 
-    public void checkIfProductHasValidPlanAndPackage(String planName, String packageName) {
+    public void checkIfProductHasValidPlanAndPackage(String planName) {
         planBusinessRules.checkIfPlanNameExists(planName);
-        packageBusinessRules.checkIfPackageNameExists(packageName);
     }
 }
