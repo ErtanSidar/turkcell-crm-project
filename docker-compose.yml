@@ -126,7 +126,7 @@ services:
 #      - redis
 
   configserver:
-    image: "essoft3/configserver-turkcell"
+    image: "essoft3/configserver-turkcell:latest"
     platform: linux/amd64
     container_name: configserver
     ports:
@@ -142,7 +142,7 @@ services:
 
 
   discoveryserver:
-    image: "essoft3/discoveryserver-turkcell"
+    image: "essoft3/discoveryserver-turkcell:latest"
     platform: linux/amd64
     container_name: discoveryserver
     ports:
@@ -163,7 +163,7 @@ services:
       - common
 
   gatewayserver:
-    image: "essoft3/gatewayserver-turkcell"
+    image: "essoft3/gatewayserver-turkcell:latest"
     platform: linux/amd64
     container_name: gatewayserver
     ports:
@@ -183,7 +183,7 @@ services:
       - common
 
   analyticservice:
-    image: "essoft3/analyticservice-turkcell"
+    image: "essoft3/analyticservice-turkcell:latest"
     platform: linux/amd64
     container_name: analyticservice
     ports:
@@ -205,7 +205,7 @@ services:
       - common
 
   billingpaymentservice:
-    image: "essoft3/billingpaymentservice-turkcell"
+    image: "essoft3/billingpaymentservice-turkcell:latest"
     platform: linux/amd64
     container_name: billingpaymentservice
     ports:
@@ -227,7 +227,7 @@ services:
       - common
 
   contractservice:
-    image: "essoft3/contractservice-turkcell"
+    image: "essoft3/contractservice-turkcell:latest"
     platform: linux/amd64
     container_name: contractservice
     ports:
@@ -249,7 +249,7 @@ services:
       - common
 
   customerservice:
-    image: "essoft3/customerservice-turkcell"
+    image: "essoft3/customerservice-turkcell:latest"
     platform: linux/amd64
     container_name: customerservice
     ports:
@@ -272,7 +272,7 @@ services:
       - common
 
   customersupportservice:
-    image: "essoft3/customersupportservice-turkcell"
+    image: "essoft3/customersupportservice-turkcell:latest"
     platform: linux/amd64
     container_name: customersupportservice
     ports:
@@ -294,7 +294,7 @@ services:
       - common
 
   notificationservice:
-    image: "essoft3/notificationservice-turkcell"
+    image: "essoft3/notificationservice-turkcell:latest"
     platform: linux/amd64
     container_name: notificationservice
     ports:
@@ -316,7 +316,7 @@ services:
       - common
 
   planservice:
-    image: "essoft3/planservice-turkcell"
+    image: "essoft3/planservice-turkcell:latest"
     platform: linux/amd64
     container_name: planservice
     ports:
@@ -338,7 +338,7 @@ services:
       - common
 
   userservice:
-    image: "essoft3/userservice-turkcell"
+    image: "essoft3/userservice-turkcell:latest"
     platform: linux/amd64
     container_name: userservice
     ports:
