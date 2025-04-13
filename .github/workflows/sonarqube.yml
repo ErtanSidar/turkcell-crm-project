@@ -33,6 +33,10 @@ jobs:
           java-version: '21'
           distribution: 'corretto'
 
+      - name: Build Common Module
+        run: mvn clean install -DskipTests
+        working-directory: common
+
       - name: Build with Maven
         working-directory: ${{matrix.service}}
         run: mvn clean package -DskipTests
