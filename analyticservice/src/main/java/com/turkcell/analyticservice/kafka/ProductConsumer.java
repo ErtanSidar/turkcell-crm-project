@@ -20,7 +20,6 @@ public class ProductConsumer {
         product.setDescription(productCreatedEvent.getDescription());
         product.setProductType(productCreatedEvent.getProductType());
 //        product.setPlanId(createProductRequest.getPlanId());
-//        product.setPackageId(createProductRequest.getPackageId());
 //        product.setSubscriptionId(createProductRequest.getSubscriptionId());
         productRepository.save(product);
 

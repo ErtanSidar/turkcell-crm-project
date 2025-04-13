@@ -23,7 +23,5 @@ public class ProductCreatedEvent {
 
     private UUID planId;
 
-    private UUID packageId;
-
     private UUID subscriptionId;
 }

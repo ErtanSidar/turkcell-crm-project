@@ -8,6 +8,8 @@ import com.turkcell.planservice.kafka.ProductCreatedProducer;
 import com.turkcell.planservice.repositories.ProductRepository;
 import com.turkcell.planservice.rules.ProductBusinessRules;
 import com.turkcell.planservice.rules.SubscriptionBusinessRules;
+import com.turkcell.planservice.services.abstracts.PlanService;
+import com.turkcell.planservice.services.abstracts.SubscriptionService;
 import io.github.ertansidar.audit.AuditAwareImpl;
 import io.github.ertansidar.exception.type.BusinessException;
 import io.github.ertansidar.paging.PageInfo;
@@ -53,6 +55,12 @@ class ProductServiceImplTest {
     @Mock
     private ProductCreatedProducer productCreatedProducer;
 
+    @Mock
+    private PlanService planService;
+
+    @Mock
+    SubscriptionService subscriptionService;
+
 
     @BeforeEach
     void setUp() {
@@ -62,7 +70,9 @@ class ProductServiceImplTest {
                 subscriptionBusinessRules,
                 productBusinessRules,
                 auditAware,
-                productCreatedProducer
+                productCreatedProducer,
+                planService,
+                subscriptionService
         );
     }
 
@@ -101,12 +111,10 @@ class ProductServiceImplTest {
     void createProduct_WithValidRequest_ShouldSaveProduct() {
         CreateProductRequest request = new CreateProductRequest();
         request.setPlanId(UUID.randomUUID());
-        request.setPackageId(UUID.randomUUID());
 
         doNothing().when(productBusinessRules)
                 .checkIfProductHasValidPlanAndPackage(
-                        request.getPlanId().toString(),
-                        request.getPackageId().toString()
+                        request.getPlanId().toString()
                 );
 
         // Act
@@ -115,8 +123,7 @@ class ProductServiceImplTest {
         // Assert
         verify(productBusinessRules)
                 .checkIfProductHasValidPlanAndPackage(
-                        request.getPlanId().toString(),
-                        request.getPackageId().toString()
+                        request.getPlanId().toString()
                 );
         verify(productRepository).save(any(Product.class));
     }

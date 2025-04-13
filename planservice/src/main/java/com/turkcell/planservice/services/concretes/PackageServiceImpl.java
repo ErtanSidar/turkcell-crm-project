@@ -76,11 +76,6 @@ public class PackageServiceImpl implements PackageService {
         packageBusinessRules.checkIfPackageNameExists(createPackageRequest.getPackageName());
         Package newPackage = PackageMapper.INSTANCE.CreatePackageFromCreatePackageRequest(createPackageRequest);
 
-        ProductResponse productResponse = productService.getOneProduct(createPackageRequest.getProductId());
-        Product product = ProductMapper.INSTANCE.createProductFromProductResponse(productResponse);
-
-        newPackage.setProduct(product);
-
         packageRepository.save(newPackage);
 
         PackageCreatedEvent event = new PackageCreatedEvent();
@@ -89,7 +84,6 @@ public class PackageServiceImpl implements PackageService {
         event.setQuota(createPackageRequest.getQuota());
         event.setPrice(createPackageRequest.getPrice());
         event.setValidityPeriod(createPackageRequest.getValidityPeriod());
-        event.setProductId(newPackage.getId());
         packageCreatedProducer.sendMessage(event);
     }
 

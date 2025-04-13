@@ -28,8 +28,6 @@ public class Product extends BaseEntity<UUID> {
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
-    @OneToOne
-    private Package packagee;
 
     @OneToMany(mappedBy = "product")
     private List<Usage> usages;
