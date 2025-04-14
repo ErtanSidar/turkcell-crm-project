@@ -103,6 +103,8 @@ services:
     ports:
       - "1080:1080"
       - "1025:1025"
+    networks:
+      - common
 
 #  redis:
 #    image: redis:latest
@@ -408,6 +410,7 @@ services:
     image: bitnami/kafka
     ports:
       - "9092:9092"
+      - "9094:9094"
     environment:
       - KAFKA_ENABLE_KRAFT=yes
       - KAFKA_CFG_PROCESS_ROLES=broker,controller
